@@ -1,0 +1,22 @@
+{
+  "short_name": "EcoWeb",
+  "name": "EcoWeb",
+  "icons": [
+    {
+      "src": "/android-chrome-256x256.png",
+      "type": "image/png",
+      "sizes": "256x256"
+    },
+    {
+      "src": "/android-chrome-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#e6e6e6",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "scope": "./",
+  "theme_color": "#ffffff"
+}
