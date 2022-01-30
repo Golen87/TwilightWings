@@ -82,7 +82,7 @@ export class Background extends Phaser.GameObjects.Container {
 
 		this.cloudCont = scene.add.container(cx, cy);
 		this.clouds = [];
-		for (let i = 0; i < 4; i++) {
+		for (let i = 0; i < 3; i++) {
 			let cloud = scene.add.tileSprite(0, 0, (1-2*EDGE)*scene.W, scene.H, "bg_clouds");
 			cloud.setBlendMode(Phaser.BlendModes.SCREEN);
 

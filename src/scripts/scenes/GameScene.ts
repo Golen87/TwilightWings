@@ -115,101 +115,144 @@ export class GameScene extends BaseScene {
 			this.bosses.push(boss);
 
 
-			boss.patterns = [
-				{type: "enemy-night", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  90, wait: 0.2}, // Triple 5s
-				{type: "enemy-night", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   4, offset: 0, degrees:  10*4, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   5, offset: 0, degrees:  10*5, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   6, offset: 0, degrees:  10*6, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   7, offset: 0, degrees:  10*7, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   8, offset: 0, degrees:  10*8, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   9, offset: 0, degrees:  10*9, wait: 2},
+			// boss.patterns = [
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  90, wait: 0.2}, // Triple 5s
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   4, offset: 0, degrees:  10*4, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   5, offset: 0, degrees:  10*5, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   6, offset: 0, degrees:  10*6, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   7, offset: 0, degrees:  10*7, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   8, offset: 0, degrees:  10*8, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   9, offset: 0, degrees:  10*9, wait: 2},
 
-				// 5-4-5 at different speeds
-				{type: "enemy-day", radius:  6, speed: 200+20*1, amount:   5, offset: 0, degrees:  45, wait: 0},
-				{type: "enemy-day", radius:  6, speed: 200+20*2, amount:   4, offset: 0, degrees:  45, wait: 0},
-				{type: "enemy-day", radius:  6, speed: 200+20*3, amount:   5, offset: 0, degrees:  45, wait: 1},
+			// 	// 5-4-5 at different speeds
+			// 	{type: "enemy-day", radius:  6, speed: 200+20*1, amount:   5, offset: 0, degrees:  45, wait: 0},
+			// 	{type: "enemy-day", radius:  6, speed: 200+20*2, amount:   4, offset: 0, degrees:  45, wait: 0},
+			// 	{type: "enemy-day", radius:  6, speed: 200+20*3, amount:   5, offset: 0, degrees:  45, wait: 1},
 
-				// Huge ring
-				{type: "enemy-night", radius: 12, speed: 120,      amount: 180, offset: 0, degrees: 360, wait: 2},
+			// 	// Huge ring
+			// 	{type: "enemy-night", radius: 12, speed: 120,      amount: 180, offset: 0, degrees: 360, wait: 2},
 
-				{type: "enemy-day",   radius:  6, speed: 200+20*1, amount:   5, offset: 0, degrees:  45, wait: 0}, // Triple 5s
-				{type: "enemy-day",   radius:  6, speed: 200+20*2, amount:   4, offset: 0, degrees:  45, wait: 0},
-				{type: "enemy-day",   radius:  6, speed: 200+20*3, amount:   5, offset: 0, degrees:  45, wait: 2},
+			// 	{type: "enemy-day",   radius:  6, speed: 200+20*1, amount:   5, offset: 0, degrees:  45, wait: 0}, // Triple 5s
+			// 	{type: "enemy-day",   radius:  6, speed: 200+20*2, amount:   4, offset: 0, degrees:  45, wait: 0},
+			// 	{type: "enemy-day",   radius:  6, speed: 200+20*3, amount:   5, offset: 0, degrees:  45, wait: 2},
 
-				{type: "enemy-night",   radius:  6, speed: 200+20*1, amount:   5, offset: 0, degrees:  45, wait: 0}, // Triple 5s
-				{type: "enemy-night",   radius:  6, speed: 200+20*2, amount:   4, offset: 0, degrees:  45, wait: 0},
-				{type: "enemy-night",   radius:  6, speed: 200+20*3, amount:   5, offset: 0, degrees:  45, wait: 1},
+			// 	{type: "enemy-night",   radius:  6, speed: 200+20*1, amount:   5, offset: 0, degrees:  45, wait: 0}, // Triple 5s
+			// 	{type: "enemy-night",   radius:  6, speed: 200+20*2, amount:   4, offset: 0, degrees:  45, wait: 0},
+			// 	{type: "enemy-night",   radius:  6, speed: 200+20*3, amount:   5, offset: 0, degrees:  45, wait: 1},
 
-				{type: "enemy-day",   radius: 12, speed: 120,      amount: 180, offset: 0, degrees: 360, wait: 2}, // Ring
-			];
+			// 	{type: "enemy-day",   radius: 12, speed: 120,      amount: 180, offset: 0, degrees: 360, wait: 2}, // Ring
+			// ];
 
-			boss.patterns = [
-				{type: "enemy-night", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2}, // Alternating
-				{type: "enemy-day", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-				{type: "enemy-day", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2}, 
-				{type: "enemy-day", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2}, // Alternating
-				{type: "enemy-day", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-				{type: "enemy-day", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2}, 
-				{type: "enemy-day", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2}, // Alternating
-				{type: "enemy-day", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-				{type: "enemy-day", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2}, 
-				{type: "enemy-day", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2}, // Alternating
-				{type: "enemy-day", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-				{type: "enemy-day", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2}, 
-				{type: "enemy-day", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-				{type: "enemy-day",   radius: 12, speed: 120,      amount: 180, offset: 0, degrees: 360, wait: 0}, // Ring
-				{type: "enemy-night", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2}, // Alternating
-				{type: "enemy-day", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-				{type: "enemy-day", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2}, 
-				{type: "enemy-day", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2}, // Alternating
-				{type: "enemy-day", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-				{type: "enemy-day", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2}, 
-				{type: "enemy-day", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2}, // Alternating
-				{type: "enemy-day", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-				{type: "enemy-day", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2}, 
-				{type: "enemy-day", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2}, // Alternating
-				{type: "enemy-day", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-				{type: "enemy-day", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2},
-				{type: "enemy-night", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2}, 
-				{type: "enemy-day", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-				{type: "enemy-night",   radius: 12, speed: 120,      amount: 180, offset: 0, degrees: 360, wait: 0}, // Ring
-			];
+			// boss.patterns = [
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2}, // Alternating
+			// 	{type: "enemy-day", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
+			// 	{type: "enemy-day", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2}, 
+			// 	{type: "enemy-day", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2}, // Alternating
+			// 	{type: "enemy-day", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
+			// 	{type: "enemy-day", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2}, 
+			// 	{type: "enemy-day", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2}, // Alternating
+			// 	{type: "enemy-day", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
+			// 	{type: "enemy-day", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2}, 
+			// 	{type: "enemy-day", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2}, // Alternating
+			// 	{type: "enemy-day", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
+			// 	{type: "enemy-day", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2}, 
+			// 	{type: "enemy-day", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
+			// 	{type: "enemy-day",   radius: 12, speed: 120,      amount: 180, offset: 0, degrees: 360, wait: 0}, // Ring
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2}, // Alternating
+			// 	{type: "enemy-day", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
+			// 	{type: "enemy-day", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2}, 
+			// 	{type: "enemy-day", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2}, // Alternating
+			// 	{type: "enemy-day", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
+			// 	{type: "enemy-day", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2}, 
+			// 	{type: "enemy-day", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2}, // Alternating
+			// 	{type: "enemy-day", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
+			// 	{type: "enemy-day", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2}, 
+			// 	{type: "enemy-day", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2}, // Alternating
+			// 	{type: "enemy-day", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
+			// 	{type: "enemy-day", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2},
+			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2}, 
+			// 	{type: "enemy-day", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
+			// 	{type: "enemy-night",   radius: 12, speed: 120,      amount: 180, offset: 0, degrees: 360, wait: 0}, // Ring
+			// ];
 
-			boss.patterns = [
-				{type: "enemy-day", radius: 8, speed: 180, amount: 30, offset: 35, degrees: 60, wait: 0},
-				{type: "enemy-day", radius: 6, speed: 220, amount: 20, offset: 9, degrees: 360, wait: 0.05},
-				{type: "enemy-day", radius: 16, speed: 320, amount: 90, offset: 180, degrees: 300, wait: 0.05, x: 0, y: 0, angle: 90},
-				{type: "enemy-day", radius: 6, speed: 220, amount: 20, offset: 0, degrees: 360, wait: 0.05},
-				{type: "enemy-day", radius: 16, speed: 320, amount: 90, offset: 180, degrees: 300, wait: 0.25, x: 0, y: 0, angle: 90},
-				{type: "enemy-day", radius: 8, speed: 180, amount: 30, offset: 325, degrees: 60, wait: 0},
-				{type: "enemy-day", radius: 6, speed: 220, amount: 20, offset: 9, degrees: 360, wait: 0.05},
-				{type: "enemy-day", radius: 16, speed: 320, amount: 90, offset: 180, degrees: 300, wait: 0.05, x: 0, y: 0, angle: 90},
-				{type: "enemy-day", radius: 6, speed: 220, amount: 20, offset: 0, degrees: 360, wait: 0.05},
-				{type: "enemy-day", radius: 16, speed: 320, amount: 90, offset: 180, degrees: 300, wait: 0.25, x: 0, y: 0, angle: 90},
-			];
+			// boss.patterns = [
+			// 	{type: "enemy-day", radius: 8, speed: 180, amount: 30, offset: 35, degrees: 60, wait: 0},
+			// 	{type: "enemy-day", radius: 6, speed: 220, amount: 20, offset: 9, degrees: 360, wait: 0.05},
+			// 	{type: "enemy-day", radius: 16, speed: 320, amount: 90, offset: 180, degrees: 300, wait: 0.05, x: 0, y: 0, angle: 90},
+			// 	{type: "enemy-day", radius: 6, speed: 220, amount: 20, offset: 0, degrees: 360, wait: 0.05},
+			// 	{type: "enemy-day", radius: 16, speed: 320, amount: 90, offset: 180, degrees: 300, wait: 0.25, x: 0, y: 0, angle: 90},
+			// 	{type: "enemy-day", radius: 8, speed: 180, amount: 30, offset: 325, degrees: 60, wait: 0},
+			// 	{type: "enemy-day", radius: 6, speed: 220, amount: 20, offset: 9, degrees: 360, wait: 0.05},
+			// 	{type: "enemy-day", radius: 16, speed: 320, amount: 90, offset: 180, degrees: 300, wait: 0.05, x: 0, y: 0, angle: 90},
+			// 	{type: "enemy-day", radius: 6, speed: 220, amount: 20, offset: 0, degrees: 360, wait: 0.05},
+			// 	{type: "enemy-day", radius: 16, speed: 320, amount: 90, offset: 180, degrees: 300, wait: 0.25, x: 0, y: 0, angle: 90},
+			// ];
+
+			// boss.patterns = [
+				// {type: "enemy-night", radius: 4, speed: 120, amount: 15, offset: 12, degrees: 360, wait: 0.1},
+				// {type: "enemy-night", radius: 4, speed: 120, amount: 15, offset: 0, degrees: 360, wait: 0.05},
+				// {type: "enemy-night", radius: 16, speed: 280, amount: 90, offset: 180, degrees: 300, wait: 0.05, angle: 90},
+				// {type: "enemy-night", radius: 4, speed: 120, amount: 15, offset: 12, degrees: 360, wait: 0.1},
+				// {type: "enemy-night", radius: 4, speed: 120, amount: 15, offset: 0, degrees: 360, wait: 0.05},
+				// {type: "enemy-night", radius: 16, speed: 280, amount: 90, offset: 180, degrees: 300, wait: 0.025, angle: 90},
+				// {type: "enemy-night", radius: 4, speed: 120, amount: 15, offset: 12, degrees: 360, wait: 0.1},
+				// {type: "enemy-night", radius: 4, speed: 120, amount: 15, offset: 0, degrees: 360, wait: 0.05},
+				// {type: "enemy-night", radius: 16, speed: 280, amount: 90, offset: 180, degrees: 300, wait: 0.05, angle: 90},
+				// {type: "enemy-night", radius: 4, speed: 120, amount: 15, offset: 12, degrees: 360, wait: 0.1},
+				// {type: "enemy-night", radius: 4, speed: 120, amount: 15, offset: 0, degrees: 360, wait: 0.05},
+				// {type: "enemy-night", radius: 16, speed: 280, amount: 90, offset: 180, degrees: 300, wait: 0.025, angle: 90},
+				// {type: "enemy-day", radius: 16, speed: 200, amount: 60, offset: 180, degrees: 260, wait: 0.025, angle: 90},
+				// {type: "enemy-day", radius: 6, speed: 180, amount: 10, offset: 20, degrees: 45, wait: 0.025, angle: 90},
+				// {type: "enemy-night", radius: 4, speed: 120, amount: 15, offset: 12, degrees: 360, wait: 0.1},
+				// {type: "enemy-night", radius: 4, speed: 120, amount: 15, offset: 0, degrees: 360, wait: 0.05},
+				// {type: "enemy-night", radius: 16, speed: 280, amount: 90, offset: 180, degrees: 300, wait: 0.05, angle: 90},
+				// {type: "enemy-night", radius: 4, speed: 120, amount: 15, offset: 12, degrees: 360, wait: 0.1},
+				// {type: "enemy-night", radius: 4, speed: 120, amount: 15, offset: 0, degrees: 360, wait: 0.05},
+				// {type: "enemy-night", radius: 16, speed: 280, amount: 90, offset: 180, degrees: 300, wait: 0.025, angle: 90},
+				// {type: "enemy-night", radius: 4, speed: 120, amount: 15, offset: 12, degrees: 360, wait: 0.1},
+				// {type: "enemy-night", radius: 4, speed: 120, amount: 15, offset: 0, degrees: 360, wait: 0.05},
+				// {type: "enemy-night", radius: 16, speed: 280, amount: 90, offset: 180, degrees: 300, wait: 0.05, angle: 90},
+				// {type: "enemy-night", radius: 4, speed: 120, amount: 15, offset: 12, degrees: 360, wait: 0.1},
+				// {type: "enemy-night", radius: 4, speed: 120, amount: 15, offset: 0, degrees: 360, wait: 0.05},
+				// {type: "enemy-night", radius: 16, speed: 280, amount: 90, offset: 180, degrees: 300, wait: 0.025, angle: 90},
+				// {type: "enemy-day", radius: 16, speed: 200, amount: 60, offset: 180, degrees: 260, wait: 0.025, angle: 90},
+				// {type: "enemy-day", radius: 6, speed: 180, amount: 10, offset: -20, degrees: 45, wait: 0.025, angle: 90},
+			// ];
+
+			boss.setPatterns([
+				[
+					{type: "enemy-night", radius: 4, speed: [160,140,120,100], amount: [3, 2, 3, 2], offset: 0, degrees: [20,10,20,10], wait: 1},
+				],
+				[
+					// {type: "enemy-day", radius: 4, speed: [160,140], amount: [3,2], offset: 0, degrees: [30,15], wait: 0.5, angle: [180,180,270,270]},
+					// {type: "enemy-day", radius: 4, speed: [160,140], amount: [3,2], offset: 60, degrees: [30,15], wait: 0.5, angle: [180,180,270,270]},
+					// {type: "enemy-day", radius: 4, speed: [160,140], amount: [3,2], offset: 120, degrees: [30,15], wait: 0.5, angle: [180,180,270,270]},
+					{type: "enemy-day", radius: 40, speed: 120, amount: 1, offset: [0,120,240], degrees: 360, wait: 1},
+				],
+			]);
 
 			// boss.patterns = [
 			// 	{type: "enemy-night", radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2}, // Alternating
@@ -227,7 +270,6 @@ export class GameScene extends BaseScene {
 			// 	{type: "enemy-day", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
 			// ];
 
-			// boss.patterns = [];
 		}
 
 		this.playerBullets = [];
@@ -275,7 +317,7 @@ export class GameScene extends BaseScene {
 			this.player.touchEnd(pointer.x, pointer.y);
 		});
 		touchArea.on('pointerdown', (pointer: Phaser.Input.Pointer, localX: number, localY: number, event: Phaser.Types.Input.EventData) => {
-			if (!this.isRunning) {
+			if (!this.isRunning && pointer.button == 0) {
 				this.onDayToggle();
 			}
 		});
@@ -301,13 +343,6 @@ export class GameScene extends BaseScene {
 		// Sounds
 
 		this.loadSounds();
-		if (!this.sounds.flightLoop.isPlaying) {
-			this.sounds.flightLoop.setLoop(true);
-			this.sounds.flightLoop.play();
-		}
-		else {
-			console.log("NO LOOP");
-		}
 
 		this.musicDay.play();
 		this.musicNight.play();
@@ -399,7 +434,7 @@ export class GameScene extends BaseScene {
 				bullet.setAlpha(0.2 + 0.8 * this.dayTimeSmooth);
 
 			// Collision with player
-			if (this.player.alive && this.player.dayTime != bullet.dayTime && this.player.insideBody(bullet)) {
+			if (this.player.alive && this.player.dayTime != bullet.dayTime && this.player.insideBody(bullet) && (this.dayTime ? 1 : 0) == this.dayTimeLinear) {
 				this.player.damage();
 				this.ui.setPlayerHealth(this.player.health);
 				bullet.kill();
@@ -541,6 +576,8 @@ export class GameScene extends BaseScene {
 		}
 
 		if (!this.player.visible) {
+			this.musicDay.stop();
+			this.musicNight.stop();
 			this.fade(true, 100, 0x000000);
 			this.addEvent(110, () => {
 				this.scene.start("MenuScene");
@@ -607,10 +644,41 @@ export class GameScene extends BaseScene {
 		spawnFunc(dayTime, origin, direction, radius);
 	}
 
-	spawnBulletArc(type: string, origin: Phaser.Math.Vector2, dirAngle: number, radius: number, speed: number, amount: number, offsetAngle: number=0, maxAngle?: number) {
+	spawnBulletArc(type: string, origin: Phaser.Math.Vector2, dirAngle, radius, speed, amount, offsetAngle=0, maxAngle=360) {
+		dirAngle = dirAngle || 90;
+		radius = radius || 6;
+		speed = speed || 100;
+		amount = amount || 1;
+		offsetAngle = offsetAngle || 0;
+		maxAngle = maxAngle || 360;
+
+		let subLength = Math.max(
+			Array.isArray(dirAngle) ? dirAngle.length : 0,
+			Array.isArray(radius) ? radius.length : 0,
+			Array.isArray(speed) ? speed.length : 0,
+			Array.isArray(amount) ? amount.length : 0,
+			Array.isArray(offsetAngle) ? offsetAngle.length : 0,
+			Array.isArray(maxAngle) ? maxAngle.length : 0
+		);
+		if (subLength > 0) {
+			for (let i = 0; i < subLength; i++) {
+				this.spawnBulletArc(
+					type,
+					origin,
+					Array.isArray(dirAngle) ? dirAngle[i%dirAngle.length] : dirAngle,
+					Array.isArray(radius) ? radius[i%radius.length] : radius,
+					Array.isArray(speed) ? speed[i%speed.length] : speed,
+					Array.isArray(amount) ? amount[i%amount.length] : amount,
+					Array.isArray(offsetAngle) ? offsetAngle[i%offsetAngle.length] : offsetAngle,
+					Array.isArray(maxAngle) ? maxAngle[i%maxAngle.length] : maxAngle
+				);
+			}
+			return;
+		}
+
 		let dir = new Phaser.Math.Vector2();
-		maxAngle = (maxAngle || 360) * Phaser.Math.DEG_TO_RAD;
 		offsetAngle *= Phaser.Math.DEG_TO_RAD;
+		maxAngle *= Phaser.Math.DEG_TO_RAD;
 
 		for (let i = 0; i < amount; i++) {
 

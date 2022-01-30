@@ -24,10 +24,9 @@ export class Boss extends Character {
 	private border: { [key: string]: number };
 
 	// Shooting
-	public shootTimer: number;
-	public shootIndex: number;
-	public patterns: any[];
-	public patternIndex: number;
+	// public shootTimer: number;
+	// public shootIndex: number;
+	private patterns: any[];
 
 	public moveTimer: number;
 
@@ -75,10 +74,9 @@ export class Boss extends Character {
 		};
 		// this.setAngle(this.facing.angle() * Phaser.Math.RAD_TO_DEG);
 
-		this.shootTimer = 0;
-		this.shootIndex = 0;
+		// this.shootTimer = 0;
+		// this.shootIndex = 0;
 		this.patterns = [];
-		this.patternIndex = 0;
 
 		this.maxHealth = 200;
 		this.health = this.maxHealth;
@@ -142,54 +140,33 @@ export class Boss extends Character {
 			// PHASE CHANGE: this.complete
 
 
-			// Shooting Bullets
-			this.shootTimer -= delta/1000;
-			let limit = 10;
-			while (this.patterns.length > 0 && this.shootTimer < 0 && limit-- > 0) {
-				this.shootTimer = this.patterns[this.patternIndex].wait;
-				this.shootIndex += 1;
+			// Bullet patterns
 
-				// dir.setLength(150);
-				// const angle = 14;
+			for (let pattern of this.patterns) {
+				pattern.index
+				pattern.timer
+				pattern.loop
 
-				// this.scene.spawnBulletPattern("enemy-day", pos, 2);
-				// this.scene.spawnBulletPattern("enemy-night", pos, 1);
+				pattern.timer -= delta/1000;
+				let limit = 10;
+				while (pattern.loop.length > 0 && pattern.timer < 0 && limit-- > 0) {
 
-				// this.scene.spawnBulletArc("enemy-day", this.pos, this.dir.angle(), 80, 80, 0);
+					pattern.timer = pattern.loop[pattern.index].wait;
 
-				// this.scene.spawnBulletArc("enemy-day", this.pos, this.dir, 6, 160, 5, 0, 45);
-				// this.scene.spawnBulletArc("enemy-day", this.pos, this.dir, 6, 140, 5, 0, 45);
-				// this.scene.spawnBulletArc("enemy-day", this.pos, this.dir, 6, 120, 5, 0, 45);
+					let p = pattern.loop[pattern.index];
+					let pos = this.pos;
+					if (p.x !== undefined && p.y !== undefined) {
+						pos.set(this.scene.CX + p.x * 0.24*this.scene.W, this.scene.CY + p.y * 0.5*this.scene.H);
+					}
+					let dir = this.dir;
+					if (p.angle !== undefined) {
+						dir = p.angle * Phaser.Math.DEG_TO_RAD;
+					}
 
-				// let type = (this.shootIndex%2==0) ? "enemy-day" : "enemy-night";
+					this.scene.spawnBulletArc(p.type, pos, dir, p.radius, p.speed, p.amount, p.offset, p.degrees);
 
-				let p = this.patterns[this.patternIndex];
-				let pos = this.pos;
-				if (p.x !== undefined && p.y !== undefined) {
-					pos.set(this.scene.CX + p.x, this.scene.CY + p.y);
+					pattern.index = (pattern.index + 1) % pattern.loop.length;
 				}
-				let dir = this.dir;
-				if (p.angle !== undefined) {
-					dir = p.angle * Phaser.Math.DEG_TO_RAD;
-				}
-
-				this.scene.spawnBulletArc(p.type, pos, dir, p.radius, p.speed, p.amount, p.offset, p.degrees);
-
-				this.patternIndex = (this.patternIndex + 1) % this.patterns.length;
-
-				// let angle = 45 * Math.sin(8*time/1000);
-				// dir.rotate(angle * Phaser.Math.DEG_TO_RAD);
-				// this.emit("shoot", this.dayTime, pos, dir);
-				// dir.rotate( -2*angle * Phaser.Math.DEG_TO_RAD);
-				// this.emit("shoot", this.dayTime, pos, dir);
-				// dir.rotate(angle * Phaser.Math.DEG_TO_RAD);
-				// this.emit("shoot", this.dayTime, pos, dir);
-				// dir.rotate(angle * Phaser.Math.DEG_TO_RAD);
-				// this.emit("shoot", this.dayTime, pos, dir);
-				// dir.rotate(angle * Phaser.Math.DEG_TO_RAD);
-				// this.emit("shoot", this.dayTime, pos, dir);
-				// dir.rotate(angle * Phaser.Math.DEG_TO_RAD);
-				// this.emit("shoot", this.dayTime, pos, dir);
 			}
 
 
@@ -268,4 +245,19 @@ export class Boss extends Character {
 			// return this.checkCollision(circle, bullet);
 		// });
 	// }
+
+
+	setPatterns(patterns) {
+		this.patterns = [];
+
+		for (let loop of patterns) {
+			console.assert(Array.isArray(loop), "Patterns array need to contain subarrays");
+
+			this.patterns.push({
+				index: 0,
+				timer: loop[0].wait,
+				loop
+			});
+		}
+	}
 }

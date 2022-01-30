@@ -241,7 +241,7 @@ import music_title from "../assets/sounds/TwilightWings_Title.ogg";
 const audios: Audio[] = [
 	{ key: "music_day", path: music_day, volume: 0 },
 	{ key: "music_night", path: music_night, volume: 0 },
-	{ key: "music_title", path: music_night, volume: 0 },
+	{ key: "music_title", path: music_title, volume: 0 },
 
 	{ key: "death", path: death, volume: 0.6, rate: 0.7 },
 	{ key: "enemyShotDay", path: enemyShotDay, volume: 0.2 },

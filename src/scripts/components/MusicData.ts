@@ -13,4 +13,11 @@ export default {
 		start: 4.151,
 		end: 56.981,
 	},
+	'music_title': {
+		offset: .424,
+		bpm: 60,
+		// loop: true,
+		// start: 4.151,
+		// end: 56.981,
+	},
 };
