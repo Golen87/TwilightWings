@@ -10,7 +10,7 @@ varying vec2 outTexCoord;
 void main( void )
 {
     vec2 uv = outTexCoord;
-    uv.x += 0.002 * sin((uv.y + (uTime * 0.1)) * 30.0);
+    uv.x += 0.02 * sin((uv.y + (uTime * 0.1)) * 30.0);
     vec4 texColor = texture2D(uMainSampler, uv);
     gl_FragColor = texColor;
 }

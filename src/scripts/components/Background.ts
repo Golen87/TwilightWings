@@ -1,6 +1,8 @@
 import { GameScene } from "../scenes/GameScene";
 import { interpolateColor } from "../utils";
 
+const EDGE = 0.235;
+
 
 export class Background extends Phaser.GameObjects.Container {
 	public scene: GameScene;
@@ -11,7 +13,9 @@ export class Background extends Phaser.GameObjects.Container {
 	private stars: Phaser.GameObjects.TileSprite;
 	private sun: Phaser.GameObjects.Image;
 	private moon: Phaser.GameObjects.Image;
-	private clouds: Phaser.GameObjects.TileSprite;
+	private clouds: Phaser.GameObjects.TileSprite[];
+	private cloudCont: Phaser.GameObjects.Container;
+	// private face: Phaser.GameObjects.Image;
 
 
 	constructor(scene: GameScene) {
@@ -21,6 +25,11 @@ export class Background extends Phaser.GameObjects.Container {
 
 		const cx = scene.CX;
 		const cy = scene.CY;
+
+		const tsx = EDGE * scene.W;
+		const tsy = 0;
+		const tsw = (1 - 2*EDGE) * scene.W;
+		const tsh = scene.H;
 
 		this.dayImages = [];
 		this.nightImages = [];
@@ -54,15 +63,16 @@ export class Background extends Phaser.GameObjects.Container {
 		this.add(light);
 
 
-		const sx = 0.48 * cx;
-		const sy = 0.1 * cy;
+		const sx = 0.25 * scene.W;
+		const sx2 = (1-0.25) * scene.W;
+		const sy = 0.11 * cy;
 
 		this.sun = scene.add.image(sx, sy, "bg_day_sun");
 		this.sun.setScale(0.5);
 		this.dayImages.push(this.sun)
 		this.add(this.sun);
 
-		this.moon = scene.add.image(sx, sy, "bg_night_moon");
+		this.moon = scene.add.image(sx2, sy, "bg_night_moon");
 		this.moon.setScale(0.5);
 		this.nightImages.push(this.moon);
 		this.add(this.moon);
@@ -70,19 +80,31 @@ export class Background extends Phaser.GameObjects.Container {
 
 		// Clouds
 
-		// let clouds = scene.add.image(cx, cy, "bg_clouds");
-		// clouds.setScale(0.25);
+		this.cloudCont = scene.add.container(cx, cy);
+		this.clouds = [];
+		for (let i = 0; i < 4; i++) {
+			let cloud = scene.add.tileSprite(0, 0, (1-2*EDGE)*scene.W, scene.H, "bg_clouds");
+			cloud.setBlendMode(Phaser.BlendModes.SCREEN);
 
-		// this.clouds = scene.add.tileSprite(400, 300, 800, 600, "bg_clouds");
-		// this.clouds.tileScaleX = 0.2;
-		// this.clouds.tileScaleY = 0.2;
+			cloud.setAlpha(0.25 - 0.06*i);
+			cloud.tileScaleX = 0.9 - 0.2*i;
+			cloud.tileScaleY = 0.9 - 0.2*i;
+			cloud.setData("dx", 0);
+			cloud.setData("dy", -1500 + 400*i);
 
-		// clouds.setAlpha(0.2);
-		// this.clouds.setBlendMode(Phaser.BlendModes.SCREEN);
+			this.clouds.push(cloud);
+			this.cloudCont.add(cloud);
+		}
+
+		// this.face = scene.add.image(cx, cy, "face");
+		// this.face.setAlpha(0);
+		// scene.containToScreen(this.face);
 	}
 
 
 	update(time: number, delta: number, dayTimeSmooth: number) {
+		// this.face.alpha -= delta/1000;
+		this.cloudCont.setAlpha(dayTimeSmooth);
 
 		// Change alpha depending on day time
 		this.dayImages.forEach((image: Phaser.GameObjects.Image, index: number) => {
@@ -93,11 +115,21 @@ export class Background extends Phaser.GameObjects.Container {
 		});
 
 		// Rotate sun and moon
-		this.sun.angle = time/400;
-		this.moon.angle = time/400;
+		this.sun.angle = time/200;
+		this.moon.angle = time/200;
 
 		// TileSprite
 		this.stars.tilePositionX = 2 * time/1000;
 		this.stars.tilePositionY = 15 * time/1000;
+
+		for (let cloud of this.clouds) {
+			cloud.tilePositionX = cloud.getData("dx") * time/1000;
+			cloud.tilePositionY = cloud.getData("dy") * time/1000;
+		}
 	}
+
+	// boom() {
+	// 	this.face.alpha = 1;
+	// 	this.scene.sounds.boom.play();
+	// }
 }

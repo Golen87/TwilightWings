@@ -45,11 +45,11 @@ export class OverworldScene extends BaseScene {
 
 		// Images
 
-		this.clouds1 = this.add.image(0, 0, "clouds");
-		this.clouds2 = this.add.image(0, 0, "clouds");
+		this.clouds1 = this.add.image(0, 0, "bg_clouds");
+		this.clouds2 = this.add.image(0, 0, "bg_clouds");
 		this.clouds1.setOrigin(0);
 		this.clouds2.setOrigin(0);
-		this.volcano = this.add.image(this.CX, this.CY, "volcano");
+		this.volcano = this.add.image(this.CX, this.CY, "bg_day");
 		this.fitToScreen(this.clouds1);
 		this.fitToScreen(this.clouds2);
 		this.fitToScreen(this.volcano);
@@ -64,11 +64,11 @@ export class OverworldScene extends BaseScene {
 		this.graphics.fillStyle(0xEEEEDD, 1.0);
 
 
-		this.title = this.createText(this.CX, 0.43*this.H, 40, "#FA4", "EGGNITE").setOrigin(0.5).setStroke("#732", 6);
+		this.title = this.createText(this.CX, 0.43*this.H, 3*40, "#FA4", "Twilight Wings").setOrigin(0.5).setStroke("#732", 6);
 		this.title.setPostPipeline(BendWaves2);
 		this.title.setVisible(false);
 
-		this.desc = this.createText(this.CX, 0.65*this.H, 18, "#FFF").setOrigin(0.5);
+		this.desc = this.createText(this.CX, 0.65*this.H, 3*18, "#FFF").setOrigin(0.5);
 		this.desc.setText("Tap to play");
 		this.desc.setVisible(false);
 

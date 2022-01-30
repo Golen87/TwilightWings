@@ -7,6 +7,5 @@ export class PlayerBullet extends Bullet {
 		super(scene);
 
 		this.sprite.setTexture("feather");
-		this.sprite.setScale(0.6);
 	}
 }

@@ -1,5 +1,5 @@
 import { BaseScene } from "./BaseScene";
-import { images, spritesheets } from "../assets";
+import { images, spritesheets, audios } from "../assets";
 import { GrayScalePostFilter } from "../pipelines/GrayScalePostFilter";
 import { BlurPostFilter } from "../pipelines/BlurPostFilter";
 import BendWaves from "../pipelines/BendWavesPostFX";
@@ -33,7 +33,7 @@ export class PreloadScene extends BaseScene {
 		let bar = this.add.rectangle(x, y, 1, 8, 0xDDDDDD).setOrigin(0, 0.5);
 
 		// Loading text
-		let text = this.createText(x, y, 32, "#DDDDDD", "Loading...").setOrigin(0, 1.5);
+		let text = this.createText(x, y, 16, "#DDDDDD", "Loading...").setOrigin(0, 1.5);
 
 		// Listener
 		this.load.on("progress", (progress) => {
@@ -50,12 +50,16 @@ export class PreloadScene extends BaseScene {
 		for (let image of spritesheets) {
 			this.load.spritesheet(image.key, image.path, { frameWidth: image.width, frameHeight: image.height });
 		}
+
+		for (let audio of audios) {
+			this.load.audio(audio.key, audio.path);
+		}
 	}
 
 	create() {
 		this.fade(true, 100, 0x000000);
 		this.addEvent(110, () => {
-			this.scene.start("GameScene");
+			this.scene.start("MenuScene");
 		});
 	}
 }

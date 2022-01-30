@@ -12,9 +12,12 @@ export class Character extends Phaser.GameObjects.Container {
 	public dayTime: boolean;
 
 	// Health
-	protected health: number;
+	public maxHealth: number;
+	public health: number;
 	protected hurtTimer: number;
 	protected deathTimer: number;
+
+	public facing: Phaser.Math.Vector2;
 
 
 	constructor(scene: GameScene, x: number, y: number, dayTime: boolean) {
@@ -26,9 +29,12 @@ export class Character extends Phaser.GameObjects.Container {
 		this.dayTime = dayTime;
 
 		// Health
+		this.maxHealth = 3;
 		this.health = 3;
 		this.hurtTimer = 0;
 		this.deathTimer = 0;
+
+		this.facing = new Phaser.Math.Vector2();
 	}
 
 	checkCollision(circle: Phaser.Geom.Circle, bullet: Bullet): boolean {
@@ -37,11 +43,11 @@ export class Character extends Phaser.GameObjects.Container {
 		point.add(this);
 
 		let dist = Phaser.Math.Distance.BetweenPoints(point, bullet);
-		return (dist < circle.radius);
+		return (dist < 0.6*circle.radius + bullet.radius);
 	}
 
-	damage() {
-		// this.health -= 0.01;
+	damage(amount: number=1) {
+		this.health -= amount;
 		this.hurtTimer = HURT_DURATION;
 
 		if (this.health <= 0) {
@@ -51,5 +57,17 @@ export class Character extends Phaser.GameObjects.Container {
 
 	get alive() {
 		return this.health > 0;
+	}
+
+	get healthPerc() {
+		return Math.max(0, this.health / this.maxHealth);
+	}
+
+	get pos(): Phaser.Math.Vector2 {
+		return new Phaser.Math.Vector2(this.x, this.y);
+	}
+
+	get dir(): number {
+		return this.facing.angle();
 	}
 }

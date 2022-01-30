@@ -23,7 +23,7 @@ export class BaseScene extends Phaser.Scene {
 	// Creates Phaser text object
 	createText(x: number=0, y: number=0, size: number=20, color: string="#FFF", text: string=""): Phaser.GameObjects.Text {
 		return this.add.text(x, y, text, {
-			fontFamily: "Gaegu",
+			fontFamily: "Fredoka One",
 			fontSize: Math.max(size, 1) + "px",
 			color: color
 		}).setLineSpacing(0.4*size);

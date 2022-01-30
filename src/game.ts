@@ -9,6 +9,7 @@ const config: Phaser.Types.Core.GameConfig = {
 	width: 1920/2,
 	height: 1080/2,
 	// pixelArt: true,
+	// disableContextMenu: true,
 	scale: {
 		mode: Phaser.Scale.FIT
 	},

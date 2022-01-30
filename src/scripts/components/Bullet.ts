@@ -8,6 +8,7 @@ export class Bullet extends Phaser.GameObjects.Container {
 	public sprite: Phaser.GameObjects.Sprite;
 	protected light: Phaser.GameObjects.PointLight;
 
+	public radius = 1;
 	public velocity: Phaser.Math.Vector2;
 	public facing: Phaser.Math.Vector2;
 
@@ -35,7 +36,7 @@ export class Bullet extends Phaser.GameObjects.Container {
 		this.add(this.sprite); // Attach sprite to the Bullet-component
 	}
 
-	spawn(dayTime: boolean, origin: Phaser.Math.Vector2, velocity: Phaser.Math.Vector2) {
+	spawn(dayTime: boolean, origin: Phaser.Math.Vector2, velocity: Phaser.Math.Vector2, radius: number) {
 		this.active = true;
 		this.visible = true;
 		this.x = origin.x;
@@ -43,22 +44,25 @@ export class Bullet extends Phaser.GameObjects.Container {
 		this.dayTime = dayTime;
 		this.velocity.copy(velocity);
 		this.sprite.setFrame(this.dayTime ? 0 : 1);
+
+		this.radius = radius;
+		this.sprite.setScale(2*radius / this.sprite.width);
 	}
 
 	update(time: number, delta: number) {
 		// Movement
-		this.x += this.velocity.x * 0.01667;// * delta/1000;
-		this.y += this.velocity.y * 0.01667;// * delta/1000;
+		this.x += this.velocity.x * delta/1000;
+		this.y += this.velocity.y * delta/1000;
 
 		if (this.movementFunction) {
 			this.movementFunction(time);
 		}
 
 		// Border collision
-		if (this.x < 0.26 * this.scene.W - 10 ||
-			this.x > 0.74 * this.scene.W + 10 ||
-			this.y < 0 - 10 ||
-			this.y > this.scene.H + 10) {
+		if (this.x < 0.26 * this.scene.W - 4*this.radius ||
+			this.x > 0.74 * this.scene.W + 4*this.radius ||
+			this.y < 0 - 2*this.radius ||
+			this.y > this.scene.H + 2*this.radius) {
 			this.kill();
 		}
 
@@ -72,7 +76,7 @@ export class Bullet extends Phaser.GameObjects.Container {
 	}
 
 	kill() {
-		this.active = true;
-		this.visible = true;
+		this.setActive(false);
+		this.setVisible(false);
 	}
 }

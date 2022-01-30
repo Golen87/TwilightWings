@@ -1,5 +1,5 @@
 {
-  "name": "Eggnite",
+  "name": "TwilightWings",
   "version": "1.0.1",
   "description": "DESCRIPTION",
   "main": "build/main.js",
@@ -23,8 +23,8 @@
     "public": "rimraf public && webpack --config webpack/webpack.prod.js"
   },
   "build": {
-    "appId": "eggnite",
-    "productName": "Eggnite",
+    "appId": "twilightwings",
+    "productName": "TwilightWings",
     "mac": {
       "category": "your.app.category.type"
     },
