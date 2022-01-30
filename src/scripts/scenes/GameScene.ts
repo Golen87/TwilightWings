@@ -126,11 +126,13 @@ export class GameScene extends BaseScene {
 				{type: "enemy-night", radius:  6, speed: 200, amount:   8, offset: 0, degrees:  10*8, wait: 0.2},
 				{type: "enemy-night", radius:  6, speed: 200, amount:   9, offset: 0, degrees:  10*9, wait: 2},
 
-				{type: "enemy-day", radius:  6, speed: 200+20*1, amount:   5, offset: 0, degrees:  45, wait: 0}, // Triple 5s
+				// 5-4-5 at different speeds
+				{type: "enemy-day", radius:  6, speed: 200+20*1, amount:   5, offset: 0, degrees:  45, wait: 0},
 				{type: "enemy-day", radius:  6, speed: 200+20*2, amount:   4, offset: 0, degrees:  45, wait: 0},
 				{type: "enemy-day", radius:  6, speed: 200+20*3, amount:   5, offset: 0, degrees:  45, wait: 1},
 
-				{type: "enemy-night", radius: 12, speed: 120,      amount: 180, offset: 0, degrees: 360, wait: 2}, // Ring
+				// Huge ring
+				{type: "enemy-night", radius: 12, speed: 120,      amount: 180, offset: 0, degrees: 360, wait: 2},
 
 				{type: "enemy-day",   radius:  6, speed: 200+20*1, amount:   5, offset: 0, degrees:  45, wait: 0}, // Triple 5s
 				{type: "enemy-day",   radius:  6, speed: 200+20*2, amount:   4, offset: 0, degrees:  45, wait: 0},
@@ -194,6 +196,19 @@ export class GameScene extends BaseScene {
 				{type: "enemy-night", radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2}, 
 				{type: "enemy-day", radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
 				{type: "enemy-night",   radius: 12, speed: 120,      amount: 180, offset: 0, degrees: 360, wait: 0}, // Ring
+			];
+
+			boss.patterns = [
+				{type: "enemy-day", radius: 8, speed: 180, amount: 30, offset: 35, degrees: 60, wait: 0},
+				{type: "enemy-day", radius: 6, speed: 220, amount: 20, offset: 9, degrees: 360, wait: 0.05},
+				{type: "enemy-day", radius: 16, speed: 320, amount: 90, offset: 180, degrees: 300, wait: 0.05},
+				{type: "enemy-day", radius: 6, speed: 220, amount: 20, offset: 0, degrees: 360, wait: 0.05},
+				{type: "enemy-day", radius: 16, speed: 320, amount: 90, offset: 180, degrees: 300, wait: 0.25},
+				{type: "enemy-day", radius: 8, speed: 180, amount: 30, offset: 325, degrees: 60, wait: 0},
+				{type: "enemy-day", radius: 6, speed: 220, amount: 20, offset: 9, degrees: 360, wait: 0.05},
+				{type: "enemy-day", radius: 16, speed: 320, amount: 90, offset: 180, degrees: 300, wait: 0.05},
+				{type: "enemy-day", radius: 6, speed: 220, amount: 20, offset: 0, degrees: 360, wait: 0.05},
+				{type: "enemy-day", radius: 16, speed: 320, amount: 90, offset: 180, degrees: 300, wait: 0.25},
 			];
 
 			// boss.patterns = [
@@ -592,16 +607,17 @@ export class GameScene extends BaseScene {
 		spawnFunc(dayTime, origin, direction, radius);
 	}
 
-	spawnBulletArc(type: string, origin: Phaser.Math.Vector2, dirAngle: number, radius: number, speed: number, amount: number, indexOffset: number=0, maxAngle?: number) {
+	spawnBulletArc(type: string, origin: Phaser.Math.Vector2, dirAngle: number, radius: number, speed: number, amount: number, offsetAngle: number=0, maxAngle?: number) {
 		let dir = new Phaser.Math.Vector2();
 		maxAngle = (maxAngle || 360) * Phaser.Math.DEG_TO_RAD;
+		offsetAngle *= Phaser.Math.DEG_TO_RAD;
 
 		for (let i = 0; i < amount; i++) {
 
-			let angle = dirAngle;
+			let angle = dirAngle + offsetAngle;
 
 			if (amount > 1) {
-				angle = dirAngle - maxAngle/2 + maxAngle * (i+indexOffset) / (amount-1);
+				angle = dirAngle + offsetAngle - maxAngle/2 + maxAngle * i / (amount-1);
 			}
 
 			dir.setToPolar(angle, speed);
