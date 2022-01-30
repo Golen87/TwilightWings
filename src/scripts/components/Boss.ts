@@ -164,8 +164,16 @@ export class Boss extends Character {
 				// let type = (this.shootIndex%2==0) ? "enemy-day" : "enemy-night";
 
 				let p = this.patterns[this.patternIndex];
+				let pos = this.pos;
+				if (p.x !== undefined && p.y !== undefined) {
+					pos.set(this.scene.CX + p.x, this.scene.CY + p.y);
+				}
+				let dir = this.dir;
+				if (p.angle !== undefined) {
+					dir = p.angle * Phaser.Math.DEG_TO_RAD;
+				}
 
-				this.scene.spawnBulletArc(p.type, this.pos, this.dir, p.radius, p.speed, p.amount, p.offset, p.degrees);
+				this.scene.spawnBulletArc(p.type, pos, dir, p.radius, p.speed, p.amount, p.offset, p.degrees);
 
 				this.patternIndex = (this.patternIndex + 1) % this.patterns.length;
 

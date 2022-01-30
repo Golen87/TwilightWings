@@ -201,14 +201,14 @@ export class GameScene extends BaseScene {
 			boss.patterns = [
 				{type: "enemy-day", radius: 8, speed: 180, amount: 30, offset: 35, degrees: 60, wait: 0},
 				{type: "enemy-day", radius: 6, speed: 220, amount: 20, offset: 9, degrees: 360, wait: 0.05},
-				{type: "enemy-day", radius: 16, speed: 320, amount: 90, offset: 180, degrees: 300, wait: 0.05},
+				{type: "enemy-day", radius: 16, speed: 320, amount: 90, offset: 180, degrees: 300, wait: 0.05, x: 0, y: 0, angle: 90},
 				{type: "enemy-day", radius: 6, speed: 220, amount: 20, offset: 0, degrees: 360, wait: 0.05},
-				{type: "enemy-day", radius: 16, speed: 320, amount: 90, offset: 180, degrees: 300, wait: 0.25},
+				{type: "enemy-day", radius: 16, speed: 320, amount: 90, offset: 180, degrees: 300, wait: 0.25, x: 0, y: 0, angle: 90},
 				{type: "enemy-day", radius: 8, speed: 180, amount: 30, offset: 325, degrees: 60, wait: 0},
 				{type: "enemy-day", radius: 6, speed: 220, amount: 20, offset: 9, degrees: 360, wait: 0.05},
-				{type: "enemy-day", radius: 16, speed: 320, amount: 90, offset: 180, degrees: 300, wait: 0.05},
+				{type: "enemy-day", radius: 16, speed: 320, amount: 90, offset: 180, degrees: 300, wait: 0.05, x: 0, y: 0, angle: 90},
 				{type: "enemy-day", radius: 6, speed: 220, amount: 20, offset: 0, degrees: 360, wait: 0.05},
-				{type: "enemy-day", radius: 16, speed: 320, amount: 90, offset: 180, degrees: 300, wait: 0.25},
+				{type: "enemy-day", radius: 16, speed: 320, amount: 90, offset: 180, degrees: 300, wait: 0.25, x: 0, y: 0, angle: 90},
 			];
 
 			// boss.patterns = [

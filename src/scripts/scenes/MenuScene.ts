@@ -9,6 +9,7 @@ export class MenuScene extends BaseScene {
 	public CoverArtBg: Phaser.GameObjects.Image;
 
 	public title: Phaser.GameObjects.Text;
+	public subtitle: Phaser.GameObjects.Text;
 
 
 	constructor() {
@@ -29,9 +30,13 @@ export class MenuScene extends BaseScene {
 		this.containToScreen(this.CoverArtAngel);
 
 
-		this.title = this.createText(this.W-50, this.H-50, 60, "#000", "Twilight Wings");
+		this.title = this.createText(this.W-50, this.H-100, 60, "#000", "Twilight Wings");
 		this.title.setOrigin(1);
 		this.title.setStroke("#FFFFFF", 8);
+
+		this.subtitle = this.createText(this.W-50, this.H-50, 30, "#000", "Tap to start");
+		this.subtitle.setOrigin(1);
+		this.subtitle.setStroke("#FFFFFF", 3);
 
 
 		// Input
@@ -41,10 +46,14 @@ export class MenuScene extends BaseScene {
 	}
 
 	update(time: number, delta: number) {
-		// this.CoverArtBg.x		= this.CX + 7 * Math.sin(time/1000+4);
-		this.CoverArtBird.x		= this.CX + 8 * Math.cos(time/1000+3);
-		this.CoverArtImp.x		= this.CX + 9 * Math.sin(time/1000+2);
-		this.CoverArtAngel.x	= this.CX + 10 * Math.cos(time/1000+1);
+		this.CoverArtBird.x		= this.CX + 30 * Math.cos(0.4*time/1000);
+
+		this.CoverArtImp.x		= this.CX + 5 * Math.sin(time/1000+Math.PI/4);
+		this.CoverArtAngel.x	= this.CX - 5 * Math.sin(time/1000);
+		this.CoverArtImp.y		= this.CY + 10 * Math.sin(0.6*time/1000+Math.PI/4);
+		this.CoverArtAngel.y	= this.CY - 10 * Math.sin(0.6*time/1000);
+
+		this.subtitle.setScale(1.0 + 0.02*Math.sin(5*time/1000));
 	}
 
 	progress() {
