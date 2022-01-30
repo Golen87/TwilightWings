@@ -5,19 +5,21 @@ import { Background } from "../components/Background";
 import { UI } from "../components/UI";
 import { Particles } from "../components/Particles";
 import { Player } from "../components/Player";
+import { Enemy } from "../components/Enemy";
+import { Minion } from "../components/Minion";
 import { Boss } from "../components/Boss";
 import { Bullet } from "../components/Bullet";
 import { PlayerBullet } from "../components/PlayerBullet";
 import { EnemyBullet } from "../components/EnemyBullet";
 import { audios } from "../assets";
-import { golen_1, lumie_1, spiral_1 } from "../patterns";
+import { levelData } from "../levels";
 
 const PLAYER_BULLET_COUNT = 1000;
 const ENEMY_BULLET_COUNT = 5000;
 
 const BACKGROUND_LAYER = 0;
-const ENEMY_LAYER = 1;
-const BOSS_LAYER = 2;
+const BOSS_LAYER = 1;
+const ENEMY_LAYER = 2;
 const PLAYER_LAYER = 3;
 const PLAYER_BULLET_LAYER = 4;
 const ENEMY_GLOW_BACK_LAYER = 5;
@@ -26,6 +28,8 @@ const ENEMY_BULLET_BACK_LAYER = 7;
 const ENEMY_BULLET_FRONT_LAYER = 8;
 const UI_LAYER = 9;
 const FLASH_LAYER = 10;
+
+let prevSeek = 0;
 
 
 export class GameScene extends BaseScene {
@@ -44,8 +48,9 @@ export class GameScene extends BaseScene {
 	private ui: UI;
 
 	// Characters
-	private player: Player;
-	private bosses: Boss[];
+	public player: Player;
+	private enemies: Enemy[];
+	private boss: Boss;
 
 	// Bullets
 	private playerBullets: PlayerBullet[];
@@ -63,8 +68,12 @@ export class GameScene extends BaseScene {
 	// public sounds: Map<string, Phaser.Sound.BaseSound>;
 	public sounds: {[key: string]: Phaser.Sound.WebAudioSound};
 	public rapidSounds: {[key: string]: any};
-	public musicDay: Phaser.Sound.WebAudioSound;
-	public musicNight: Phaser.Sound.WebAudioSound;
+	public musicDay: Music;
+	public musicNight: Music;
+
+	// Level
+	public levelTimer: number;
+	public levelIndex: number;
 
 
 	constructor() {
@@ -103,19 +112,20 @@ export class GameScene extends BaseScene {
 		this.player = new Player(this, this.CX, this.CY);
 		this.player.setDepth(PLAYER_LAYER);
 
-		this.bosses = [];
-		for (let i = 0; i < 1; i++) {
-			// let dayTime = (i%2 == 0);
-			let dayTime = true;
-			let boss = new Boss(this, this.CX, 0.3*this.H, dayTime);
-			boss.setDepth(BOSS_LAYER);
-			boss.following = this.player;
+		// this.boss = null;
+		this.enemies = [];
+		for (let i = 0; i < 0; i++) {
+			// let dayTime = true;
+			// let boss = new Boss(this, this.CX, 0.3*this.H, dayTime);
+			// boss.setDepth(BOSS_LAYER);
 
-			boss.on("shoot", this.spawnEnemyBullet.bind(this));
-			boss.on("defeated", this.onBossDefeated.bind(this));
-			this.bosses.push(boss);
+			// boss.on("shoot", this.spawnEnemyBullet.bind(this));
+			// boss.on("defeated", this.onBossDefeated.bind(this));
+			// this.bosses.push(boss);
 
-			boss.setPatterns(spiral_1);
+			// boss.setPatterns(myPattern);
+
+			// this.ui.setBoss(boss);
 		}
 
 		this.playerBullets = [];
@@ -192,12 +202,25 @@ export class GameScene extends BaseScene {
 
 		this.musicDay.play();
 		this.musicNight.play();
+		console.log("MUSIC PLAY");
 
 
 		// this.showIntro();
+
+
+		this.levelTimer = 0;
+		this.levelIndex = 0;
 	}
 
 	update(time: number, delta: number) {
+
+		time = this.musicDay.seek * 1000;
+		delta = (this.musicDay.seek - prevSeek) * 1000;
+		if (this.musicDay.seek < prevSeek) {
+			delta = 1/60;
+		}
+		prevSeek = this.musicDay.seek;
+
 		const swapDur = 2 * delta/1000;
 		this.dayTimeLinear += Phaser.Math.Clamp( (this.dayTime ? 1 : 0) - this.dayTimeLinear, -swapDur, swapDur );
 		this.dayTimeSmooth = Phaser.Math.Easing.Back.InOut(this.dayTimeLinear, 0.8);
@@ -209,14 +232,56 @@ export class GameScene extends BaseScene {
 		this.background.update(time, delta, this.dayTimeSmooth);
 		this.ui.update(time, delta, this.dayTimeSmooth);
 
+
 		this.player.update(time, delta);
 
 		this.particles.update(time, delta);
 
-		this.bosses.forEach((boss: Boss, index: number) => {
-			boss.update(time, delta);
-			this.ui.setBossHealth(boss.healthPerc);
-			// boss.setAlpha(0.6 + 0.4 * this.dayTimeSmooth * (boss.dayTime ? -1 : 1));
+
+		if (!this.anyEnemies && levelData.length > this.levelIndex) {
+			this.levelTimer -= delta/1000;
+
+			if (this.levelTimer <= 0) {
+
+				let data = levelData[this.levelIndex++];
+				this.levelTimer = data.delay;
+
+				for (let e of data.enemies) {
+
+					let x = this.CX + e.x * 0.24*this.W;
+					let y = this.CY + e.y * 0.5*this.H;
+
+					setTimeout(() => {
+						if (e.type == "boss") {
+							let boss = new Boss( this, x, y, true );
+							boss.setDepth(BOSS_LAYER);
+							boss.setPatterns(e.pattern);
+							boss.setHealth(e.health);
+							this.enemies.push(boss);
+							this.boss = boss;
+							this.ui.setBoss(boss);
+							boss.on("defeated", this.onBossDefeated.bind(this));
+						} else {
+							let minion = new Minion( this, x, y, e.type );
+							minion.setDepth(ENEMY_LAYER);
+							minion.setPatterns(e.pattern);
+							minion.setHealth(e.health);
+							this.enemies.push(minion);
+						}
+					}, e.spawnDelay*1000);
+
+
+				}
+
+			}
+
+		}
+
+		this.enemies.forEach((enemy: Enemy, index: number) => {
+			if (!enemy.scene) {
+				return this.enemies.splice(index, 1);
+			}
+			enemy.update(time, delta);
 		});
 
 
@@ -237,23 +302,24 @@ export class GameScene extends BaseScene {
 			else
 				bullet.setAlpha(1.0 - 0.8 * this.dayTimeSmooth);
 
-			// Collision with boss
-			this.bosses.forEach((boss: Boss, index: number) => {
-				if (boss.alive && boss.insideBody(bullet)) {
+			// Collision with enemies
+			this.enemies.forEach((enemy: Enemy, index: number) => {
+				if (enemy.alive && enemy.insideBody(bullet)) {
 
-					let amount = boss.dayTime != bullet.dayTime ? 3 : 1;
+					let amount = enemy.dayTime != bullet.dayTime ? 3 : 1;
 					if (amount > 1) {
-						this.sounds.bossDamage2.play();
+						this.sounds.enemyDamage2.play();
 						this.sounds.graze.play();
 					} else {
-						this.sounds.bossDamage.play();
+						this.sounds.enemyDamage.play();
 						this.sounds.graze.play();
 					}
 
-					boss.damage(amount);
+					enemy.damage(amount);
+					// this.ui.onEnemyDamage(enemy);
 					bullet.kill();
 
-					// if (boss.alive) {
+					// if (enemy.alive) {
 						// this.shakeCamera = true;
 						// this.addEvent(400, () => {
 							// this.shakeCamera = false;
@@ -400,7 +466,7 @@ export class GameScene extends BaseScene {
 		this.introPlaying = true;
 		this.shakeCamera = true;
 
-		this.addEvent(3000, () => {
+		this.addEvent(1500, () => {
 			this.shakeCamera = false;
 
 			this.addEvent(1000, () => {
@@ -422,6 +488,7 @@ export class GameScene extends BaseScene {
 		}
 
 		if (!this.player.visible) {
+			console.log("MUSIC STOP");
 			this.musicDay.stop();
 			this.musicNight.stop();
 			this.fade(true, 100, 0x000000);
@@ -484,13 +551,12 @@ export class GameScene extends BaseScene {
 		return null;
 	}
 
-	spawnBullet(type: string, origin: Phaser.Math.Vector2, direction: Phaser.Math.Vector2, radius: number) {
-		let spawnFunc = type.startsWith("player") ? this.spawnPlayerBullet.bind(this) : this.spawnEnemyBullet.bind(this);
-		let dayTime = type.endsWith("day");
+	spawnBullet(enemyType: boolean, dayTime: boolean, origin: Phaser.Math.Vector2, direction: Phaser.Math.Vector2, radius: number) {
+		let spawnFunc = enemyType ? this.spawnEnemyBullet.bind(this) : this.spawnPlayerBullet.bind(this);
 		spawnFunc(dayTime, origin, direction, radius);
 	}
 
-	spawnBulletArc(type: string, origin: Phaser.Math.Vector2, dirAngle, radius, speed, amount, offsetAngle=0, maxAngle=360) {
+	spawnBulletArc(enemyType: boolean, dayTime: boolean, origin: Phaser.Math.Vector2, dirAngle, radius, speed, amount, offsetAngle=0, maxAngle=360) {
 		dirAngle = dirAngle || 90;
 		radius = radius || 6;
 		speed = speed || 100;
@@ -509,7 +575,8 @@ export class GameScene extends BaseScene {
 		if (subLength > 0) {
 			for (let i = 0; i < subLength; i++) {
 				this.spawnBulletArc(
-					type,
+					enemyType,
+					dayTime,
 					origin,
 					Array.isArray(dirAngle) ? dirAngle[i%dirAngle.length] : dirAngle,
 					Array.isArray(radius) ? radius[i%radius.length] : radius,
@@ -536,7 +603,7 @@ export class GameScene extends BaseScene {
 
 			dir.setToPolar(angle, speed);
 
-			this.spawnBullet(type, origin, dir, radius);
+			this.spawnBullet(enemyType, dayTime, origin, dir, radius);
 		}
 	}
 
@@ -547,6 +614,7 @@ export class GameScene extends BaseScene {
 	}
 
 	spawnBulletPattern(type: string, origin: any, pattern: number) {
+		/*
 		clearTimeout(this.currentTimeout);
 
 		if (pattern == 1) {
@@ -601,6 +669,7 @@ export class GameScene extends BaseScene {
 		else if (pattern == 8) {}
 		else if (pattern == 9) {}
 		else if (pattern == 0) {}
+		*/
 	}
 
 	screenWipe() {
@@ -609,6 +678,10 @@ export class GameScene extends BaseScene {
 		for (let i = 0; i < ENEMY_BULLET_COUNT; i++) {
 			this.enemyBullets[i].kill();
 		}
+	}
+
+	get anyEnemies() {
+		return this.enemies.length > 0;
 	}
 
 }

@@ -55,6 +55,11 @@ export class Character extends Phaser.GameObjects.Container {
 		}
 	}
 
+	setHealth(health: number) {
+		this.maxHealth = health;
+		this.health = health;
+	}
+
 	get alive() {
 		return this.health > 0;
 	}

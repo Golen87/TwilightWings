@@ -43,6 +43,8 @@ import owl_outline2 from "../assets/images/backgrounds/Owl_Outline2.png";
 
 import boss from "../assets/images/characters/boss.png";
 import angel from "../assets/images/characters/angel.png";
+import small_angel from "../assets/images/characters/small_angel.png";
+import small_imp from "../assets/images/characters/small_imp.png";
 import face from "../assets/images/face.png";
 
 import CoverArtImp from "../assets/images/CoverArtImp.png";
@@ -74,7 +76,9 @@ const images: Asset[] = [
 	{ key: "owl_outline2",	path: owl_outline2 },
 
 	{ key: "boss",	path: boss },
-	{ key: "angel",	path: angel },
+	// { key: "angel",	path: angel },
+	{ key: "small_angel",	path: small_angel },
+	{ key: "small_imp",	path: small_imp },
 	{ key: "face",	path: face },
 
 	{ key: "CoverArtImp",	path: CoverArtImp },
@@ -253,9 +257,9 @@ const audios: Audio[] = [
 	{ key: "damage", path: damage, volume: 1.0, rate: 0.5 },
 	{ key: "complete", path: complete, volume: 0.5 },
 	{ key: "score", path: score, volume: 0.5 },
-	{ key: "bossDamage", path: bossDamage, volume: 0.6, rate: 0.6 },
-	{ key: "bossDamage2", path: bossDamage, volume: 0.8, rate: 0.5 },
-	{ key: "graze", path: graze, volume: 0.2, rate: 0.8 },
+	{ key: "enemyDamage", path: bossDamage, volume: 0.6, rate: 0.6 },
+	{ key: "enemyDamage2", path: bossDamage, volume: 0.8, rate: 0.5 },
+	{ key: "graze", path: graze, volume: 0.1, rate: 0.8 },
 	{ key: "graze2", path: graze, volume: 0.3, rate: 0.7 },
 
 	// { key: "boom", path: a_boom, volume: 0.5 },

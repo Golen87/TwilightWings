@@ -82,15 +82,15 @@ export class Background extends Phaser.GameObjects.Container {
 
 		this.cloudCont = scene.add.container(cx, cy);
 		this.clouds = [];
-		for (let i = 0; i < 3; i++) {
+		for (let i = 0; i < 4; i++) {
 			let cloud = scene.add.tileSprite(0, 0, (1-2*EDGE)*scene.W, scene.H, "bg_clouds");
 			cloud.setBlendMode(Phaser.BlendModes.SCREEN);
 
-			cloud.setAlpha(0.25 - 0.06*i);
-			cloud.tileScaleX = 0.9 - 0.2*i;
-			cloud.tileScaleY = 0.9 - 0.2*i;
+			cloud.setAlpha(0.15 + 0.03*i);
+			cloud.tileScaleX = 1.2 - 0.2*i;
+			cloud.tileScaleY = 1.2 - 0.2*i;
 			cloud.setData("dx", 0);
-			cloud.setData("dy", -1500 + 400*i);
+			cloud.setData("dy", -800 + 200*i);
 
 			this.clouds.push(cloud);
 			this.cloudCont.add(cloud);

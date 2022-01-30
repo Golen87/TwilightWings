@@ -23,7 +23,7 @@ export class Player extends Character {
 
 	// Graphics
 	private graphics: Phaser.GameObjects.Graphics;
-	private sprite: Phaser.GameObjects.Sprite;
+	public sprite: Phaser.GameObjects.Sprite;
 	private origScale: number = 0.3;
 
 	// Movement
@@ -136,7 +136,7 @@ export class Player extends Character {
 
 			// Shooting bullets
 			this.shootTimer += delta/1000;
-			if (this.shootTimer > SHOOTING_TIMER) {
+			if (this.shootTimer > SHOOTING_TIMER && this.scene.anyEnemies) {
 				this.shootTimer = 0;
 
 				let pos = new Phaser.Math.Vector2(this.x, this.y - 0.4*this.sprite.displayHeight);
@@ -181,9 +181,9 @@ export class Player extends Character {
 				// this.destroy();
 				this.scene.sounds.death.play();
 
-				this.scene.spawnBulletArc(this.dayTime ? "player-day" : "player-night", this.pos, this.dir, 16, 300, 45, 0.0);
-				this.scene.spawnBulletArc(this.dayTime ? "player-day" : "player-night", this.pos, this.dir, 16, 250, 45, 0.5);
-				this.scene.spawnBulletArc(this.dayTime ? "player-day" : "player-night", this.pos, this.dir, 16, 200, 45, 0.0);
+				this.scene.spawnBulletArc(false, this.dayTime, this.pos, this.dir, 16, 300, 45, 0.0);
+				this.scene.spawnBulletArc(false, this.dayTime, this.pos, this.dir, 16, 250, 45, 0.5);
+				this.scene.spawnBulletArc(false, this.dayTime, this.pos, this.dir, 16, 200, 45, 0.0);
 			}
 		}
 

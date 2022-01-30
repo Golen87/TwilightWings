@@ -1,5 +1,6 @@
 import { GameScene } from "../scenes/GameScene";
 import { interpolateColor } from "../utils";
+import { Boss } from "./Boss";
 import BendWaves2 from "../pipelines/BendWavesPostFX2";
 
 const EDGE = 0.235;
@@ -22,6 +23,7 @@ export class UI extends Phaser.GameObjects.Container {
 	private healthBox: Phaser.GameObjects.Image;
 	private healthBg: Phaser.GameObjects.Rectangle;
 	private healthBar: Phaser.GameObjects.Rectangle;
+	private healthFlash: number;
 
 	private hearts: Phaser.GameObjects.Image[];
 
@@ -32,6 +34,8 @@ export class UI extends Phaser.GameObjects.Container {
 	public score: Phaser.GameObjects.Text;
 	public gameover: Phaser.GameObjects.Container;
 	public playagain: Phaser.GameObjects.Text;
+
+	private boss?: Boss;
 
 
 	constructor(scene: GameScene) {
@@ -94,6 +98,8 @@ export class UI extends Phaser.GameObjects.Container {
 
 		this.health.bringToTop(this.healthBox);
 
+		this.healthFlash = 0;
+
 
 		// Hearts
 
@@ -117,7 +123,7 @@ export class UI extends Phaser.GameObjects.Container {
 
 		// Text
 
-		this.world = scene.createText(lx/2, 6*PAD, 1.4*FONT_SIZE, "#000", "World-1");
+		this.world = scene.createText(lx/2, 4*PAD, 1.4*FONT_SIZE, "#000", "World-1");
 		this.world.setOrigin(0.5);
 		this.world.setStroke("#FFFFFF", STROKE);
 		this.add(this.world);
@@ -186,22 +192,47 @@ export class UI extends Phaser.GameObjects.Container {
 
 
 	update(time: number, delta: number, dayTimeSmooth: number) {
+
 		this.outlineDay.setAlpha(0.25 * (dayTimeSmooth));
 		this.outlineNight.setAlpha(0.25 * (1 - dayTimeSmooth));
 
+		this.clock.setFrame(this.scene.dayTime ? 0 : 1);
+
+
+		// Health
+
+		if (this.boss) {
+			this.healthBar.width = this.boss.healthPerc * (this.healthBox.displayWidth - 5);
+		}
+
+		this.healthFlash += -0.1 * this.healthFlash;
+
 		this.background.setTint( interpolateColor(0xb8c5ff, 0xf7e3af, dayTimeSmooth) );
 		this.healthBox.setTint( interpolateColor(0xDDEEFF, 0x110900, dayTimeSmooth) );
-		this.healthBar.fillColor = interpolateColor(0xd81b60, 0x43a047, dayTimeSmooth);
+		this.healthBar.fillColor = interpolateColor( interpolateColor(0xd81b60, 0x43a047, dayTimeSmooth), 0xFFFFFF, this.healthFlash );
 		this.healthBg.fillColor = interpolateColor(0, 0xAABBFF, dayTimeSmooth);
 
-		this.clock.setFrame(this.scene.dayTime ? 0 : 1);
+
+		// Game over
+
 		this.gameover.alpha += Phaser.Math.Clamp((this.gameover.visible ? 1 : 0) - this.gameover.alpha, -delta/1000, delta/1000);
 		this.playagain.setScale(1.0 + 0.02*Math.sin(5*time/1000));
 	}
 
-	setBossHealth(healthPerc: number) {
+	setBoss(boss: Boss) {
+		this.boss = boss;
 		this.health.setVisible(true);
-		this.healthBar.width = healthPerc * (this.healthBox.displayWidth - 5);
+	}
+
+	clearBoss() {
+		this.boss = undefined;
+		this.health.setVisible(false);
+	}
+
+	onBossDamage(boss: Boss) {
+		if (this.boss == boss) {
+			this.healthFlash = 1;
+		}
 	}
 
 	setPlayerHealth(health: number) {
