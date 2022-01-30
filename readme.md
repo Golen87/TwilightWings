@@ -1,11 +1,11 @@
-# Eggnite
+# Twilight Wings
 
-LiU Fall Game Jam 2021
+Bullet hell through dawn and dusk. Made during Global Game Jam 2022.
 
 ## Installation
 
-* `git@github.com:Golen87/XXX.git`
-* `cd XXX`
+* `git@github.com:Golen87/TwilightWings.git`
+* `cd TwilightWings`
 * `yarn`
 
 ## Usage
