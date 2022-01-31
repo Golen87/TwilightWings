@@ -88,12 +88,14 @@ class Particle extends Phaser.GameObjects.Sprite {
 		this.lifeTime = 0.4 + 0.4*Math.random();
 	}
 
-	lava(x: number, y: number) {
-		this.init(x, y, "lavabubble");
+	explosion(x: number, y: number, scale: number, duration: number) {
+		this.init(x, y, "explosion");
 
+		this.setData("scale", scale);
+		this.setScale(this.getData("scale"));
 		this.setFrame(0);
 
-		this.lifeTime = 0.3 + 0.5*Math.random();
+		this.lifeTime = duration * (0.8 + 0.2*Math.random());
 	}
 
 
@@ -126,8 +128,8 @@ class Particle extends Phaser.GameObjects.Sprite {
 			}
 		}
 
-		if (this.myType == "lavabubble") {
-			let frame = Math.floor(7 * (this.life / this.lifeTime));
+		if (this.myType == "explosion") {
+			let frame = Math.floor(17 * (this.life / this.lifeTime));
 			this.setFrame(frame);
 		}
 
@@ -213,9 +215,9 @@ export class Particles extends Phaser.GameObjects.Container {
 		});
 	}
 
-	createLava(x: number, y: number) {
+	createExplosion(x: number, y: number, scale: number, duration: number) {
 		this.getFreeParticles(1).forEach((particle) => {
-			particle.lava(x, y);
+			particle.explosion(x, y, scale, duration);
 		});
 	}
 }

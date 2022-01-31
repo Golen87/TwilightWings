@@ -4,9 +4,6 @@ import { Bullet } from "./Bullet";
 import { EnemyBullet } from "./EnemyBullet";
 import { interpolateColor } from "../utils";
 
-const HURT_DURATION = 0.3;
-const SHOOTING_TIMER = 2.7;
-const DEATH_DURATION = 0.4;
 
 
 export class Enemy extends Character {
@@ -26,9 +23,7 @@ export class Enemy extends Character {
 
 	// Collision
 	protected bodyAreas: Phaser.Geom.Circle[];
-	// protected weakAreas: Phaser.Geom.Circle[];
 
-	protected goalPoints: Phaser.Math.Vector2[];
 
 	constructor(scene: GameScene, x: number, y: number, dayTime: boolean) {
 		super(scene, x, y, dayTime);
@@ -60,23 +55,15 @@ export class Enemy extends Character {
 		this.maxHealth = 200;
 		this.health = this.maxHealth;
 
-		this.bodyAreas = [ new Phaser.Geom.Circle( 0, 0, 70) ];
-
-		this.goalPoints = [];
-		for (let i=-1; i<2; i++) {
-			for (let j=0; j<1; j++) {
-				this.goalPoints.push(
-					new Phaser.Math.Vector2(this.x + i*170, this.y + j*90)
-				);
-			}
-		}
+		this.bodyAreas = [ new Phaser.Geom.Circle( 0, 0, 80) ];
 	}
 
 	update(time: number, delta: number) {
-		// Movement
+		super.update(time, delta);
 
 		if (this.alive) {
 
+			// Movement
 			let target = new Phaser.Math.Vector2();
 			target.add(this.scene.player);
 			target.subtract(this);
@@ -119,35 +106,64 @@ export class Enemy extends Character {
 			}
 		}
 
-		// Hurt animation
-		this.hurtTimer -= delta/1000;
-		if (this.hurtTimer > 0 || !this.alive) {
-			let blink = (Math.sin(50*time/1000) > 0);
-			this.sprite.setTint(blink ? 0xFFBBBB : 0xFFFFFF);
-			// this.sprite.setAlpha(0.75);
-			// this.sprite.setOrigin(0.5, 0.5 + 0.01 * Math.sin(35*time/1000));
-		}
-		else {
-			this.sprite.setTint(0xFFFFFF);
-			this.sprite.setAlpha(1);
-			this.sprite.setOrigin(0.5, 0.5);
+
+		// Hurt animation while alive
+		if (this.alive) {
+			this.setScale(
+				1 - 0.06 * this.hurtEase,
+				1 - 0.14 * this.hurtEase);
+			this.sprite.setTint(interpolateColor(
+				0xFFFFFF, 0xFF7777, this.hurtEase));
+			this.sprite.setAlpha(
+				1 - 0.2 * this.hurtEase);
+
+			this.hurtEase += 0.6 * (0 - this.hurtEase);
+
+			// if (this.hurtEase > 0.1) {
+			// 	this.scene.particles.createExplosion(
+			// 		this.x + 20 * (-1+2*Math.random()),
+			// 		this.y + 20 * (-1+2*Math.random()),
+			// 		0.2, 0.4
+			// 	);
+			// }
 		}
 
-		// Check if dead
-		if (!this.alive) {
+		// Death animation
+		else {
 			this.deathTimer += delta/1000;
-			this.setScale(1 - 0.5 * this.deathTimer / DEATH_DURATION);
-			this.setAlpha(1 - this.deathTimer / DEATH_DURATION);
-			if (this.deathTimer > DEATH_DURATION) {
+			let deathFac = this.deathTimer / this.deathDuration; // 1 = dead
+			let deathEase = Phaser.Math.Easing.Quintic.In(deathFac);
+			let x = Math.max(0, 1-Math.abs(1-2.5*deathFac));
+			let deathEase2 = Phaser.Math.Easing.Sine.Out(x);
+
+			this.setScale(1 - deathEase);
+			this.sprite.setOrigin(0.5 + deathEase2 * 0.15 * Math.sin(100*time/1000), 0.5);
+			// this.setAlpha(1 - deathEase);
+
+			let blink = (Math.sin(50*time/1000) > 0);
+			this.sprite.setTint(blink ? 0xFFBBBB : 0xFFFFFF);
+
+			// this.scene.particles.createExplosion(
+			// 	this.x + 50 * (-1+2*Math.random()),
+			// 	this.y + 50 * (-1+2*Math.random()),
+			// 	0.2, 0.6
+			// );
+
+			// End prematurely
+			if (this.deathTimer > 0.95 * this.deathDuration) {
+				this.emit("destruction");
+				// this.scene.particles.createExplosion(this.x, this.y, 1, 1.0);
 				this.destroy();
 			}
 		}
 
+
+
 		// Debug
 		this.graphics.clear();
 		// this.bodyAreas.forEach((circle: Phaser.Geom.Circle) => {
-			// this.graphics.lineStyle(1, 0x00FF00, 0.5);
-			// this.graphics.strokeCircleShape(circle);
+		// 	this.graphics.lineStyle(1, 0x00FF00, 0.5);
+		// 	this.graphics.strokeCircleShape(circle);
 		// });
 		// this.weakAreas.forEach((circle: Phaser.Geom.Circle) => {
 			// this.graphics.lineStyle(1, 0x0000FF, 0.5);

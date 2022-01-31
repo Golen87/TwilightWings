@@ -23,10 +23,12 @@ export class Minion extends Enemy {
 	update(time: number, delta: number) {
 		super.update(time, delta);
 
-		this.goal.x = this.start.x + 100 * Math.sin(time/1000);
-		this.goal.y = this.start.y + 50 * Math.sin(2*time/1000);
+		if (this.alive) {
+			this.goal.x = this.start.x + 100 * Math.sin(time/1000);
+			this.goal.y = this.start.y + 50 * Math.sin(2*time/1000);
 
-		this.x += 0.03 * (this.goal.x - this.x);
-		this.y += 0.03 * (this.goal.y - this.y);
+			this.x += (this.goal.x - this.x) * delta/1000;
+			this.y += (this.goal.y - this.y) * delta/1000;
+		}
 	}
 }

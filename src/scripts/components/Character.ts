@@ -3,7 +3,6 @@ import { Bullet } from "./Bullet";
 import { interpolateColor } from "../utils";
 
 const HURT_DURATION = 0.7;
-const DEATH_DURATION = 3.0;
 
 
 export class Character extends Phaser.GameObjects.Container {
@@ -15,7 +14,9 @@ export class Character extends Phaser.GameObjects.Container {
 	public maxHealth: number;
 	public health: number;
 	protected hurtTimer: number;
+	protected hurtEase: number;
 	protected deathTimer: number;
+	protected deathDuration;
 
 	public facing: Phaser.Math.Vector2;
 
@@ -32,7 +33,9 @@ export class Character extends Phaser.GameObjects.Container {
 		this.maxHealth = 3;
 		this.health = 3;
 		this.hurtTimer = 0;
+		this.hurtEase = 0;
 		this.deathTimer = 0;
+		this.deathDuration = 1;
 
 		this.facing = new Phaser.Math.Vector2();
 	}
@@ -43,15 +46,16 @@ export class Character extends Phaser.GameObjects.Container {
 		point.add(this);
 
 		let dist = Phaser.Math.Distance.BetweenPoints(point, bullet);
-		return (dist < 0.6*circle.radius + bullet.radius);
+		return (dist < 0.6*circle.radius + 0.8*bullet.radius);
 	}
 
 	damage(amount: number=1) {
 		this.health -= amount;
 		this.hurtTimer = HURT_DURATION;
+		this.hurtEase = 0.25 * amount;
 
 		if (this.health <= 0) {
-			this.emit("defeated");
+			this.emit("death");
 		}
 	}
 

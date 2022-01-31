@@ -3,13 +3,12 @@ import { Character } from "./Character";
 import { Bullet } from "./Bullet";
 import { interpolateColor } from "../utils";
 
-const ACCELERATION = 50;
+const ACCELERATION = 70;
 const MAX_SPEED = 200;
 const HURT_DURATION = 4.0;
 const TAPPING_TIMER = 0.2;
-const SHOOTING_TIMER = 0.12;
-const DEATH_DURATION = 0.6;
-const PLAYER_RADIUS = 3.2;
+const SHOOTING_TIMER = 0.09;
+const PLAYER_RADIUS = 2.4;
 
 
 export class Player extends Character {
@@ -78,10 +77,11 @@ export class Player extends Character {
 
 		// Game
 		this.bodyArea = new Phaser.Geom.Circle(0, 2*PLAYER_RADIUS, 2*PLAYER_RADIUS);
-		this.maxHealth = 3;
-		this.health = 3;
+		this.maxHealth = 5;
+		this.health = 5;
 		this.dayTimeSmooth = this.dayTime ? 1 : 0;
 		this.shootTimer = 0;
+		this.deathDuration = 1.2;
 
 
 		// Intro
@@ -89,6 +89,8 @@ export class Player extends Character {
 	}
 
 	update(time: number, delta: number) {
+		super.update(time, delta);
+
 		if (this.alive) {
 			this.dayTime = this.scene.dayTime;
 			this.dayTimeSmooth = this.scene.dayTimeSmooth;
@@ -100,7 +102,7 @@ export class Player extends Character {
 			this.inputVec.limit(1);
 			// this.inputVec.normalize();
 			this.inputVec.scale(ACCELERATION);
-			this.velocity.scale(0.6); // Friction
+			this.velocity.scale(0.5); // Friction
 			this.velocity.add(this.inputVec);
 			this.velocity.limit(MAX_SPEED);
 
@@ -136,12 +138,12 @@ export class Player extends Character {
 
 			// Shooting bullets
 			this.shootTimer += delta/1000;
-			if (this.shootTimer > SHOOTING_TIMER && this.scene.anyEnemies) {
+			if (this.shootTimer > SHOOTING_TIMER && this.scene.anyEnemies && !this.stunned) {
 				this.shootTimer = 0;
 
 				let pos = new Phaser.Math.Vector2(this.x, this.y - 0.4*this.sprite.displayHeight);
 				let dir = this.facing.clone();
-				dir.setLength(300);
+				dir.setLength(500);
 				// const angle = 20;
 
 				// pos.add({x:-50,y:0})
@@ -174,23 +176,23 @@ export class Player extends Character {
 		// Check if dead
 		if (!this.alive) {
 			this.deathTimer += delta/1000;
-			this.setScale(1 - 0.5 * this.deathTimer / DEATH_DURATION);
-			this.setAlpha(1 - this.deathTimer / DEATH_DURATION);
-			if (this.deathTimer > DEATH_DURATION && this.visible) {
+			this.setScale(1 - 0.5 * this.deathTimer / this.deathDuration);
+			this.setAlpha(1 - this.deathTimer / this.deathDuration);
+			if (this.deathTimer > this.deathDuration && this.visible) {
+				this.emit("destruction");
 				this.setVisible(false);
 				// this.destroy();
-				this.scene.sounds.death.play();
 
-				this.scene.spawnBulletArc(false, this.dayTime, this.pos, this.dir, 16, 300, 45, 0.0);
-				this.scene.spawnBulletArc(false, this.dayTime, this.pos, this.dir, 16, 250, 45, 0.5);
-				this.scene.spawnBulletArc(false, this.dayTime, this.pos, this.dir, 16, 200, 45, 0.0);
+				this.scene.spawnBulletArc(false, this.dayTime, this.pos, this.dir, 16, 300, 45, 0);
+				this.scene.spawnBulletArc(false, this.dayTime, this.pos, this.dir, 16, 250, 45, 460/45/2);
+				this.scene.spawnBulletArc(false, this.dayTime, this.pos, this.dir, 16, 200, 45, 0);
 			}
 		}
 
 
 		// Debug
 		this.graphics.clear();
-		this.graphics.fillStyle(0xe91e63, 0.85);
+		this.graphics.fillStyle(0xe91e63, 0.9);
 		this.graphics.fillCircleShape(this.bodyArea);
 	}
 
@@ -282,17 +284,20 @@ export class Player extends Character {
 
 	damage() {
 		if (this.alive && this.hurtTimer < 0) {
-			this.scene.sounds.damage.play();
 
 			this.hurtTimer = HURT_DURATION;
 
 			this.health -= 1;
 			if (this.health <= 0) {
-				this.emit("defeat");
+				this.emit("death");
 			}
 			else {
 				this.emit("damage");
 			}
 		}
+	}
+
+	get stunned() {
+		return this.hurtTimer > HURT_DURATION/2;
 	}
 }

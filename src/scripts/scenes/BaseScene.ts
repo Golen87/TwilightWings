@@ -1,4 +1,7 @@
 export class BaseScene extends Phaser.Scene {
+	protected flashRect: Phaser.GameObjects.Rectangle;
+	protected cameraShakeValue: number;
+
 	constructor(config: Phaser.Types.Scenes.SettingsConfig) {
 		super(config);
 	}
@@ -10,9 +13,35 @@ export class BaseScene extends Phaser.Scene {
 	}
 
 	// Start a white camera flash effect
-	flash(time: number, hexColor: number=0xFFFFFF) {
-		let c = Phaser.Display.Color.ColorToRGBA(hexColor);
-		this.cameras.main.flashEffect.start(time, c.r, c.g, c.b);
+	flash(time: number, hexColor: number=0xFFFFFF, alpha: number=1.0) {
+		if (!this.flashRect) {
+			this.flashRect = this.add.rectangle(this.CX, this.CY, this.W, this.H, 0);
+			this.flashRect.setDepth(9999999999);
+		}
+
+		this.flashRect.setAlpha(alpha);
+		this.flashRect.fillColor = hexColor;
+
+		this.tweens.add({
+			targets: this.flashRect,
+			alpha: { from: alpha, to: 0 },
+			ease: 'Cubic.Out',
+			duration: time
+		});
+	}
+
+	// Start a camera shake effect
+	shake(time: number, startShake: number=1.0, endShake: number=0.0) {
+		this.cameraShakeValue = startShake;
+		this.tweens.add({
+			targets: this,
+			cameraShakeValue: { from: startShake, to: endShake },
+			ease: (endShake < startShake) ? 'Sine.Out' : 'Linear',
+			duration: time,
+			onComplete: () => {
+				this.cameraShakeValue = 0;
+			}
+		});
 	}
 
 	// Creates a timer event

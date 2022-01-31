@@ -116,12 +116,12 @@ const spritesheets: SpriteSheet[] = [
 
 /* Sounds */
 
-// import a_boom from "../assets/sounds/memes/a_boom.ogg";
-// import c_bruh from "../assets/sounds/memes/c_bruh.ogg";
-// import d_bong from "../assets/sounds/memes/d_bong.ogg";
+import a_boom from "../assets/sounds/memes/a_boom.ogg";
+import c_bruh from "../assets/sounds/memes/c_bruh.ogg";
+import d_bong from "../assets/sounds/memes/d_bong.ogg";
 // import e_skull from "../assets/sounds/memes/e_skull.ogg";
 // import f_clap from "../assets/sounds/memes/f_clap.ogg";
-// import g_dog from "../assets/sounds/memes/g_dog.ogg";
+import g_dog from "../assets/sounds/memes/g_dog.ogg";
 // import h_alien from "../assets/sounds/memes/h_alien.ogg";
 // import i_bell from "../assets/sounds/memes/i_bell.ogg";
 // import j_anger from "../assets/sounds/memes/j_anger.ogg";
@@ -137,7 +137,7 @@ const spritesheets: SpriteSheet[] = [
 // import t_e from "../assets/sounds/memes/t_e.ogg";
 // import u_pizza from "../assets/sounds/memes/u_pizza.ogg";
 // import v_swan from "../assets/sounds/memes/v_swan.ogg";
-// import w_explosion from "../assets/sounds/memes/w_explosion.ogg";
+import w_explosion from "../assets/sounds/memes/w_explosion.ogg";
 // import x_americano from "../assets/sounds/memes/x_americano.ogg";
 // import a_smw_coin from "../assets/sounds/memes/a_smw_coin.ogg";
 // import b_smw_1up from "../assets/sounds/memes/b_smw_1up.ogg";
@@ -187,7 +187,7 @@ const spritesheets: SpriteSheet[] = [
 // import zc_violin from "../assets/sounds/memes/zc_violin.ogg";
 // import zd_slip from "../assets/sounds/memes/zd_slip.ogg";
 // import ze_hehehehaw from "../assets/sounds/memes/ze_hehehehaw.ogg";
-// import a_necoarc from "../assets/sounds/memes/a_necoarc.ogg";
+import a_necoarc from "../assets/sounds/memes/a_necoarc.ogg";
 // import b_megalovania from "../assets/sounds/memes/b_megalovania.ogg";
 // import c_undertale_encounter from "../assets/sounds/memes/c_undertale_encounter.ogg";
 // import d_undertale_hit from "../assets/sounds/memes/d_undertale_hit.ogg";
@@ -247,27 +247,35 @@ const audios: Audio[] = [
 	{ key: "music_night", path: music_night, volume: 0 },
 	{ key: "music_title", path: music_title, volume: 0 },
 
-	{ key: "death", path: death, volume: 0.6, rate: 0.7 },
+	{ key: "wind", path: flightLoop, volume: 0.5 },
+	{ key: "dayShift", path: dayShift, volume: 0.8 },
+	{ key: "nightShift", path: nightShift, volume: 0.9 },
+
+	// Player
+	{ key: "playerDamage", path: damage, volume: 0.8, rate: 0.4 },
+	{ key: "playerDeath", path: damage, volume: 0.9, rate: 0.5 },
+	{ key: "playerDestroy", path: death, volume: 0.7, rate: 0.7 },
+
+	// Enemy
+	{ key: "enemyDeath", path: death, volume: 0.6, rate: 0.9 },
+	{ key: "enemyDestroy", path: complete, volume: 0.6, rate: 0.9 },
+	{ key: "enemyDamage", path: enemyShotNight, volume: 0.1, rate: 0.9 },
+	{ key: "enemyDamageHigh", path: graze, volume: 0.15, rate: 0.5 },
+	{ key: "enemyDamageLow", path: graze, volume: 0.2, rate: 0.4 },
+	{ key: "bossSpawn", path: death, volume: 0.8, rate: 0.5 },
+
 	{ key: "enemyShotDay", path: enemyShotDay, volume: 0.2 },
 	{ key: "enemyShotNight", path: enemyShotNight, volume: 0.2 },
 	{ key: "playerShot", path: playerShot, volume: 0.6 },
-	{ key: "dayShift", path: dayShift, volume: 0.8 },
-	{ key: "nightShift", path: nightShift, volume: 0.8 },
-	{ key: "flightLoop", path: flightLoop, volume: 0.5 },
-	{ key: "damage", path: damage, volume: 1.0, rate: 0.5 },
-	{ key: "complete", path: complete, volume: 0.5 },
 	{ key: "score", path: score, volume: 0.5 },
-	{ key: "enemyDamage", path: bossDamage, volume: 0.6, rate: 0.6 },
-	{ key: "enemyDamage2", path: bossDamage, volume: 0.8, rate: 0.5 },
 	{ key: "graze", path: graze, volume: 0.1, rate: 0.8 },
-	{ key: "graze2", path: graze, volume: 0.3, rate: 0.7 },
 
-	// { key: "boom", path: a_boom, volume: 0.5 },
-	// { key: "bruh", path: c_bruh, volume: 0.5 },
-	// { key: "bong", path: d_bong, volume: 0.5 },
+	{ key: "boom", path: a_boom, volume: 0.5 },
+	{ key: "bruh", path: c_bruh, volume: 0.5 },
+	{ key: "bong", path: d_bong, volume: 0.5 },
 	// { key: "skull", path: e_skull, volume: 0.5 },
 	// { key: "clap", path: f_clap, volume: 0.5 },
-	// { key: "dog", path: g_dog, volume: 0.5 },
+	{ key: "dog", path: g_dog, volume: 0.5 },
 	// { key: "alien", path: h_alien, volume: 0.5 },
 	// { key: "bell", path: i_bell, volume: 0.5 },
 	// { key: "anger", path: j_anger, volume: 0.5 },
@@ -283,7 +291,7 @@ const audios: Audio[] = [
 	// { key: "e", path: t_e, volume: 0.5 },
 	// { key: "pizza", path: u_pizza, volume: 0.5 },
 	// { key: "swan", path: v_swan, volume: 0.5 },
-	// { key: "explosion", path: w_explosion, volume: 0.5 },
+	{ key: "explosion", path: w_explosion, volume: 0.5 },
 	// { key: "americano", path: x_americano, volume: 0.5 },
 	// { key: "smw_coin", path: a_smw_coin, volume: 0.5 },
 	// { key: "smw_1up", path: b_smw_1up, volume: 0.5 },
@@ -333,7 +341,7 @@ const audios: Audio[] = [
 	// { key: "violin", path: zc_violin, volume: 0.5 },
 	// { key: "slip", path: zd_slip, volume: 0.5 },
 	// { key: "hehehehaw", path: ze_hehehehaw, volume: 0.5 },
-	// { key: "necoarc", path: a_necoarc, volume: 0.5 },
+	{ key: "necoarc", path: a_necoarc, volume: 0.5 },
 	// { key: "megalovania", path: b_megalovania, volume: 0.5 },
 	// { key: "undertale_encounter", path: c_undertale_encounter, volume: 0.5 },
 	// { key: "undertale_hit", path: d_undertale_hit, volume: 0.5 },

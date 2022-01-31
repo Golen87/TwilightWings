@@ -30,10 +30,15 @@ export class UI extends Phaser.GameObjects.Container {
 	public debug: Phaser.GameObjects.Text;
 	public world: Phaser.GameObjects.Text;
 	public stage: Phaser.GameObjects.Text;
+
+
 	public highscore: Phaser.GameObjects.Text;
 	public score: Phaser.GameObjects.Text;
-	public gameover: Phaser.GameObjects.Container;
-	public playagain: Phaser.GameObjects.Text;
+	public scoreBounce: number;
+
+	public endScreen: Phaser.GameObjects.Container;
+	public endText: Phaser.GameObjects.Text;
+	public playAgain: Phaser.GameObjects.Text;
 
 	private boss?: Boss;
 
@@ -107,15 +112,15 @@ export class UI extends Phaser.GameObjects.Container {
 		let hy = 0.9 * scene.H;
 
 		this.hearts = [];
-		for (let i = 0; i < 3; i++) {
-			let x = hx - 65 + 65*i;
+		for (let i = 0; i < 5; i++) {
+			let x = hx - 2*40 + 40*i;
 
 			let heartBg = scene.add.image(x, hy, "ui_heart_empty");
-			heartBg.setScale(0.5);
+			heartBg.setScale(0.3);
 			this.add(heartBg);
 
 			let heart = scene.add.image(x, hy, "ui_heart");
-			heart.setScale(0.5);
+			heart.setScale(0.3);
 			this.add(heart);
 			this.hearts.push(heart);
 		}
@@ -125,7 +130,7 @@ export class UI extends Phaser.GameObjects.Container {
 
 		this.world = scene.createText(lx/2, 4*PAD, 1.4*FONT_SIZE, "#000", "World-1");
 		this.world.setOrigin(0.5);
-		this.world.setStroke("#FFFFFF", STROKE);
+		this.world.setStroke("#FFFFFF", 1.4*STROKE);
 		this.add(this.world);
 
 		// this.stage = scene.createText(lx/2, scene.H-4*PAD, FONT_SIZE, "#000", "Stage-1");
@@ -141,23 +146,30 @@ export class UI extends Phaser.GameObjects.Container {
 		hsLabel.setStroke("#FFFFFF", STROKE);
 		this.add(hsLabel);
 
-		ty += 1.0 * FONT_SIZE;
-		this.highscore = scene.createText(rx, ty, FONT_SIZE, "#000", "00000");
-		this.highscore.setOrigin(0, 0);
-		this.highscore.setStroke("#FFFFFF", STROKE);
+		ty += 1.2 * FONT_SIZE;
+		this.highscore = scene.createText(rx, ty, FONT_SIZE, "#FFF", "00000000");
+		this.highscore.setOrigin(0.5);
+		// this.highscore.setStroke("#FFFFFF", STROKE);
 		this.add(this.highscore);
 
-		ty += 1.4 * FONT_SIZE;
+		ty += 1.7 * FONT_SIZE;
 		let sLabel = scene.createText(rx, ty, FONT_SIZE, "#000", "Score");
-		sLabel.setOrigin(0, 0);
+		sLabel.setOrigin(0);
 		sLabel.setStroke("#FFFFFF", STROKE);
 		this.add(sLabel);
 
-		ty += 1.0 * FONT_SIZE;
-		this.score = scene.createText(rx, ty, FONT_SIZE, "#000", "00000");
-		this.score.setOrigin(0, 0);
-		this.score.setStroke("#FFFFFF", STROKE);
+		ty += 1.2 * FONT_SIZE;
+		this.score = scene.createText(rx, ty, FONT_SIZE, "#FFF", "00000000");
+		this.score.setOrigin(0.5);
+		// this.score.setStroke("#FFFFFF", STROKE);
 		this.add(this.score);
+
+		this.score.x += this.score.width/2;
+		this.score.y += this.score.height/2;
+		this.highscore.x += this.highscore.width/2;
+		this.highscore.y += this.highscore.height/2;
+
+		this.scoreBounce = 0;
 
 
 		let livesLabel = scene.createText(rx, hy - 2*PAD, FONT_SIZE, "#000", "Lives");
@@ -171,23 +183,23 @@ export class UI extends Phaser.GameObjects.Container {
 		this.add(this.debug);
 
 
-		this.gameover = scene.add.container(cx, cy);
-		this.gameover.setVisible(false);
-		this.gameover.setAlpha(0);
-		this.add(this.gameover);
+		this.endScreen = scene.add.container(cx, cy);
+		this.endScreen.setVisible(false);
+		this.endScreen.setAlpha(0);
+		this.add(this.endScreen);
 
-		let gameover = scene.createText(0, -2*PAD, 2.7*FONT_SIZE, "#FFF", "GAME OVER");
-		gameover.setOrigin(0.5);
-		gameover.setStroke("#000", 8);
-		this.gameover.add(gameover);
+		this.endText = scene.createText(0, -2*PAD, 2.7*FONT_SIZE, "#FFF", "");
+		this.endText.setOrigin(0.5);
+		this.endText.setStroke("#000", 8);
+		this.endScreen.add(this.endText);
 
-		this.playagain = scene.createText(0, 3*PAD, FONT_SIZE, "#000", "Tap to play again");
-		this.playagain.setOrigin(0.5);
-		this.playagain.setStroke("#FFFFFF", STROKE);
-		this.gameover.add(this.playagain);
+		this.playAgain = scene.createText(0, 3*PAD, FONT_SIZE, "#000", "Tap to play again");
+		this.playAgain.setOrigin(0.5);
+		this.playAgain.setStroke("#FFFFFF", STROKE);
+		this.endScreen.add(this.playAgain);
 
 
-		this.setScore(0);
+		this.setScore(0, 0);
 	}
 
 
@@ -214,9 +226,13 @@ export class UI extends Phaser.GameObjects.Container {
 
 
 		// Game over
+		this.endScreen.alpha += Phaser.Math.Clamp((this.endScreen.visible ? 1 : 0) - this.endScreen.alpha, -delta/1000, delta/1000);
+		this.playAgain.setScale(1.0 + 0.02*Math.sin(5*time/1000));
 
-		this.gameover.alpha += Phaser.Math.Clamp((this.gameover.visible ? 1 : 0) - this.gameover.alpha, -delta/1000, delta/1000);
-		this.playagain.setScale(1.0 + 0.02*Math.sin(5*time/1000));
+		// Score
+		this.scoreBounce += 10 * (0 - this.scoreBounce) * delta/1000;
+		this.score.setScale(1 + 0.15 * this.scoreBounce, 1 - 0.05 * this.scoreBounce);
+		this.highscore.setScale(1 + 0.15 * this.scoreBounce, 1 - 0.05 * this.scoreBounce);
 	}
 
 	setBoss(boss: Boss) {
@@ -236,17 +252,24 @@ export class UI extends Phaser.GameObjects.Container {
 	}
 
 	setPlayerHealth(health: number) {
-		for (let i = 0; i < 3; i++) {
+		for (let i = 0; i < 5; i++) {
 			this.hearts[i].setVisible(i < health);
 		}
 	}
 
-	setScore(score: number) {
+	setScore(score: number, highscore: number) {
 		this.score.setText(score.toString().padStart(8, '0'));
-		this.highscore.setText(score.toString().padStart(8, '0'));
+		this.highscore.setText(highscore.toString().padStart(8, '0'));
+		this.scoreBounce = 1;
 	}
 
 	showGameover() {
-		this.gameover.setVisible(true);
+		this.endScreen.setVisible(true);
+		this.endText.setText("GAME OVER");
+	}
+
+	showVictory() {
+		this.endScreen.setVisible(true);
+		this.endText.setText("VICTORY");
 	}
 }
