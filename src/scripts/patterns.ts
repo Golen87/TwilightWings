@@ -383,7 +383,7 @@ let fastCircle = [
 	{type: true, radius: 4, speed: 120, amount: 36, offset: 5, degrees: 350, angle: 90, wait: 1.0},
 ];
 
-let fiveSixFour = [
+let SixFiveFour = [
 	{type: false, radius: 6, speed: [160,130,100], amount: [6,5,4], offset: 0, degrees: 50, wait: 4.0},
 ];
 
@@ -394,7 +394,7 @@ export {
 	arrowRing,
 	easyArcs,
 	fastCircle,
-	fiveSixFour,
+	SixFiveFour,
 
 	golen,
 	lumie,

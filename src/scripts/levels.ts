@@ -1,12 +1,5 @@
 import * as patterns from "./patterns";
 
-// patterns.lumie
-// patterns.zigzag
-// patterns.tightArcs
-// patterns.hardArcs
-// patterns.boss
-// patterns.misc
-
 let levelData = [
 
 	{
@@ -56,12 +49,12 @@ let levelData = [
 		enemies: [
 			{
 				type: "small_imp",
-				pattern: [patterns.fastCircle, patterns.fiveSixFour],
+				pattern: [patterns.fastCircle, patterns.SixFiveFour],
 				health: 160, x: -0.5, y: -0.5, spawnDelay: 0,
 			},
 			{
 				type: "small_angel",
-				pattern: [patterns.easyArcs, patterns.fiveSixFour],
+				pattern: [patterns.easyArcs, patterns.SixFiveFour],
 				health: 160, x: 0.5, y: -0.5, spawnDelay: 1.7,
 			}
 		]
@@ -102,12 +95,12 @@ let levelData = [
 		enemies: [
 			{
 				type: "small_imp",
-				pattern: [patterns.hardArcs, patterns.fiveSixFour],
+				pattern: [patterns.hardArcs, patterns.SixFiveFour],
 				health: 170, x: -0.5, y: -0.5, spawnDelay: 0,
 			},
 			{
 				type: "small_angel",
-				pattern: [patterns.zigzag, patterns.fiveSixFour],
+				pattern: [patterns.zigzag, patterns.SixFiveFour],
 				health: 170, x: 0.5, y: -0.5, spawnDelay: 1.7,
 			}
 		]

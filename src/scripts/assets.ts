@@ -238,14 +238,18 @@ import complete from "../assets/sounds/Complete.ogg";
 import score from "../assets/sounds/Score.ogg";
 
 
-import music_day from "../assets/sounds/TwilightWings_Day.ogg";
-import music_night from "../assets/sounds/TwilightWings_Night.ogg";
-import music_title from "../assets/sounds/TwilightWings_Title.ogg";
+import music_day from "../assets/music/Game_Day.ogg";
+import music_night from "../assets/music/Game_Night.ogg";
+import music_title from "../assets/music/Title.ogg";
+import music_tutorial_day from "../assets/music/Tutorial_Day.ogg";
+import music_tutorial_night from "../assets/music/Tutorial_Night.ogg";
 
 const audios: Audio[] = [
-	{ key: "music_day", path: music_day, volume: 0 },
-	{ key: "music_night", path: music_night, volume: 0 },
-	{ key: "music_title", path: music_title, volume: 0 },
+	{ key: "music_day", path: music_day, volume: 0.25 },
+	{ key: "music_night", path: music_night, volume: 0.25 },
+	{ key: "music_title", path: music_title, volume: 0.25 },
+	{ key: "music_tutorial_day", path: music_tutorial_day, volume: 0.25 },
+	{ key: "music_tutorial_night", path: music_tutorial_night, volume: 0.25 },
 
 	{ key: "wind", path: flightLoop, volume: 0.5 },
 	{ key: "dayShift", path: dayShift, volume: 0.8 },
@@ -264,8 +268,8 @@ const audios: Audio[] = [
 	{ key: "enemyDamageLow", path: graze, volume: 0.2, rate: 0.4 },
 	{ key: "bossSpawn", path: death, volume: 0.8, rate: 0.5 },
 
-	{ key: "enemyShotDay", path: enemyShotDay, volume: 0.2 },
-	{ key: "enemyShotNight", path: enemyShotNight, volume: 0.2 },
+	{ key: "enemyShotDay", path: enemyShotDay, volume: 0.5 },
+	{ key: "enemyShotNight", path: enemyShotNight, volume: 0.5 },
 	{ key: "playerShot", path: playerShot, volume: 0.6 },
 	{ key: "score", path: score, volume: 0.5 },
 	{ key: "graze", path: graze, volume: 0.1, rate: 0.8 },

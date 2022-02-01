@@ -9,6 +9,12 @@ const HURT_DURATION = 4.0;
 const TAPPING_TIMER = 0.2;
 const SHOOTING_TIMER = 0.09;
 const PLAYER_RADIUS = 2.4;
+let TOUCH_OFFSET = 50;
+
+// Hack to detect computer with mouse
+addEventListener("mousemove", e => {
+	TOUCH_OFFSET = 0;
+});
 
 
 export class Player extends Character {
@@ -16,8 +22,8 @@ export class Player extends Character {
 
 	// Input
 	private keys: any;
-	private isTouched: boolean;
-	private isTapped: boolean;
+	public isTouched: boolean;
+	public isTapped: boolean;
 	private tappedTimer: number;
 
 	// Graphics
@@ -106,9 +112,14 @@ export class Player extends Character {
 			this.velocity.add(this.inputVec);
 			this.velocity.limit(MAX_SPEED);
 
-			this.tappedTimer -= delta/1000;
-			if (this.isTapped && this.tappedTimer > TAPPING_TIMER/2) {
-				this.velocity.reset();
+			if (this.isTapped) {
+				this.tappedTimer -= delta/1000;
+				if (this.tappedTimer > TAPPING_TIMER/2) {
+					this.velocity.reset();
+				}
+				else if (this.tappedTimer <= 0) {
+					this.isTapped = false;
+				}
 			}
 
 			this.x += this.velocity.x * delta/1000;
@@ -213,7 +224,7 @@ export class Player extends Character {
 		else {
 			this.inputVec.copy(this.touchPos);
 			this.inputVec.x -= this.x;
-			this.inputVec.y -= this.y;
+			this.inputVec.y -= this.y + TOUCH_OFFSET; // Offset so finger doesn't block
 			// if (this.inputVec.length() < 8) {
 				// this.inputVec.reset();
 			// }

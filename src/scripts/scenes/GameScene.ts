@@ -117,21 +117,7 @@ export class GameScene extends BaseScene {
 		this.player = new Player(this, this.CX, this.CY);
 		this.player.setDepth(PLAYER_LAYER);
 
-		// this.boss = null;
 		this.enemies = [];
-		for (let i = 0; i < 0; i++) {
-			// let dayTime = true;
-			// let boss = new Boss(this, this.CX, 0.3*this.H, dayTime);
-			// boss.setDepth(BOSS_LAYER);
-
-			// boss.on("shoot", this.spawnEnemyBullet.bind(this));
-			// boss.on("defeated", this.onBossDefeated.bind(this));
-			// this.bosses.push(boss);
-
-			// boss.setPatterns(myPattern);
-
-			// this.ui.setBoss(boss);
-		}
 
 		this.playerBullets = [];
 		this.enemyBullets = [];
@@ -165,26 +151,55 @@ export class GameScene extends BaseScene {
 
 
 		// Touch controls
-		this.input.addPointer(1);
+		this.input.addPointer(2);
 
-		let touchArea = this.add.rectangle(0, 0, this.W, this.H, 0xFFFFFF).setOrigin(0).setAlpha(0.001);
-		touchArea.setInteractive({ useHandCursor: true, draggable: true });
-		touchArea.on('dragstart', (pointer: Phaser.Input.Pointer) => {
-			this.player.touchStart(pointer.x, pointer.y);
-		});
-		touchArea.on('drag', (pointer: Phaser.Input.Pointer) => {
-			this.player.touchDrag(pointer.x, pointer.y);
+		// let touchArea = this.add.rectangle(0, 0, this.W, this.H, 0xFFFFFF).setOrigin(0).setAlpha(0.001);
+		// touchArea.setInteractive({ useHandCursor: true, draggable: true });
 
+		let touchId: number = -1;
+		let touchButton: number = -1;
 
-		});
-		touchArea.on('dragend', (pointer: Phaser.Input.Pointer) => {
-			this.player.touchEnd(pointer.x, pointer.y);
-		});
-		touchArea.on('pointerdown', (pointer: Phaser.Input.Pointer, localX: number, localY: number, event: Phaser.Types.Input.EventData) => {
-			if (!this.isRunning && pointer.button == 0) {
+		this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+			console.log('down', pointer.id, pointer.button);
+			if (!this.player.isTouched) {
+				console.log("TAP");
+				this.player.touchStart(pointer.x, pointer.y);
+				touchId = pointer.id;
+				touchButton = pointer.button;
+			}
+			else if (this.player.isTouched && !this.player.isTapped) { // Allow second touch to toggle
 				this.onDayToggle();
 			}
 		});
+		// this.input.on('drag', (pointer: Phaser.Input.Pointer) => {
+		this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
+			console.log('move', pointer.id, pointer.button, this.player.isTouched, this.player.isTapped);
+			if (touchId == pointer.id) {
+				this.player.touchDrag(pointer.x, pointer.y);
+			}
+		});
+		// this.input.on('dragend', (pointer: Phaser.Input.Pointer) => {
+		this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => {
+			console.log('up', pointer.id, pointer.button);
+			if (touchId == pointer.id && touchButton == pointer.button) {
+				// this.ui.debug.setText(`${new Date().getTime()} - id:${pointer.id} button:${pointer.button}`);
+				this.player.touchEnd(pointer.x, pointer.y);
+			}
+		});
+		// this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+		// });
+		// scene.input.on('drag', (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject, dragX: number, dragY: number) => {});
+		// scene.input.on('dragend', (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) => {});
+		// scene.input.on('dragstart', (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) => {});
+		// scene.input.on('pointerdown', (pointer: Phaser.Input.Pointer, currentlyOver: Phaser.GameObjects.GameObject[]) => {});
+
+		// this.input.on('pointerdown', (pointer) => {
+			// console.log(pointer);
+			// this.ui.debug.setText(`${this.InputPlugin.pointer1}`);
+			// if (pointer.button == 0) {
+				// this.progress();
+			// }
+		// }, this);
 
 		// Skip
 		// this.input.keyboard.on("keydown-ESC", () => {
@@ -256,84 +271,90 @@ export class GameScene extends BaseScene {
 		this.particles.update(time, delta);
 
 
-		if (!this.anyEnemies && !this.enemiesInQueue && levelData.length > this.levelIndex) {
-			this.levelTimer -= delta/1000;
+		if (!this.anyEnemies && !this.enemiesInQueue) {
+			if (levelData.length > this.levelIndex) {
+				this.levelTimer -= delta/1000;
 
-			if (this.levelTimer <= 0) {
+				if (this.levelTimer <= 0) {
 
-				let data = levelData[this.levelIndex++];
-				this.levelTimer = data.delay;
+					this.ui.setWorld(1+Math.floor(this.levelIndex/5));
+					this.ui.setStage(1+(this.levelIndex%5));
 
-				for (let e of data.enemies) {
+					let data = levelData[this.levelIndex++];
+					this.levelTimer = data.delay;
 
-					let x = this.CX + e.x * 0.24*this.W;
-					let y = this.CY + e.y * 0.5*this.H;
+					for (let e of data.enemies) {
 
-					this.enemiesInQueue = true;
+						let x = this.CX + e.x * 0.24*this.W;
+						let y = this.CY + e.y * 0.5*this.H;
 
-					setTimeout(() => {
-						this.enemiesInQueue = false;
+						this.enemiesInQueue = true;
+
+						setTimeout(() => {
+							this.enemiesInQueue = false;
+
+							if (e.type == "boss") {
+								let boss = new Boss( this, x, y, true );
+								boss.setDepth(BOSS_LAYER);
+								boss.setPatterns(e.pattern);
+								boss.setHealth(e.health);
+								this.enemies.push(boss);
+								this.boss = boss;
+								this.ui.setBoss(boss);
+								// this.sounds.dog.play();
+								this.sounds.bossSpawn.play();
+
+								this.flash(3000, 0xFFFFFF, 0.9);
+								this.spawnBulletArc(true, true, boss.pos, 90, [15,12.5,10], [150,200,250], 20, [0,9,0]);
+								this.spawnBulletArc(true, false, boss.pos, 90, [15,12.5,10], [150,200,250], 20, [9,0,9]);
+								this.shake(1000, 12, 0);
+
+								boss.on("death", this.onBossDefeated.bind(this));
+								boss.on("destruction", () => {
+									// this.sounds.explosion.play();
+									this.sounds.enemyDestroy.play();
+									this.flash(3000, 0xFFFFFF, 1.0);
+									this.shake(1000, 12, 0);
+									this.spawnBulletArc(true, true, boss.pos, 90, [14,13,12,10,8], [120,160,200,240,280], 20, [0,9,0,9,0]);
+									this.spawnBulletArc(true, false, boss.pos, 90, [14,13,12,10,8], [120,160,200,240,280], 20, [9,0,9,0,9]);
+									this.addScore(100000);
+									this.ui.clearBoss();
+								});
+							} else {
+								let minion = new Minion( this, x, y, e.type );
+								minion.setDepth(ENEMY_LAYER);
+								minion.setPatterns(e.pattern);
+								minion.setHealth(e.health);
+								this.enemies.push(minion);
+
+								minion.on("death", () => {
+									this.sounds.enemyDeath.play();
+									this.shake(500, 4, 0);
+								});
+								minion.on("destruction", () => {
+									// this.sounds.explosion.play();
+									this.sounds.enemyDestroy.play();
+									this.flash(1000, 0xFFFFFF, 0.5);
+									this.shake(1000, 6, 0);
+									this.spawnBulletArc(true, minion.dayTime, minion.pos, minion.dir, 8, 200, 45, 0.0);
+									this.addScore(10000);
+								});
+
+								// this.sounds.necoarc.play();
+							}
+						}, e.spawnDelay*1000);
 
 						if (e.type == "boss") {
-							let boss = new Boss( this, x, y, true );
-							boss.setDepth(BOSS_LAYER);
-							boss.setPatterns(e.pattern);
-							boss.setHealth(e.health);
-							this.enemies.push(boss);
-							this.boss = boss;
-							this.ui.setBoss(boss);
-							// this.sounds.dog.play();
-							this.sounds.bossSpawn.play();
-
-							this.flash(3000, 0xFFFFFF, 0.9);
-							this.spawnBulletArc(true, true, boss.pos, 90, [15,12.5,10], [150,200,250], 20, [0,9,0]);
-							this.spawnBulletArc(true, false, boss.pos, 90, [15,12.5,10], [150,200,250], 20, [9,0,9]);
-							this.shake(1000, 12, 0);
-
-							boss.on("death", this.onBossDefeated.bind(this));
-							boss.on("destruction", () => {
-								// this.sounds.explosion.play();
-								this.sounds.enemyDestroy.play();
-								this.flash(3000, 0xFFFFFF, 1.0);
-								this.shake(1000, 12, 0);
-								this.spawnBulletArc(true, true, boss.pos, 90, [14,13,12,10,8], [120,160,200,240,280], 20, [0,9,0,9,0]);
-								this.spawnBulletArc(true, false, boss.pos, 90, [14,13,12,10,8], [120,160,200,240,280], 20, [9,0,9,0,9]);
-								this.addScore(100000);
-							});
-						} else {
-							let minion = new Minion( this, x, y, e.type );
-							minion.setDepth(ENEMY_LAYER);
-							minion.setPatterns(e.pattern);
-							minion.setHealth(e.health);
-							this.enemies.push(minion);
-
-							minion.on("death", () => {
-								this.sounds.enemyDeath.play();
-								this.shake(500, 4, 0);
-							});
-							minion.on("destruction", () => {
-								// this.sounds.explosion.play();
-								this.sounds.enemyDestroy.play();
-								this.flash(1000, 0xFFFFFF, 0.5);
-								this.shake(1000, 6, 0);
-								this.spawnBulletArc(true, minion.dayTime, minion.pos, minion.dir, 8, 200, 45, 0.0);
-								this.addScore(10000);
-							});
-
-							// this.sounds.necoarc.play();
+							setTimeout(() => {
+								this.shake(1500, 0, 3);
+							}, e.spawnDelay*1000 - 1500);
 						}
-					}, e.spawnDelay*1000);
-
-					if (e.type == "boss") {
-						setTimeout(() => {
-							this.shake(1500, 0, 3);
-						}, e.spawnDelay*1000 - 1500);
 					}
 				}
 			}
-		}
-		else if (levelData.length <= this.levelIndex) {
-			this.ui.showVictory();
+			else {
+				this.ui.showVictory();
+			}
 		}
 
 		this.enemies.forEach((enemy: Enemy, index: number) => {
@@ -379,6 +400,10 @@ export class GameScene extends BaseScene {
 					// this.ui.onEnemyDamage(enemy);
 					this.sounds.enemyDamage.play();
 					bullet.kill();
+
+					if (enemy instanceof Boss) {
+						this.ui.onBossDamage(enemy);
+					}
 
 					// this.particles.createExplosion(
 						// enemy.x + 20 * (-1+2*Math.random()),
@@ -534,13 +559,13 @@ export class GameScene extends BaseScene {
 		this.introPlaying = true;
 		this.sounds.playerDeath.play();
 
-		this.shake(1400, 8, 4);
+		this.shake(1400, 8, 2);
 	}
 
 	onPlayerDestroy() {
 		this.sounds.playerDestroy.play();
 
-		this.shake(1400, 8, 4);
+		this.shake(1400, 8, 2);
 
 		this.ui.showGameover();
 		this.saveHighscore()
@@ -610,21 +635,21 @@ export class GameScene extends BaseScene {
 			if (!this.enemyBullets[this.ebIndex].active) {
 				this.enemyBullets[this.ebIndex].spawn(dayTime, origin, direction, radius);
 
-				if (dayTime) {
-					if (this.sounds.enemyShotDay.isPlaying) {
-						// this.sounds.enemyShotDay.seek = 0.005;
-					} else {
-						this.sounds.enemyShotDay.play();
-						// this.sounds.enemyShotDay.rate = 0.2;
-					}
-				} else {
-					if (this.sounds.enemyShotNight.isPlaying) {
-						// this.sounds.enemyShotNight.seek = 0.005;
-					} else {
-						this.sounds.enemyShotNight.play();
-						// this.sounds.enemyShotNight.rate = 0.2;
-					}
-				}
+				// if (dayTime) {
+				// 	if (this.sounds.enemyShotDay.isPlaying) {
+				// 		// this.sounds.enemyShotDay.seek = 0.005;
+				// 	} else {
+				// 		this.sounds.enemyShotDay.play();
+				// 		// this.sounds.enemyShotDay.rate = 0.2;
+				// 	}
+				// } else {
+				// 	if (this.sounds.enemyShotNight.isPlaying) {
+				// 		// this.sounds.enemyShotNight.seek = 0.005;
+				// 	} else {
+				// 		this.sounds.enemyShotNight.play();
+				// 		// this.sounds.enemyShotNight.rate = 0.2;
+				// 	}
+				// }
 
 				return this.enemyBullets[this.ebIndex];
 			}
@@ -690,6 +715,15 @@ export class GameScene extends BaseScene {
 
 			this.spawnBullet(enemyType, dayTime, origin, dir, radius);
 		}
+
+		// let rate = 2.0 - Phaser.Math.Clamp(0.8 * Math.pow(amount / 100,2), 0, 1);
+		// let volume = Math.min(0.0 + amount / 100 + radius / 30, 1);
+		// if (dayTime) {
+			// this.sounds.enemyShotDay.play({ rate:0.1, volume:1.0 });
+		// }
+		// else {
+			// this.sounds.enemyShotNight.play({ rate, volume });
+		// }
 	}
 
 	debugSpawnPatter(key, event) {
@@ -794,5 +828,9 @@ export class GameScene extends BaseScene {
 		this.score += value;
 		this.highscore = Math.max(this.highscore, this.score);
 		this.ui.setScore(this.score, this.highscore);
+
+		if (value > 1000) {
+			this.saveHighscore();
+		}
 	}
 }

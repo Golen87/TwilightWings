@@ -8,6 +8,7 @@ export class RoundRectangle extends Phaser.GameObjects.Container {
 	private radius: number;
 	private color: number;
 	private origin: Phaser.Math.Vector2;
+	private points: any;
 
 	constructor(scene: BaseScene, x: number, y: number, width: number, height: number, radius: number, color: number, alpha: number=1.0) {
 		super(scene, x, y);
@@ -44,7 +45,7 @@ export class RoundRectangle extends Phaser.GameObjects.Container {
 
 	setColor(value: number) {
 		this.color = value;
-		this.updatePolygon();
+		this.updatePolygon(false);
 	}
 
 	setOrigin(x: number, y?: number) {
@@ -56,23 +57,26 @@ export class RoundRectangle extends Phaser.GameObjects.Container {
 		this.updatePolygon();
 	}
 
-	updatePolygon() {
-		let points:any=[], t=16;
-		for (let j = 0; j < 4; j++) {
-			let sx = Math.sign(Math.cos(j*Math.PI/2+0.1));
-			let sy = Math.sign(Math.sin(j*Math.PI/2+0.1));
-			for (let i = 0; i < t; i++) {
-				let px = Math.cos(j*Math.PI/2 + i/(t-1)*Math.PI/2);
-				let py = Math.sin(j*Math.PI/2 + i/(t-1)*Math.PI/2);
-				points.push({
-					x: ((0.5 - this.origin.x) * this.width) + sx * (this.width/2-this.radius) + this.radius*px,
-					y: ((0.5 - this.origin.y) * this.height) + sy * (this.height/2-this.radius) + this.radius*py
-				});
+	updatePolygon(sizeChange: boolean=true) {
+		if (sizeChange) {
+			let points:any=[], t=16;
+			for (let j = 0; j < 4; j++) {
+				let sx = Math.sign(Math.cos(j*Math.PI/2+0.1));
+				let sy = Math.sign(Math.sin(j*Math.PI/2+0.1));
+				for (let i = 0; i < t; i++) {
+					let px = Math.cos(j*Math.PI/2 + i/(t-1)*Math.PI/2);
+					let py = Math.sin(j*Math.PI/2 + i/(t-1)*Math.PI/2);
+					points.push({
+						x: ((0.5 - this.origin.x) * this.width) + sx * (this.width/2-this.radius) + this.radius*px,
+						y: ((0.5 - this.origin.y) * this.height) + sy * (this.height/2-this.radius) + this.radius*py
+					});
+				}
 			}
+			this.points = points;
 		}
 
 		this.context.clear();
 		this.context.fillStyle(this.color, 1.0);
-		this.context.fillPoints(points, true, true);
+		this.context.fillPoints(this.points, true, true);
 	}
 }

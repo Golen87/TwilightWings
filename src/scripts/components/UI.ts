@@ -1,4 +1,5 @@
 import { GameScene } from "../scenes/GameScene";
+import { RoundRectangle } from "./RoundRectangle";
 import { interpolateColor } from "../utils";
 import { Boss } from "./Boss";
 import BendWaves2 from "../pipelines/BendWavesPostFX2";
@@ -17,6 +18,7 @@ export class UI extends Phaser.GameObjects.Container {
 	private outlineNight: Phaser.GameObjects.Image;
 	private outlineDay: Phaser.GameObjects.Image;
 
+	private clockBg: RoundRectangle;
 	private clock: Phaser.GameObjects.Sprite;
 
 	private health: Phaser.GameObjects.Container;
@@ -25,13 +27,15 @@ export class UI extends Phaser.GameObjects.Container {
 	private healthBar: Phaser.GameObjects.Rectangle;
 	private healthFlash: number;
 
+	private heartsBg: RoundRectangle;
 	private hearts: Phaser.GameObjects.Image[];
 
 	public debug: Phaser.GameObjects.Text;
 	public world: Phaser.GameObjects.Text;
 	public stage: Phaser.GameObjects.Text;
 
-
+	private highscoreBg: RoundRectangle;
+	private scoreBg: RoundRectangle;
 	public highscore: Phaser.GameObjects.Text;
 	public score: Phaser.GameObjects.Text;
 	public scoreBounce: number;
@@ -53,6 +57,7 @@ export class UI extends Phaser.GameObjects.Container {
 
 		const rx = (1-EDGE)*scene.W + PAD;
 		const lx = EDGE*scene.W - PAD;
+		let rrw = 0.92 * EDGE*scene.W;
 
 		this.background = scene.add.image(cx, cy, "ui_bg");
 		scene.containToScreen(this.background);
@@ -73,10 +78,13 @@ export class UI extends Phaser.GameObjects.Container {
 
 		// Clock
 
-		this.clock = scene.add.sprite(0.99*scene.W, 0.55 * scene.H, "ui_clock", 0);
-		this.clock.setOrigin(1, 0.5);
+		this.clock = scene.add.sprite((1-EDGE/2)*scene.W, 0.55 * scene.H, "ui_clock", 0);
 		this.clock.setScale(0.5);
 		this.add(this.clock);
+
+		this.clockBg = new RoundRectangle(scene, this.clock.x, this.clock.y, rrw, this.clock.displayHeight+PAD, 10, 0x3a3a3a);
+		this.add(this.clockBg);
+		this.moveDown(this.clockBg);
 
 
 		// Boss health
@@ -111,71 +119,83 @@ export class UI extends Phaser.GameObjects.Container {
 		let hx = (1 - EDGE/2) * scene.W;
 		let hy = 0.9 * scene.H;
 
+		this.heartsBg = new RoundRectangle(scene, hx, hy, rrw, 86, 10, 0x3a3a3a);
+		this.add(this.heartsBg);
+
 		this.hearts = [];
 		for (let i = 0; i < 5; i++) {
-			let x = hx - 2*40 + 40*i;
+			let x = hx - 2*35 + 35*i;
+			let y = hy + 16 * (i%2 == 0 ? -1 : 1);
 
-			let heartBg = scene.add.image(x, hy, "ui_heart_empty");
-			heartBg.setScale(0.3);
+			let heartBg = scene.add.image(x, y, "ui_heart_empty");
+			heartBg.setScale(0.4);
 			this.add(heartBg);
 
-			let heart = scene.add.image(x, hy, "ui_heart");
-			heart.setScale(0.3);
+			let heart = scene.add.image(x, y, "ui_heart");
+			heart.setScale(0.4);
 			this.add(heart);
 			this.hearts.push(heart);
 		}
 
+		let livesLabel = scene.createText(hx, hy - 50, FONT_SIZE, "#000", "Lives");
+		livesLabel.setOrigin(0.5, 1);
+		livesLabel.setStroke("#FFFFFF", STROKE);
+		this.add(livesLabel);
+
 
 		// Text
 
-		this.world = scene.createText(lx/2, 4*PAD, 1.4*FONT_SIZE, "#000", "World-1");
+		this.world = scene.createText(lx/2, 4*PAD, 1.4*FONT_SIZE, "#000", "");
 		this.world.setOrigin(0.5);
 		this.world.setStroke("#FFFFFF", 1.4*STROKE);
 		this.add(this.world);
+		this.setWorld(1);
 
-		// this.stage = scene.createText(lx/2, scene.H-4*PAD, FONT_SIZE, "#000", "Stage-1");
-		// this.stage.setOrigin(0.5);
-		// this.stage.setStroke("#FFFFFF", STROKE);
-		// this.add(this.stage);
+		this.stage = scene.createText(lx/2, 7*PAD, 0.75*FONT_SIZE, "#000", "");
+		this.stage.setOrigin(0.5);
+		this.stage.setStroke("#FFFFFF", 0.85*STROKE);
+		this.add(this.stage);
+		this.setStage(1);
 
 
 		let ty = 0.7 * PAD;
 
-		let hsLabel = scene.createText(rx, ty, FONT_SIZE, "#000", "High score");
-		hsLabel.setOrigin(0);
+		this.highscoreBg = new RoundRectangle(scene, hx, ty+34, rrw, 67, 10, 0x3a3a3a);
+		this.add(this.highscoreBg);
+
+		let hsLabel = scene.createText(hx, ty, FONT_SIZE, "#000", "High score");
+		hsLabel.setOrigin(0.5, 0);
 		hsLabel.setStroke("#FFFFFF", STROKE);
 		this.add(hsLabel);
 
 		ty += 1.2 * FONT_SIZE;
-		this.highscore = scene.createText(rx, ty, FONT_SIZE, "#FFF", "00000000");
-		this.highscore.setOrigin(0.5);
+		this.highscore = scene.createText(hx, ty, FONT_SIZE, "#FFF", "00000000");
+		this.highscore.setOrigin(0.5, 0);
 		// this.highscore.setStroke("#FFFFFF", STROKE);
 		this.add(this.highscore);
 
-		ty += 1.7 * FONT_SIZE;
-		let sLabel = scene.createText(rx, ty, FONT_SIZE, "#000", "Score");
-		sLabel.setOrigin(0);
+		ty += 2.0 * FONT_SIZE;
+		this.scoreBg = new RoundRectangle(scene, hx, ty+34, rrw, 67, 10, 0x3a3a3a);
+		this.add(this.scoreBg);
+
+		let sLabel = scene.createText(hx, ty, FONT_SIZE, "#000", "Score");
+		sLabel.setOrigin(0.5, 0);
 		sLabel.setStroke("#FFFFFF", STROKE);
 		this.add(sLabel);
 
 		ty += 1.2 * FONT_SIZE;
-		this.score = scene.createText(rx, ty, FONT_SIZE, "#FFF", "00000000");
-		this.score.setOrigin(0.5);
+		this.score = scene.createText(hx, ty, FONT_SIZE, "#FFF", "00000000");
+		this.score.setOrigin(0.5, 0);
 		// this.score.setStroke("#FFFFFF", STROKE);
 		this.add(this.score);
 
-		this.score.x += this.score.width/2;
-		this.score.y += this.score.height/2;
-		this.highscore.x += this.highscore.width/2;
-		this.highscore.y += this.highscore.height/2;
+		// this.score.x += 4 +this.score.width/2;
+		// this.score.y += 4 +this.score.height/2;
+		// this.highscore.x += 4 +this.highscore.width/2;
+		// this.highscore.y += 4 +this.highscore.height/2;
 
 		this.scoreBounce = 0;
 
-
-		let livesLabel = scene.createText(rx, hy - 2*PAD, FONT_SIZE, "#000", "Lives");
-		livesLabel.setOrigin(0, 1);
-		livesLabel.setStroke("#FFFFFF", STROKE);
-		this.add(livesLabel);
 
 		this.debug = scene.createText(0, 0, FONT_SIZE/2, "#FFF", "LMAO");
 		this.debug.setOrigin(0, 0);
@@ -217,7 +237,12 @@ export class UI extends Phaser.GameObjects.Container {
 			this.healthBar.width = this.boss.healthPerc * (this.healthBox.displayWidth - 5);
 		}
 
-		this.healthFlash += -0.1 * this.healthFlash;
+		this.healthFlash += -0.3 * this.healthFlash;
+
+		this.clockBg.setColor( interpolateColor(0x363a4b-0x101010, 0x494333-0x101010, dayTimeSmooth) );
+		this.heartsBg.setColor( interpolateColor(0x363a4b-0x101010, 0x494333-0x101010, dayTimeSmooth) );
+		this.highscoreBg.setColor( interpolateColor(0x363a4b-0x101010, 0x494333-0x101010, dayTimeSmooth) );
+		this.scoreBg.setColor( interpolateColor(0x363a4b-0x101010, 0x494333-0x101010, dayTimeSmooth) );
 
 		this.background.setTint( interpolateColor(0xb8c5ff, 0xf7e3af, dayTimeSmooth) );
 		this.healthBox.setTint( interpolateColor(0xDDEEFF, 0x110900, dayTimeSmooth) );
@@ -271,5 +296,13 @@ export class UI extends Phaser.GameObjects.Container {
 	showVictory() {
 		this.endScreen.setVisible(true);
 		this.endText.setText("VICTORY");
+	}
+
+	setWorld(world: number) {
+		this.world.setText("World — " + world.toString());
+	}
+
+	setStage(world: number) {
+		this.stage.setText("Stage — " + world.toString());
 	}
 }

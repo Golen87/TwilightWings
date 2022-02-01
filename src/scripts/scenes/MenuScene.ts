@@ -13,16 +13,16 @@ Kiu
 Lumie
 
 Thanks to
-Frassy, Neo, Squishy`
+Frassy, Neo, Squishy`;
 
 const creditsRight = `
 
 code
 art
-art
+design
 music
 sound
-patterns`
+patterns`;
 
 
 export class MenuScene extends BaseScene {

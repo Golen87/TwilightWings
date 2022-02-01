@@ -1,5 +1,6 @@
 import { GameScene } from "../scenes/GameScene";
 import { Enemy } from "./Enemy";
+import { interpolateColor } from "../utils";
 
 
 export class Boss extends Enemy {
@@ -12,6 +13,13 @@ export class Boss extends Enemy {
 		super(scene, x, y, dayTime);
 
 		this.sprite.setTexture("boss");
+		this.sprite.setOrigin(0.5, 0.4);
+
+		// this.light = scene.add.pointlight(0, 0, 0xffeeaa, 200, 0.4, 0.05);
+		// this.add(this.light);
+		// this.sendToBack(this.light);
+		this.light.radius = 200;
+		this.light.intensity = 0.0;
 
 		this.moveTimer = 0;
 
@@ -37,9 +45,13 @@ export class Boss extends Enemy {
 		if (this.alive) {
 
 			this.appearScale += 2 * (1 - this.appearScale) * delta/1000;
+			this.light.intensity += 2 * (1.2 - this.appearScale) * delta/1000;
+
 			this.setScale(
 				this.appearScale - 0.06 * this.hurtEase,
 				this.appearScale - 0.14 * this.hurtEase);
+			this.sprite.setTint(interpolateColor(
+				0xFFFFFF, 0xFFCCCC, this.hurtEase));
 
 			this.moveTimer -= delta/1000;
 			if (this.moveTimer <= 0) {
@@ -54,7 +66,7 @@ export class Boss extends Enemy {
 			this.x += (gx - this.x) * delta/1000;
 			this.y += 2 * (gy - this.y) * delta/1000;
 
-
+			// this.light.color = Phaser.Display.Color.ValueToColor(interpolateColor(0xff5500, 0xffff99, this.healthPerc));
 		}
 	}
 }

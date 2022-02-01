@@ -35,6 +35,11 @@ export class Enemy extends Character {
 		this.sprite.setScale(0.25);
 		this.add(this.sprite); // Attach sprite to the Player-component
 
+		// Light
+		this.light = scene.add.pointlight(0, 0, 0xffeeaa, 65, 0.35, 0.04);
+		this.add(this.light);
+		this.sendToBack(this.light);
+
 		// Debug graphics
 		this.graphics = scene.add.graphics();
 		// this.graphics.setVisible(false);
@@ -83,6 +88,8 @@ export class Enemy extends Character {
 				// pattern.loop
 
 				pattern.timer -= delta/1000;
+				let dayTimeCount = 0;
+				let noise = 0;
 				let limit = 10;
 				while (pattern.loop.length > 0 && pattern.timer < 0 && limit-- > 0) {
 
@@ -101,7 +108,43 @@ export class Enemy extends Character {
 
 					this.scene.spawnBulletArc(true, dayTime, pos, dir, p.radius, p.speed, p.amount, p.offset, p.degrees);
 
+
+					// Noise calculation
+
+					if (dayTime) {
+						dayTimeCount += 1;
+					}
+
+					let length = Math.max(
+						Array.isArray(p.radius) ? p.radius.length : 0,
+						Array.isArray(p.amount) ? p.amount.length : 0,
+						1
+					);
+					for (let i = 0; i < length; i++) {
+						let r = Array.isArray(p.radius) ? p.radius[i%p.radius.length] : p.radius;
+						let a = Array.isArray(p.amount) ? p.amount[i%p.amount.length] : p.amount;
+						noise += r*a;
+					}
+
 					pattern.index = (pattern.index + 1) % pattern.loop.length;
+				}
+
+				if (noise) {
+					let k = Math.log10(noise)/4.5;
+					let rate = 1.1 - 1*k;
+					let volume = 0.0 + 0.7*k
+
+					if (dayTimeCount > 0) {
+						this.scene.sounds.enemyShotDay.play({ rate, volume });
+					}
+					else {
+						this.scene.sounds.enemyShotNight.play({ rate, volume });
+					}
+
+					k *= k;
+					// k -= 0.5
+					if (k > 0)
+						this.scene.shake(500*k, 3*k, 0);
 				}
 			}
 		}
@@ -126,6 +169,8 @@ export class Enemy extends Character {
 			// 		0.2, 0.4
 			// 	);
 			// }
+
+			this.light.color = Phaser.Display.Color.ValueToColor(interpolateColor(0xff0000, 0xffff99, this.healthPerc));
 		}
 
 		// Death animation
@@ -142,6 +187,8 @@ export class Enemy extends Character {
 
 			let blink = (Math.sin(50*time/1000) > 0);
 			this.sprite.setTint(blink ? 0xFFBBBB : 0xFFFFFF);
+
+			this.light.setAlpha(1-Phaser.Math.Easing.Quintic.Out(deathFac));
 
 			// this.scene.particles.createExplosion(
 			// 	this.x + 50 * (-1+2*Math.random()),
