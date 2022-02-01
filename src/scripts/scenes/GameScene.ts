@@ -160,9 +160,7 @@ export class GameScene extends BaseScene {
 		let touchButton: number = -1;
 
 		this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
-			console.log('down', pointer.id, pointer.button);
 			if (!this.player.isTouched) {
-				console.log("TAP");
 				this.player.touchStart(pointer.x, pointer.y);
 				touchId = pointer.id;
 				touchButton = pointer.button;
@@ -173,14 +171,12 @@ export class GameScene extends BaseScene {
 		});
 		// this.input.on('drag', (pointer: Phaser.Input.Pointer) => {
 		this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
-			console.log('move', pointer.id, pointer.button, this.player.isTouched, this.player.isTapped);
 			if (touchId == pointer.id) {
 				this.player.touchDrag(pointer.x, pointer.y);
 			}
 		});
 		// this.input.on('dragend', (pointer: Phaser.Input.Pointer) => {
 		this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => {
-			console.log('up', pointer.id, pointer.button);
 			if (touchId == pointer.id && touchButton == pointer.button) {
 				// this.ui.debug.setText(`${new Date().getTime()} - id:${pointer.id} button:${pointer.button}`);
 				this.player.touchEnd(pointer.x, pointer.y);
@@ -434,7 +430,7 @@ export class GameScene extends BaseScene {
 
 			if (bullet.dayTime) {
 				bullet.setAlpha(1.0 - 0.5 * this.dayTimeSmooth);
-				bullet.setTint(interpolateColor(0xFFFFFF, 0xFFFFBB, this.dayTimeSmooth));
+				bullet.setTint(interpolateColor(0xFFFFFF, 0xFFFFAA, this.dayTimeSmooth));
 			}
 			else {
 				bullet.setAlpha(0.3 + 0.7 * this.dayTimeSmooth);
@@ -584,6 +580,11 @@ export class GameScene extends BaseScene {
 	}
 
 	onDayToggle() {
+		let canvas = document.querySelector('canvas')!;
+		console.log(canvas);
+		// let image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+		// window.location.href = image;
+
 		if (this.player.alive && this.isRunning && (this.dayTime ? 1 : 0) == this.dayTimeLinear) {
 			this.dayTime = !this.dayTime;
 			this.player.onDayToggle();
@@ -807,21 +808,27 @@ export class GameScene extends BaseScene {
 	/* Score */
 
 	loadHighscore() {
-		let data = JSON.parse(localStorage.getItem("TWSaveData")!);
-		if (data) {
+		// Crashes in incognito
+		try {
+			let data = JSON.parse(localStorage.getItem("TWSaveData")!);
+			if (data) {
 
-			if (data.highscore && !isNaN(parseInt(data.highscore))) {
-				this.highscore = Phaser.Math.Clamp(data.highscore, 0, 99999999);
-				this.ui.setScore(this.score, this.highscore);
+				if (data.highscore && !isNaN(parseInt(data.highscore))) {
+					this.highscore = Phaser.Math.Clamp(data.highscore, 0, 99999999);
+					this.ui.setScore(this.score, this.highscore);
+				}
 			}
-		}
+		} catch (error) {}
 	}
 
 	saveHighscore() {
-		localStorage.setItem("TWSaveData", JSON.stringify({
-			version: 1,
-			highscore: this.highscore,
-		}));
+		// Crashes in incognito
+		try {
+			localStorage.setItem("TWSaveData", JSON.stringify({
+				version: 1,
+				highscore: this.highscore,
+			}));
+		} catch (error) {}
 	}
 
 	addScore(value: number) {

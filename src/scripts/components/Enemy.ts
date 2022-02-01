@@ -88,7 +88,7 @@ export class Enemy extends Character {
 				// pattern.loop
 
 				pattern.timer -= delta/1000;
-				let dayTimeCount = 0;
+				let playLoud = false;
 				let noise = 0;
 				let limit = 10;
 				while (pattern.loop.length > 0 && pattern.timer < 0 && limit-- > 0) {
@@ -111,8 +111,9 @@ export class Enemy extends Character {
 
 					// Noise calculation
 
-					if (dayTime) {
-						dayTimeCount += 1;
+					// Because negatives are visible and loud
+					if (dayTime != this.scene.dayTime) {
+						playLoud = true;
 					}
 
 					let length = Math.max(
@@ -133,8 +134,9 @@ export class Enemy extends Character {
 					let k = Math.log10(noise)/4.5;
 					let rate = 1.1 - 1*k;
 					let volume = 0.0 + 0.7*k
+					volume *= (playLoud ? 1 : 0.4);
 
-					if (dayTimeCount > 0) {
+					if (this.scene.dayTime !== playLoud) {
 						this.scene.sounds.enemyShotDay.play({ rate, volume });
 					}
 					else {

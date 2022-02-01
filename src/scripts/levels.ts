@@ -36,7 +36,7 @@ let levelData = [
 		duration: 10,
 		enemies: [
 			{
-				type: "small_imp",
+				type: "small_angel",
 				pattern: [patterns.fourWay, patterns.laser],
 				health: 200, x: 0, y: -0.5, spawnDelay: 0,
 			},

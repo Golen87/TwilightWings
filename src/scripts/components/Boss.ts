@@ -45,7 +45,7 @@ export class Boss extends Enemy {
 		if (this.alive) {
 
 			this.appearScale += 2 * (1 - this.appearScale) * delta/1000;
-			this.light.intensity += 2 * (1.2 - this.appearScale) * delta/1000;
+			this.light.intensity += 2 * (1.0 - this.appearScale) * delta/1000;
 
 			this.setScale(
 				this.appearScale - 0.06 * this.hurtEase,
