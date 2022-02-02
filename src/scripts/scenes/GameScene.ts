@@ -292,7 +292,14 @@ export class GameScene extends BaseScene {
 							if (e.type == "boss") {
 								let boss = new Boss( this, x, y, true );
 								boss.setDepth(BOSS_LAYER);
-								boss.setPatterns(e.pattern);
+
+								if (e.phases) {
+									boss.setPhases(e.phases);
+								}
+								else if (e.pattern) {
+									boss.setPatterns(e.pattern);
+								}
+
 								boss.setHealth(e.health);
 								this.enemies.push(boss);
 								this.boss = boss;
@@ -305,6 +312,14 @@ export class GameScene extends BaseScene {
 								this.spawnBulletArc(true, false, boss.pos, 90, [15,12.5,10], [150,200,250], 20, [9,0,9]);
 								this.shake(1000, 12, 0);
 
+								boss.on("phase", () => {
+									console.log("PHASE");
+									this.screenWipe();
+									this.flash(3000, 0xFFFFFF, 1.0);
+									this.shake(1000, 12, 0);
+									this.sounds.phaseComplete.play();
+
+								});
 								boss.on("death", this.onBossDefeated.bind(this));
 								boss.on("destruction", () => {
 									// this.sounds.explosion.play();
@@ -571,7 +586,7 @@ export class GameScene extends BaseScene {
 	onBossDefeated() {
 		// this.introPlaying = true;
 		this.shake(1500, 8, 4);
-		this.sounds.enemyDeath.play();
+		// this.sounds.enemyDeath.play();
 		this.sounds.bossSpawn.play();
 
 		// this.addEvent(1500+1000, () => {
@@ -580,8 +595,8 @@ export class GameScene extends BaseScene {
 	}
 
 	onDayToggle() {
-		let canvas = document.querySelector('canvas')!;
-		console.log(canvas);
+		// let canvas = document.querySelector('canvas')!;
+		// console.log(canvas);
 		// let image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
 		// window.location.href = image;
 
@@ -793,8 +808,6 @@ export class GameScene extends BaseScene {
 	}
 
 	screenWipe() {
-		this.sounds.death.play();
-
 		for (let i = 0; i < ENEMY_BULLET_COUNT; i++) {
 			this.enemyBullets[i].kill();
 		}

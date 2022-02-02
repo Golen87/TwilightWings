@@ -1,6 +1,23 @@
 import * as patterns from "./patterns";
 
-let levelData = [
+export interface StageEnemy {
+	type: string;
+	health: number;
+	pattern?: any;
+	phases?: any;
+	x: number;
+	y: number;
+	spawnDelay: number;
+}
+
+export interface Stage {
+	delay: number;
+	duration?: number;
+	enemies: StageEnemy[];
+}
+
+
+let levelData: Stage[] = [
 
 	{
 		delay: 2,
@@ -66,8 +83,12 @@ let levelData = [
 		enemies: [
 			{
 				type: "boss",
-				pattern: patterns.lumie2,
-				health: 500, x: 0, y: -0.5, spawnDelay: 2.0
+				phases: [
+					patterns.lumie,
+					patterns.lumie2,
+					patterns.random
+				],
+				health: 1000, x: 0, y: -0.5, spawnDelay: 2.0
 			}
 		]
 	},

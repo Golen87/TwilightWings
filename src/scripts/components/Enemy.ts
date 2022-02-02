@@ -4,6 +4,7 @@ import { Bullet } from "./Bullet";
 import { EnemyBullet } from "./EnemyBullet";
 import { interpolateColor } from "../utils";
 
+const STUNNED_DURATION = 1.5;
 
 
 export class Enemy extends Character {
@@ -19,7 +20,10 @@ export class Enemy extends Character {
 	protected border: { [key: string]: number };
 
 	// Shooting
+	protected phases: any[];
+	protected phaseIndex: number;
 	protected patterns: any[];
+	protected stunnedTimer: number;
 
 	// Collision
 	protected bodyAreas: Phaser.Geom.Circle[];
@@ -55,7 +59,10 @@ export class Enemy extends Character {
 			bottom: scene.H - size/2,
 		};
 
+		this.phases = [];
+		this.phaseIndex = 0;
 		this.patterns = [];
+		this.stunnedTimer = 0;
 
 		this.maxHealth = 200;
 		this.health = this.maxHealth;
@@ -77,77 +84,92 @@ export class Enemy extends Character {
 			this.facing.copy(target);
 
 
-			// PHASE CHANGE: this.complete
-
-
 			// Bullet patterns
 
-			for (let pattern of this.patterns) {
-				// pattern.index
-				// pattern.timer
-				// pattern.loop
+			if (this.stunnedTimer <= 0) {
+				for (let pattern of this.patterns) {
+					// pattern.index
+					// pattern.timer
+					// pattern.loop
 
-				pattern.timer -= delta/1000;
-				let playLoud = false;
-				let noise = 0;
-				let limit = 10;
-				while (pattern.loop.length > 0 && pattern.timer < 0 && limit-- > 0) {
+					pattern.timer -= delta/1000;
+					let playLoud = false;
+					let noise = 0;
+					let limit = 10;
+					while (pattern.loop.length > 0 && pattern.timer < 0 && limit-- > 0) {
 
-					pattern.timer = pattern.loop[pattern.index].wait;
+						pattern.timer = pattern.loop[pattern.index].wait;
 
-					let p = pattern.loop[pattern.index];
-					let pos = this.pos;
-					if (p.x !== undefined && p.y !== undefined) {
-						pos.set(this.scene.CX + p.x * 0.24*this.scene.W, this.scene.CY + p.y * 0.5*this.scene.H);
+						let p = pattern.loop[pattern.index];
+						let pos = this.pos;
+						if (p.x !== undefined && p.y !== undefined) {
+							pos.set(this.scene.CX + p.x * 0.24*this.scene.W, this.scene.CY + p.y * 0.5*this.scene.H);
+						}
+						let dir = this.dir;
+						if (p.angle !== undefined) {
+							dir = p.angle * Phaser.Math.DEG_TO_RAD;
+						}
+						let dayTime = (p.type == this.dayTime);
+
+						this.scene.spawnBulletArc(true, dayTime, pos, dir, p.radius, p.speed, p.amount, p.offset, p.degrees);
+
+
+						// Noise calculation
+
+						// Because negatives are visible and loud
+						if (dayTime != this.scene.dayTime) {
+							playLoud = true;
+						}
+
+						let length = Math.max(
+							Array.isArray(p.radius) ? p.radius.length : 0,
+							Array.isArray(p.amount) ? p.amount.length : 0,
+							1
+						);
+						for (let i = 0; i < length; i++) {
+							let r = Array.isArray(p.radius) ? p.radius[i%p.radius.length] : p.radius;
+							let a = Array.isArray(p.amount) ? p.amount[i%p.amount.length] : p.amount;
+							noise += r*a;
+						}
+
+						pattern.index = (pattern.index + 1) % pattern.loop.length;
 					}
-					let dir = this.dir;
-					if (p.angle !== undefined) {
-						dir = p.angle * Phaser.Math.DEG_TO_RAD;
+
+					if (noise) {
+						let k = Math.log10(noise)/4.5;
+						let rate = 1.1 - 1*k;
+						let volume = 0.0 + 0.7*k
+						volume *= (playLoud ? 1 : 0.4);
+
+						if (this.scene.dayTime !== playLoud) {
+							this.scene.sounds.enemyShotDay.play({ rate, volume });
+						}
+						else {
+							this.scene.sounds.enemyShotNight.play({ rate, volume });
+						}
+
+						k *= k;
+						// k -= 0.5
+						if (k > 0)
+							this.scene.shake(500*k, 3*k, 0);
 					}
-					let dayTime = (p.type == this.dayTime);
+				}
+			}
 
-					this.scene.spawnBulletArc(true, dayTime, pos, dir, p.radius, p.speed, p.amount, p.offset, p.degrees);
 
+			// Phase change
 
-					// Noise calculation
+			if (this.phases.length > 0) {
+				let fac = this.phases.length - this.phaseIndex - 1;
+				let threshold = fac * this.maxHealth / this.phases.length;
 
-					// Because negatives are visible and loud
-					if (dayTime != this.scene.dayTime) {
-						playLoud = true;
-					}
-
-					let length = Math.max(
-						Array.isArray(p.radius) ? p.radius.length : 0,
-						Array.isArray(p.amount) ? p.amount.length : 0,
-						1
-					);
-					for (let i = 0; i < length; i++) {
-						let r = Array.isArray(p.radius) ? p.radius[i%p.radius.length] : p.radius;
-						let a = Array.isArray(p.amount) ? p.amount[i%p.amount.length] : p.amount;
-						noise += r*a;
-					}
-
-					pattern.index = (pattern.index + 1) % pattern.loop.length;
+				if (threshold > 0 && this.health < threshold) {
+					this.phaseIndex++;
+					this.stunnedTimer = STUNNED_DURATION;
+					this.setPatterns(this.phases[this.phaseIndex]);
+					this.emit("phase");
 				}
 
-				if (noise) {
-					let k = Math.log10(noise)/4.5;
-					let rate = 1.1 - 1*k;
-					let volume = 0.0 + 0.7*k
-					volume *= (playLoud ? 1 : 0.4);
-
-					if (this.scene.dayTime !== playLoud) {
-						this.scene.sounds.enemyShotDay.play({ rate, volume });
-					}
-					else {
-						this.scene.sounds.enemyShotNight.play({ rate, volume });
-					}
-
-					k *= k;
-					// k -= 0.5
-					if (k > 0)
-						this.scene.shake(500*k, 3*k, 0);
-				}
 			}
 		}
 
@@ -173,6 +195,16 @@ export class Enemy extends Character {
 			// }
 
 			this.light.color = Phaser.Display.Color.ValueToColor(interpolateColor(0xff0000, 0xffff99, this.healthPerc));
+
+
+			if (this.stunnedTimer > 0) {
+				this.stunnedTimer -= delta/1000;
+				let stunFac = 1 - this.stunnedTimer / STUNNED_DURATION;
+				let x = Math.max(0, 1-Math.abs(1-2*stunFac));
+				let stunEase = Phaser.Math.Easing.Sine.Out(x);
+
+				this.sprite.setOrigin(0.5 + stunEase * 0.1 * Math.sin(50*time/1000), 0.5);
+			}
 		}
 
 		// Death animation
@@ -233,11 +265,21 @@ export class Enemy extends Character {
 	// }
 
 
+	setPhases(phases) {
+		console.assert(Array.isArray(phases), "Phases needs to be an array of patterns");
+		this.phases = phases;
+		this.phaseIndex = 0;
+		this.setPatterns(phases[0]);
+	}
+
 	setPatterns(patterns) {
 		this.patterns = [];
+		console.assert(Array.isArray(patterns), "Patterns need to be an array");
+		if (!Array.isArray(patterns[0])) {
+			patterns = [patterns];
+		}
 
 		for (let loop of patterns) {
-			console.assert(Array.isArray(loop), "Patterns array need to contain subarrays");
 
 			this.patterns.push({
 				index: 0,

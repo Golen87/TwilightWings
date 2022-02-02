@@ -267,6 +267,7 @@ const audios: Audio[] = [
 	{ key: "enemyDamageHigh", path: graze, volume: 0.15, rate: 0.5 },
 	{ key: "enemyDamageLow", path: graze, volume: 0.2, rate: 0.4 },
 	{ key: "bossSpawn", path: death, volume: 0.8, rate: 0.5 },
+	{ key: "phaseComplete", path: complete, volume: 0.7, rate: 1.0 },
 
 	{ key: "enemyShotDay", path: enemyShotDay, volume: 0.5 },
 	{ key: "enemyShotNight", path: enemyShotNight, volume: 0.5 },

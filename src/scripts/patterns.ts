@@ -1,86 +1,80 @@
 
 let golen = [
-	{type: true, radius:  6, speed: 200, amount:   1, offset: 0, degrees:  90, wait: 0.2}, // Triple 5s
-	{type: true, radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2},
-	{type: true, radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-	{type: true, radius:  6, speed: 200, amount:   4, offset: 0, degrees:  10*4, wait: 0.2},
-	{type: true, radius:  6, speed: 200, amount:   5, offset: 0, degrees:  10*5, wait: 0.2},
-	{type: true, radius:  6, speed: 200, amount:   6, offset: 0, degrees:  10*6, wait: 0.2},
-	{type: true, radius:  6, speed: 200, amount:   7, offset: 0, degrees:  10*7, wait: 0.2},
-	{type: true, radius:  6, speed: 200, amount:   8, offset: 0, degrees:  10*8, wait: 0.2},
-	{type: true, radius:  6, speed: 200, amount:   9, offset: 0, degrees:  10*9, wait: 2},
+	{type: true, radius:  6, speed: 200, amount: 1, degrees:  90, wait: 0.2}, // Triple 5s
+	{type: true, radius:  6, speed: 200, amount: 2, degrees:  10*2, wait: 0.2},
+	{type: true, radius:  6, speed: 200, amount: 3, degrees:  10*3, wait: 0.2},
+	{type: true, radius:  6, speed: 200, amount: 4, degrees:  10*4.1, wait: 0.2},
+	{type: true, radius:  6, speed: 200, amount: 5, degrees:  10*5.2, wait: 0.2},
+	{type: true, radius:  6, speed: 200, amount: 6, degrees:  10*6.4, wait: 0.2},
+	{type: true, radius:  6, speed: 200, amount: 7, degrees:  10*7.6, wait: 0.2},
+	{type: true, radius:  6, speed: 200, amount: 8, degrees:  10*8.9, wait: 0.2},
+	{type: true, radius:  6, speed: 200, amount: 9, degrees:  10*10.5, wait: 2},
 
-	// 5-4-5 at different speeds
-	{type: false, radius:  6, speed: 200+20*1, amount:   5, offset: 0, degrees:  45, wait: 0},
-	{type: false, radius:  6, speed: 200+20*2, amount:   4, offset: 0, degrees:  45, wait: 0},
-	{type: false, radius:  6, speed: 200+20*3, amount:   5, offset: 0, degrees:  45, wait: 1},
+	// 5-5-5 at different speeds
+	{type: false, radius: 6, speed: [220,240,260], amount:   5, degrees:  45, wait: 0},
 
 	// Huge ring
-	{type: true, radius: 12, speed: 120,      amount: 180, offset: 0, degrees: 360, wait: 2},
+	{type: true, radius: 12, speed: 120, amount: 180, degrees: 360, wait: 2},
 
-	{type: false,   radius:  6, speed: 200+20*1, amount:   5, offset: 0, degrees:  45, wait: 0}, // Triple 5s
-	{type: false,   radius:  6, speed: 200+20*2, amount:   4, offset: 0, degrees:  45, wait: 0},
-	{type: false,   radius:  6, speed: 200+20*3, amount:   5, offset: 0, degrees:  45, wait: 2},
+	{type: false, radius: 6, speed: [220,240,260], amount:   5, degrees:  45, wait: 2},
 
-	{type: true,   radius:  6, speed: 200+20*1, amount:   5, offset: 0, degrees:  45, wait: 0}, // Triple 5s
-	{type: true,   radius:  6, speed: 200+20*2, amount:   4, offset: 0, degrees:  45, wait: 0},
-	{type: true,   radius:  6, speed: 200+20*3, amount:   5, offset: 0, degrees:  45, wait: 1},
+	{type: false, radius: 6, speed: [220,240,260], amount:   5, degrees:  45, wait: 1},
 
-	{type: false,   radius: 12, speed: 120,      amount: 180, offset: 0, degrees: 360, wait: 2}, // Ring
+	{type: false,   radius: 12, speed: 120,      amount: 180, degrees: 360, wait: 2}, // Ring
 ];
 
 
 // boss.patterns = [
-// 	{type: true, radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2}, // Alternating
-// 	{type: false, radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2},
-// 	{type: true, radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-// 	{type: false, radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2},
-// 	{type: true, radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2}, 
-// 	{type: false, radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-// 	{type: true, radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2}, // Alternating
-// 	{type: false, radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2},
-// 	{type: true, radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-// 	{type: false, radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2},
-// 	{type: true, radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2}, 
-// 	{type: false, radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-// 	{type: true, radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2}, // Alternating
-// 	{type: false, radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2},
-// 	{type: true, radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-// 	{type: false, radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2},
-// 	{type: true, radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2}, 
-// 	{type: false, radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-// 	{type: true, radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2}, // Alternating
-// 	{type: false, radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2},
-// 	{type: true, radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-// 	{type: false, radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2},
-// 	{type: true, radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2}, 
-// 	{type: false, radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-// 	{type: false,   radius: 12, speed: 120,      amount: 180, offset: 0, degrees: 360, wait: 0}, // Ring
-// 	{type: true, radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2}, // Alternating
-// 	{type: false, radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2},
-// 	{type: true, radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-// 	{type: false, radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2},
-// 	{type: true, radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2}, 
-// 	{type: false, radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-// 	{type: true, radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2}, // Alternating
-// 	{type: false, radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2},
-// 	{type: true, radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-// 	{type: false, radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2},
-// 	{type: true, radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2}, 
-// 	{type: false, radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-// 	{type: true, radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2}, // Alternating
-// 	{type: false, radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2},
-// 	{type: true, radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-// 	{type: false, radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2},
-// 	{type: true, radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2}, 
-// 	{type: false, radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-// 	{type: true, radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2}, // Alternating
-// 	{type: false, radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2},
-// 	{type: true, radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-// 	{type: false, radius:  6, speed: 200, amount:   1, offset: 0, degrees:  10*1, wait: 0.2},
-// 	{type: true, radius:  6, speed: 200, amount:   2, offset: 0, degrees:  10*2, wait: 0.2}, 
-// 	{type: false, radius:  6, speed: 200, amount:   3, offset: 0, degrees:  10*3, wait: 0.2},
-// 	{type: true,   radius: 12, speed: 120,      amount: 180, offset: 0, degrees: 360, wait: 0}, // Ring
+// 	{type: true, radius:  6, speed: 200, amount:   1, degrees:  10*1, wait: 0.2}, // Alternating
+// 	{type: false, radius:  6, speed: 200, amount:   2, degrees:  10*2, wait: 0.2},
+// 	{type: true, radius:  6, speed: 200, amount:   3, degrees:  10*3, wait: 0.2},
+// 	{type: false, radius:  6, speed: 200, amount:   1, degrees:  10*1, wait: 0.2},
+// 	{type: true, radius:  6, speed: 200, amount:   2, degrees:  10*2, wait: 0.2}, 
+// 	{type: false, radius:  6, speed: 200, amount:   3, degrees:  10*3, wait: 0.2},
+// 	{type: true, radius:  6, speed: 200, amount:   1, degrees:  10*1, wait: 0.2}, // Alternating
+// 	{type: false, radius:  6, speed: 200, amount:   2, degrees:  10*2, wait: 0.2},
+// 	{type: true, radius:  6, speed: 200, amount:   3, degrees:  10*3, wait: 0.2},
+// 	{type: false, radius:  6, speed: 200, amount:   1, degrees:  10*1, wait: 0.2},
+// 	{type: true, radius:  6, speed: 200, amount:   2, degrees:  10*2, wait: 0.2}, 
+// 	{type: false, radius:  6, speed: 200, amount:   3, degrees:  10*3, wait: 0.2},
+// 	{type: true, radius:  6, speed: 200, amount:   1, degrees:  10*1, wait: 0.2}, // Alternating
+// 	{type: false, radius:  6, speed: 200, amount:   2, degrees:  10*2, wait: 0.2},
+// 	{type: true, radius:  6, speed: 200, amount:   3, degrees:  10*3, wait: 0.2},
+// 	{type: false, radius:  6, speed: 200, amount:   1, degrees:  10*1, wait: 0.2},
+// 	{type: true, radius:  6, speed: 200, amount:   2, degrees:  10*2, wait: 0.2}, 
+// 	{type: false, radius:  6, speed: 200, amount:   3, degrees:  10*3, wait: 0.2},
+// 	{type: true, radius:  6, speed: 200, amount:   1, degrees:  10*1, wait: 0.2}, // Alternating
+// 	{type: false, radius:  6, speed: 200, amount:   2, degrees:  10*2, wait: 0.2},
+// 	{type: true, radius:  6, speed: 200, amount:   3, degrees:  10*3, wait: 0.2},
+// 	{type: false, radius:  6, speed: 200, amount:   1, degrees:  10*1, wait: 0.2},
+// 	{type: true, radius:  6, speed: 200, amount:   2, degrees:  10*2, wait: 0.2}, 
+// 	{type: false, radius:  6, speed: 200, amount:   3, degrees:  10*3, wait: 0.2},
+// 	{type: false,   radius: 12, speed: 120,      amount: 180, degrees: 360, wait: 0}, // Ring
+// 	{type: true, radius:  6, speed: 200, amount:   1, degrees:  10*1, wait: 0.2}, // Alternating
+// 	{type: false, radius:  6, speed: 200, amount:   2, degrees:  10*2, wait: 0.2},
+// 	{type: true, radius:  6, speed: 200, amount:   3, degrees:  10*3, wait: 0.2},
+// 	{type: false, radius:  6, speed: 200, amount:   1, degrees:  10*1, wait: 0.2},
+// 	{type: true, radius:  6, speed: 200, amount:   2, degrees:  10*2, wait: 0.2}, 
+// 	{type: false, radius:  6, speed: 200, amount:   3, degrees:  10*3, wait: 0.2},
+// 	{type: true, radius:  6, speed: 200, amount:   1, degrees:  10*1, wait: 0.2}, // Alternating
+// 	{type: false, radius:  6, speed: 200, amount:   2, degrees:  10*2, wait: 0.2},
+// 	{type: true, radius:  6, speed: 200, amount:   3, degrees:  10*3, wait: 0.2},
+// 	{type: false, radius:  6, speed: 200, amount:   1, degrees:  10*1, wait: 0.2},
+// 	{type: true, radius:  6, speed: 200, amount:   2, degrees:  10*2, wait: 0.2}, 
+// 	{type: false, radius:  6, speed: 200, amount:   3, degrees:  10*3, wait: 0.2},
+// 	{type: true, radius:  6, speed: 200, amount:   1, degrees:  10*1, wait: 0.2}, // Alternating
+// 	{type: false, radius:  6, speed: 200, amount:   2, degrees:  10*2, wait: 0.2},
+// 	{type: true, radius:  6, speed: 200, amount:   3, degrees:  10*3, wait: 0.2},
+// 	{type: false, radius:  6, speed: 200, amount:   1, degrees:  10*1, wait: 0.2},
+// 	{type: true, radius:  6, speed: 200, amount:   2, degrees:  10*2, wait: 0.2}, 
+// 	{type: false, radius:  6, speed: 200, amount:   3, degrees:  10*3, wait: 0.2},
+// 	{type: true, radius:  6, speed: 200, amount:   1, degrees:  10*1, wait: 0.2}, // Alternating
+// 	{type: false, radius:  6, speed: 200, amount:   2, degrees:  10*2, wait: 0.2},
+// 	{type: true, radius:  6, speed: 200, amount:   3, degrees:  10*3, wait: 0.2},
+// 	{type: false, radius:  6, speed: 200, amount:   1, degrees:  10*1, wait: 0.2},
+// 	{type: true, radius:  6, speed: 200, amount:   2, degrees:  10*2, wait: 0.2}, 
+// 	{type: false, radius:  6, speed: 200, amount:   3, degrees:  10*3, wait: 0.2},
+// 	{type: true,   radius: 12, speed: 120,      amount: 180, degrees: 360, wait: 0}, // Ring
 // ];
 
 // boss.patterns = [
@@ -220,19 +214,19 @@ let zigzag = [
 ];
 
 let fireballs = [
-	{type: true, radius: [15, 11, 8, 6, 5], speed: [130, 120, 110, 100, 90], amount: 1, offset: 0, degrees: 0, x: 0, y: -1, angle: 90, wait: 0},
-	{type: true, radius: [15, 11, 8, 6, 5], speed: [130, 120, 110, 100, 90], amount: 1, offset: 0, degrees: 0, x: 0.3, y: -1, angle: 90, wait: 0},
-	{type: true, radius: [15, 11, 8, 6, 5], speed: [130, 120, 110, 100, 90], amount: 1, offset: 0, degrees: 0, x: -0.3, y: -1, angle: 90, wait: 0},
-	{type: true, radius: [15, 11, 8, 6, 5], speed: [130, 120, 110, 100, 90], amount: 1, offset: 0, degrees: 0, x: 0.6, y: -1, angle: 90, wait: 0},
-	{type: true, radius: [15, 11, 8, 6, 5], speed: [130, 120, 110, 100, 90], amount: 1, offset: 0, degrees: 0, x: -0.6, y: -1, angle: 90, wait: 0},
-	{type: true, radius: [15, 11, 8, 6, 5], speed: [130, 120, 110, 100, 90], amount: 1, offset: 0, degrees: 0, x: 0.9, y: -1, angle: 90, wait: 0},
-	{type: true, radius: [15, 11, 8, 6, 5], speed: [130, 120, 110, 100, 90], amount: 1, offset: 0, degrees: 0, x: -0.9, y: -1, angle: 90, wait: 1.25},
-	{type: true, radius: [15, 11, 8, 6, 5], speed: [130, 120, 110, 100, 90], amount: 1, offset: 0, degrees: 0, x: 0.15, y: -1, angle: 90, wait: 0},
-	{type: true, radius: [15, 11, 8, 6, 5], speed: [130, 120, 110, 100, 90], amount: 1, offset: 0, degrees: 0, x: -0.15, y: -1, angle: 90, wait: 0},
-	{type: true, radius: [15, 11, 8, 6, 5], speed: [130, 120, 110, 100, 90], amount: 1, offset: 0, degrees: 0, x: 0.45, y: -1, angle: 90, wait: 0},
-	{type: true, radius: [15, 11, 8, 6, 5], speed: [130, 120, 110, 100, 90], amount: 1, offset: 0, degrees: 0, x: -0.45, y: -1, angle: 90, wait: 0},
-	{type: true, radius: [15, 11, 8, 6, 5], speed: [130, 120, 110, 100, 90], amount: 1, offset: 0, degrees: 0, x: 0.75, y: -1, angle: 90, wait: 0},
-	{type: true, radius: [15, 11, 8, 6, 5], speed: [130, 120, 110, 100, 90], amount: 1, offset: 0, degrees: 0, x: -0.75, y: -1, angle: 90, wait: 1.25},
+	{type: true, radius: [14, 11, 8, 6, 5], speed: [130, 120, 110, 100, 90], amount: 1, offset: 0, degrees: 0, x: 0, y: -1, angle: 90, wait: 0},
+	{type: true, radius: [14, 11, 8, 6, 5], speed: [130, 120, 110, 100, 90], amount: 1, offset: 0, degrees: 0, x: 0.3, y: -1, angle: 90, wait: 0},
+	{type: true, radius: [14, 11, 8, 6, 5], speed: [130, 120, 110, 100, 90], amount: 1, offset: 0, degrees: 0, x: -0.3, y: -1, angle: 90, wait: 0},
+	{type: true, radius: [14, 11, 8, 6, 5], speed: [130, 120, 110, 100, 90], amount: 1, offset: 0, degrees: 0, x: 0.6, y: -1, angle: 90, wait: 0},
+	{type: true, radius: [14, 11, 8, 6, 5], speed: [130, 120, 110, 100, 90], amount: 1, offset: 0, degrees: 0, x: -0.6, y: -1, angle: 90, wait: 0},
+	{type: true, radius: [14, 11, 8, 6, 5], speed: [130, 120, 110, 100, 90], amount: 1, offset: 0, degrees: 0, x: 0.9, y: -1, angle: 90, wait: 0},
+	{type: true, radius: [14, 11, 8, 6, 5], speed: [130, 120, 110, 100, 90], amount: 1, offset: 0, degrees: 0, x: -0.9, y: -1, angle: 90, wait: 1.25},
+	{type: true, radius: [14, 11, 8, 6, 5], speed: [130, 120, 110, 100, 90], amount: 1, offset: 0, degrees: 0, x: 0.15, y: -1, angle: 90, wait: 0},
+	{type: true, radius: [14, 11, 8, 6, 5], speed: [130, 120, 110, 100, 90], amount: 1, offset: 0, degrees: 0, x: -0.15, y: -1, angle: 90, wait: 0},
+	{type: true, radius: [14, 11, 8, 6, 5], speed: [130, 120, 110, 100, 90], amount: 1, offset: 0, degrees: 0, x: 0.45, y: -1, angle: 90, wait: 0},
+	{type: true, radius: [14, 11, 8, 6, 5], speed: [130, 120, 110, 100, 90], amount: 1, offset: 0, degrees: 0, x: -0.45, y: -1, angle: 90, wait: 0},
+	{type: true, radius: [14, 11, 8, 6, 5], speed: [130, 120, 110, 100, 90], amount: 1, offset: 0, degrees: 0, x: 0.75, y: -1, angle: 90, wait: 0},
+	{type: true, radius: [14, 11, 8, 6, 5], speed: [130, 120, 110, 100, 90], amount: 1, offset: 0, degrees: 0, x: -0.75, y: -1, angle: 90, wait: 1.25},
 ];
 
 
@@ -356,6 +350,34 @@ let lumie2 = [
 	]
 ];
 
+let random = [
+	{type: true, radius: 8, speed: 90, amount: 36, offset: 0, degrees: 350, x: -0.022, y: -0.462, angle:90, wait: 0.2},
+	{type: false, radius: 6, speed: 110, amount: 36, offset: 0, degrees: 350, x: -0.042, y: -0.575, angle:90, wait: 0.2},
+	{type: true, radius: 4, speed: 130, amount: 36, offset: 0, degrees: 350, x: -0.158, y: -0.582, angle:90, wait: 0.2},
+	{type: false, radius: 8, speed: 90, amount: 36, offset: 0, degrees: 350, x: -0.008, y: -0.451, angle:90, wait: 0.2},
+	{type: true, radius: 6, speed: 110, amount: 36, offset: 0, degrees: 350, x: 0.132, y: -0.423, angle:90, wait: 0.2},
+	{type: false, radius: 4, speed: 130, amount: 36, offset: 0, degrees: 350, x: 0.150, y: -0.463, angle:90, wait: 0.2},
+	{type: true, radius: 8, speed: 90, amount: 36, offset: 0, degrees: 350, x: -0.078, y: -0.416, angle:90, wait: 0.2},
+	{type: false, radius: 6, speed: 110, amount: 36, offset: 0, degrees: 350, x: 0.138, y: -0.499, angle:90, wait: 0.2},
+	{type: true, radius: 4, speed: 130, amount: 36, offset: 0, degrees: 350, x: 0.117, y: -0.411, angle:90, wait: 0.2},
+	{type: false, radius: 8, speed: 90, amount: 36, offset: 0, degrees: 350, x: -0.043, y: -0.573, angle:90, wait: 0.2},
+	{type: true, radius: 6, speed: 110, amount: 36, offset: 0, degrees: 350, x: -0.105, y: -0.594, angle:90, wait: 0.2},
+	{type: false, radius: 4, speed: 130, amount: 36, offset: 0, degrees: 350, x: 0.006, y: -0.481, angle:90, wait: 0.2},
+
+	{type: true, radius: 8, speed: 90, amount: 36, offset: 0, degrees: 350, x: -0.194, y: -0.463, angle:90, wait: 0.2},
+	{type: false, radius: 6, speed: 110, amount: 36, offset: 0, degrees: 350, x: 0.160, y: -0.419, angle:90, wait: 0.2},
+	{type: true, radius: 4, speed: 130, amount: 36, offset: 0, degrees: 350, x: -0.198, y: -0.459, angle:90, wait: 0.2},
+	{type: false, radius: 8, speed: 90, amount: 36, offset: 0, degrees: 350, x: 0.042, y: -0.588, angle:90, wait: 0.2},
+	{type: true, radius: 6, speed: 110, amount: 36, offset: 0, degrees: 350, x: 0.083, y: -0.571, angle:90, wait: 0.2},
+	{type: false, radius: 4, speed: 130, amount: 36, offset: 0, degrees: 350, x: -0.195, y: -0.483, angle:90, wait: 0.2},
+	{type: true, radius: 8, speed: 90, amount: 36, offset: 0, degrees: 350, x: 0.090, y: -0.577, angle:90, wait: 0.2},
+	{type: false, radius: 6, speed: 110, amount: 36, offset: 0, degrees: 350, x: 0.182, y: -0.500, angle:90, wait: 0.2},
+	{type: true, radius: 4, speed: 130, amount: 36, offset: 0, degrees: 350, x: 0.030, y: -0.468, angle:90, wait: 0.2},
+	{type: false, radius: 8, speed: 90, amount: 36, offset: 0, degrees: 350, x: -0.056, y: -0.483, angle:90, wait: 0.2},
+	{type: true, radius: 6, speed: 110, amount: 36, offset: 0, degrees: 350, x: 0.157, y: -0.519, angle:90, wait: 0.2},
+	{type: false, radius: 4, speed: 130, amount: 36, offset: 0, degrees: 350, x: 0.118, y: -0.479, angle:90, wait: 0.2},
+];
+
 
 
 /* Completed */
@@ -399,6 +421,7 @@ export {
 	golen,
 	lumie,
 	lumie2,
+	random,
 	arrow,
 	spiral,
 	laser,
