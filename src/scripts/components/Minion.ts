@@ -3,14 +3,12 @@ import { Enemy } from "./Enemy";
 
 
 export class Minion extends Enemy {
-	public start: Phaser.Math.Vector2;
 	public goal: Phaser.Math.Vector2;
 
 	constructor(scene: GameScene, x: number, y: number, type: string) {
 		let dayTime = (type == "small_angel");
 		super(scene, x, y, dayTime);
 
-		this.start = new Phaser.Math.Vector2(this.x, this.y);
 		this.goal = new Phaser.Math.Vector2(this.x, this.y);
 
 		this.y = -100;

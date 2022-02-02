@@ -69,4 +69,8 @@ export class Boss extends Enemy {
 			// this.light.color = Phaser.Display.Color.ValueToColor(interpolateColor(0xff5500, 0xffff99, this.healthPerc));
 		}
 	}
+
+	center() {
+		this.goal.copy(this.start);
+	}
 }

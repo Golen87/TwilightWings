@@ -16,6 +16,7 @@ export class Enemy extends Character {
 	protected graphics: Phaser.GameObjects.Graphics;
 
 	// Movement
+	public start: Phaser.Math.Vector2;
 	public velocity: Phaser.Math.Vector2;
 	protected border: { [key: string]: number };
 
@@ -50,6 +51,7 @@ export class Enemy extends Character {
 		this.add(this.graphics);
 
 		// Movement
+		this.start = new Phaser.Math.Vector2(this.x, this.y);
 		this.velocity = new Phaser.Math.Vector2(0, 0);
 		this.facing.set(0, 1);
 		this.border = {

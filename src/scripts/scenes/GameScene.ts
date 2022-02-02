@@ -77,6 +77,10 @@ export class GameScene extends BaseScene {
 	public levelIndex: number;
 	public enemiesInQueue: boolean;
 
+	// Focus
+	public shiftKey: any;
+	public focusValue: number;
+
 	// Score
 	public score: number;
 	public highscore: number;
@@ -203,16 +207,8 @@ export class GameScene extends BaseScene {
 		// }, this);
 
 		this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE).on('down', this.onDayToggle, this);
-		this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ZERO).on('down', this.screenWipe, this);
-		this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE).on('down', this.spawnBulletPattern, this);
-		this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TWO).on('down', this.spawnBulletPattern, this);
-		this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.THREE).on('down', this.spawnBulletPattern, this);
-		this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FOUR).on('down', this.spawnBulletPattern, this);
-		this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FIVE).on('down', this.spawnBulletPattern, this);
-		this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SIX).on('down', this.spawnBulletPattern, this);
-		this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SEVEN).on('down', this.spawnBulletPattern, this);
-		this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.EIGHT).on('down', this.spawnBulletPattern, this);
-		this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.NINE).on('down', this.spawnBulletPattern, this);
+		this.shiftKey = this.input.keyboard.addKey('Shift');
+		this.focusValue = 1;
 
 
 		// Sounds
@@ -240,6 +236,11 @@ export class GameScene extends BaseScene {
 	}
 
 	update(time: number, delta: number) {
+
+		let focusTarget = this.shiftKey.isDown ? 0.5 : 1.0;
+		this.focusValue += 10*(focusTarget - this.focusValue) * delta/1000;
+		this.musicDay.rate = this.focusValue;
+		this.musicNight.rate = this.focusValue;
 
 		// time = this.musicDay.seek * 1000;
 		delta = (this.musicDay.seek - prevSeek) * 1000;
@@ -313,11 +314,9 @@ export class GameScene extends BaseScene {
 								this.shake(1000, 12, 0);
 
 								boss.on("phase", () => {
-									console.log("PHASE");
 									this.screenWipe();
-									this.flash(3000, 0xFFFFFF, 1.0);
-									this.shake(1000, 12, 0);
 									this.sounds.phaseComplete.play();
+									boss.center();
 
 								});
 								boss.on("death", this.onBossDefeated.bind(this));
@@ -559,7 +558,7 @@ export class GameScene extends BaseScene {
 	onPlayerDamage() {
 		if (this.player.alive) {
 			this.sounds.playerDamage.play();
-			this.flash(1000, 0xFF0000, 0.5);
+			this.flash(2000, 0xFF0000, 0.5);
 			this.shake(1000, 12, 0);
 			this.spawnBulletArc(false, this.player.dayTime, this.player.pos, this.player.dir, 16, 300, 8, 0);
 			this.spawnBulletArc(false, this.player.dayTime, this.player.pos, this.player.dir, 16, 150, 6, 0);
@@ -585,9 +584,9 @@ export class GameScene extends BaseScene {
 
 	onBossDefeated() {
 		// this.introPlaying = true;
-		this.shake(1500, 8, 4);
 		// this.sounds.enemyDeath.play();
 		this.sounds.bossSpawn.play();
+		this.screenWipe();
 
 		// this.addEvent(1500+1000, () => {
 			// this.outroPlaying = true;
@@ -808,6 +807,8 @@ export class GameScene extends BaseScene {
 	}
 
 	screenWipe() {
+		this.flash(3000, 0xFFFFFF, 1.0);
+		this.shake(1000, 12, 0);
 		for (let i = 0; i < ENEMY_BULLET_COUNT; i++) {
 			this.enemyBullets[i].kill();
 		}
