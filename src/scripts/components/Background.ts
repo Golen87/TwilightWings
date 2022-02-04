@@ -103,7 +103,7 @@ export class Background extends Phaser.GameObjects.Container {
 
 
 	update(time: number, delta: number, dayTimeSmooth: number) {
-		// this.face.alpha -= delta/1000;
+		// this.face.alpha -= delta;
 		this.cloudCont.setAlpha(dayTimeSmooth);
 
 		// Change alpha depending on day time
@@ -119,12 +119,12 @@ export class Background extends Phaser.GameObjects.Container {
 		this.moon.angle = time/200;
 
 		// TileSprite
-		this.stars.tilePositionX = 2 * time/1000;
-		this.stars.tilePositionY = 15 * time/1000;
+		this.stars.tilePositionX = 2 * time;
+		this.stars.tilePositionY = 15 * time;
 
 		for (let cloud of this.clouds) {
-			cloud.tilePositionX = cloud.getData("dx") * time/1000;
-			cloud.tilePositionY = cloud.getData("dy") * time/1000;
+			cloud.tilePositionX = cloud.getData("dx") * time;
+			cloud.tilePositionY = cloud.getData("dy") * time;
 		}
 	}
 

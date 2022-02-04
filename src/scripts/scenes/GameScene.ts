@@ -30,10 +30,6 @@ const ENEMY_BULLET_BACK_LAYER = 8;
 const UI_LAYER = 9;
 const FLASH_LAYER = 10;
 
-let prevSeek = 0;
-let myTime = 0;
-let prevTime = 0;
-
 
 export class GameScene extends BaseScene {
 	public isRunning: boolean;
@@ -41,7 +37,8 @@ export class GameScene extends BaseScene {
 	public dayTimeLinear: number;
 	public dayTimeSmooth: number;
 
-	// public level: number;
+	public prevTime: number;
+	public prevBarTime: number;
 	private currentTimeout: ReturnType<typeof setTimeout>;
 
 	// Background
@@ -68,7 +65,6 @@ export class GameScene extends BaseScene {
 
 	// public sounds: Map<string, Phaser.Sound.BaseSound>;
 	public sounds: {[key: string]: Phaser.Sound.WebAudioSound};
-	public rapidSounds: {[key: string]: any};
 	public musicDay: Music;
 	public musicNight: Music;
 
@@ -100,6 +96,8 @@ export class GameScene extends BaseScene {
 
 
 		// Vars
+		this.prevTime = 0;
+		this.prevBarTime = 0;
 		this.introPlaying = false;
 		this.outroPlaying = false;
 		this.dayTime = true;
@@ -207,6 +205,12 @@ export class GameScene extends BaseScene {
 		// }, this);
 
 		this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE).on('down', this.onDayToggle, this);
+		this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q).on('down', () => {
+			this.enemies.forEach((enemy: Enemy, index: number) => {
+				enemy.destroy();
+			});
+			this.screenWipe();
+		}, this);
 		this.shiftKey = this.input.keyboard.addKey('Shift');
 		this.focusValue = 1;
 
@@ -222,7 +226,7 @@ export class GameScene extends BaseScene {
 		// this.showIntro();
 
 
-		this.levelTimer = 1;
+		this.levelTimer = 0;
 		this.levelIndex = 0;
 		this.enemiesInQueue = false;
 
@@ -235,28 +239,28 @@ export class GameScene extends BaseScene {
 		this.loadHighscore();
 	}
 
-	update(time: number, delta: number) {
+	update(timeMs: number, deltaMs: number) {
 
-		let focusTarget = this.shiftKey.isDown ? 0.5 : 1.0;
-		this.focusValue += 10*(focusTarget - this.focusValue) * delta/1000;
+		let focusTarget = this.shiftKey.isDown ? 0.25 : 1.0;
+		this.focusValue += 6*(focusTarget - this.focusValue) * deltaMs/1000;
 		this.musicDay.rate = this.focusValue;
 		this.musicNight.rate = this.focusValue;
 
-		// time = this.musicDay.seek * 1000;
-		delta = (this.musicDay.seek - prevSeek) * 1000;
-		if (this.musicDay.seek < prevSeek) {
-			delta = 1/60;
-		}
-		myTime += delta;
-		time = myTime;
-		prevSeek = this.musicDay.seek;
 
-		const swapDur = 2 * delta/1000;
+		let barTime = this.musicDay.barTime;
+		let time = this.musicDay.totalTime;
+		let delta = Math.max(0, (time - this.prevTime));
+		this.prevTime = time;
+		let barDelta = Math.max(0, (barTime - this.prevBarTime));
+		this.prevBarTime = barTime;
+
+		const swapDur = 2 * delta;
 		this.dayTimeLinear += Phaser.Math.Clamp( (this.dayTime ? 1 : 0) - this.dayTimeLinear, -swapDur, swapDur );
 		this.dayTimeSmooth = Phaser.Math.Easing.Back.InOut(this.dayTimeLinear, 0.8);
 
 		this.musicDay.volume   = 0.25 * (0.1 + 0.9 * this.dayTimeSmooth);
 		this.musicNight.volume = 0.25 * (1.0 - 0.9 * this.dayTimeSmooth);
+
 
 
 		this.background.update(time, delta, this.dayTimeSmooth);
@@ -270,9 +274,9 @@ export class GameScene extends BaseScene {
 
 		if (!this.anyEnemies && !this.enemiesInQueue) {
 			if (levelData.length > this.levelIndex) {
-				this.levelTimer -= delta/1000;
+				this.levelTimer -= delta;
 
-				if (this.levelTimer <= 0) {
+				if (this.levelTimer <= 0 && barTime >= 0) {
 
 					this.ui.setWorld(1+Math.floor(this.levelIndex/5));
 					this.ui.setStage(1+(this.levelIndex%5));
@@ -291,7 +295,7 @@ export class GameScene extends BaseScene {
 							this.enemiesInQueue = false;
 
 							if (e.type == "boss") {
-								let boss = new Boss( this, x, y, true );
+								let boss = new Boss( this, x, y, true, Math.round(this.musicDay.barTime) );
 								boss.setDepth(BOSS_LAYER);
 
 								if (e.phases) {
@@ -331,7 +335,7 @@ export class GameScene extends BaseScene {
 									this.ui.clearBoss();
 								});
 							} else {
-								let minion = new Minion( this, x, y, e.type );
+								let minion = new Minion( this, x, y, e.type, Math.round(this.musicDay.barTime) );
 								minion.setDepth(ENEMY_LAYER);
 								minion.setPatterns(e.pattern);
 								minion.setHealth(e.health);
@@ -352,7 +356,7 @@ export class GameScene extends BaseScene {
 
 								// this.sounds.necoarc.play();
 							}
-						}, e.spawnDelay*1000);
+						}, ((Math.round(barTime) - barTime + e.spawnDelay) * this.musicDay.speed) * 1000);
 
 						if (e.type == "boss") {
 							setTimeout(() => {
@@ -371,7 +375,7 @@ export class GameScene extends BaseScene {
 			if (!enemy.scene) {
 				return this.enemies.splice(index, 1);
 			}
-			enemy.update(time, delta);
+			enemy.update(time, delta, barTime, barDelta);
 		});
 
 
@@ -475,7 +479,7 @@ export class GameScene extends BaseScene {
 		// Camera shake
 
 		if (this.cameraShakeValue > 0) {
-			this.cameras.main.x = this.cameraShakeValue*Math.sin(100 * time/1000);
+			this.cameras.main.x = this.cameraShakeValue*Math.sin(100 * time);
 		}
 		else {
 			this.cameras.main.x = 0;
@@ -497,35 +501,6 @@ export class GameScene extends BaseScene {
 			this.sounds[audio.key] = this.sound.add(audio.key, { volume: audio.volume, rate: audio.rate || 1 }) as Phaser.Sound.WebAudioSound;
 		}
 
-		this.rapidSounds = {
-			playerShot: {
-				sounds: [],
-				size: 10,
-				index: 0,
-			},
-			enemyShotDay: {
-				sounds: [],
-				size: 20,
-				index: 0,
-			},
-			enemyShotNight: {
-				sounds: [],
-				size: 20,
-				index: 0,
-			},
-		};
-
-		for (let key in this.rapidSounds) {
-			for (let i = 0; i < this.rapidSounds[key].size; i++) {
-				for (let audio of audios) {
-					if (key == audio.key) {
-						let sound = this.sound.add(key, { volume: audio.volume }) as Phaser.Sound.WebAudioSound;
-						this.rapidSounds[key].sounds.push(sound);
-					}
-				}
-			}
-		}
-
 
 		// Music
 
@@ -533,25 +508,15 @@ export class GameScene extends BaseScene {
 			this.musicDay = new Music(this, "music_day", { volume: 0.25 });
 			this.musicNight = new Music(this, "music_night", { volume: 0.25 });
 
-			this.musicDay.on('bar', this.onBar, this);
-			this.musicDay.on('beat', this.onBeat, this);
+			this.musicDay.on('bar', () => {
+				// this.sounds.score.play();
+				// this.sounds.score.seek = 0.05;
+				// this.spawnBulletArc("enemy-day", new Phaser.Math.Vector2(this.CX, this.CY), 0, 6, 80, 60, 0);
+			}, this);
+			this.musicDay.on('loop', () => {
+				this.musicNight.seek = this.musicDay.seek;
+			}, this);
 		}
-	}
-
-	playRapid(key: string) {
-		let rs = this.rapidSounds[key];
-
-		rs.sounds[rs.index].play();
-		console.log(rs.index);
-		rs.index = (rs.index + 1) % rs.size;
-	}
-
-	onBar(bar) {
-		// this.sounds.graze.play();
-		// this.spawnBulletArc("enemy-day", new Phaser.Math.Vector2(this.CX, this.CY), 0, 6, 80, 60, 0);
-	}
-
-	onBeat(time) {
 	}
 
 

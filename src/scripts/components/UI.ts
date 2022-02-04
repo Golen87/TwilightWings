@@ -251,11 +251,11 @@ export class UI extends Phaser.GameObjects.Container {
 
 
 		// Game over
-		this.endScreen.alpha += Phaser.Math.Clamp((this.endScreen.visible ? 1 : 0) - this.endScreen.alpha, -delta/1000, delta/1000);
-		this.playAgain.setScale(1.0 + 0.02*Math.sin(5*time/1000));
+		this.endScreen.alpha += Phaser.Math.Clamp((this.endScreen.visible ? 1 : 0) - this.endScreen.alpha, -delta, delta);
+		this.playAgain.setScale(1.0 + 0.02*Math.sin(5*time));
 
 		// Score
-		this.scoreBounce += 10 * (0 - this.scoreBounce) * delta/1000;
+		this.scoreBounce += 10 * (0 - this.scoreBounce) * delta;
 		this.score.setScale(1 + 0.15 * this.scoreBounce, 1 - 0.05 * this.scoreBounce);
 		this.highscore.setScale(1 + 0.15 * this.scoreBounce, 1 - 0.05 * this.scoreBounce);
 	}

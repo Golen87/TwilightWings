@@ -51,8 +51,8 @@ export class Bullet extends Phaser.GameObjects.Container {
 
 	update(time: number, delta: number) {
 		// Movement
-		this.x += this.velocity.x * delta/1000;
-		this.y += this.velocity.y * delta/1000;
+		this.x += this.velocity.x * delta;
+		this.y += this.velocity.y * delta;
 
 		if (this.movementFunction) {
 			this.movementFunction(time);

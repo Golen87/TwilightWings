@@ -5,9 +5,9 @@ import { Enemy } from "./Enemy";
 export class Minion extends Enemy {
 	public goal: Phaser.Math.Vector2;
 
-	constructor(scene: GameScene, x: number, y: number, type: string) {
+	constructor(scene: GameScene, x: number, y: number, type: string, spawnBar: number) {
 		let dayTime = (type == "small_angel");
-		super(scene, x, y, dayTime);
+		super(scene, x, y, dayTime, spawnBar);
 
 		this.goal = new Phaser.Math.Vector2(this.x, this.y);
 
@@ -18,15 +18,15 @@ export class Minion extends Enemy {
 		this.bodyAreas = [ new Phaser.Geom.Circle( 0, 0, 30) ];
 	}
 
-	update(time: number, delta: number) {
-		super.update(time, delta);
+	update(time: number, delta: number, barTime: number, barDelta: number) {
+		super.update(time, delta, barTime, barDelta);
 
 		if (this.alive) {
-			this.goal.x = this.start.x + 100 * Math.sin(time/1000);
-			this.goal.y = this.start.y + 50 * Math.sin(2*time/1000);
+			this.goal.x = this.start.x + 100 * Math.sin(time+this.spawnBar);
+			this.goal.y = this.start.y + 50 * Math.sin(2*time+this.spawnBar);
 
-			this.x += (this.goal.x - this.x) * delta/1000;
-			this.y += (this.goal.y - this.y) * delta/1000;
+			this.x += (this.goal.x - this.x) * delta;
+			this.y += (this.goal.y - this.y) * delta;
 		}
 	}
 }

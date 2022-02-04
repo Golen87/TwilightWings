@@ -21,6 +21,7 @@ export class Enemy extends Character {
 	protected border: { [key: string]: number };
 
 	// Shooting
+	protected spawnBar: number;
 	protected phases: any[];
 	protected phaseIndex: number;
 	protected patterns: any[];
@@ -30,7 +31,7 @@ export class Enemy extends Character {
 	protected bodyAreas: Phaser.Geom.Circle[];
 
 
-	constructor(scene: GameScene, x: number, y: number, dayTime: boolean) {
+	constructor(scene: GameScene, x: number, y: number, dayTime: boolean, spawnBar: number) {
 		super(scene, x, y, dayTime);
 
 		// Create player sprite
@@ -61,6 +62,7 @@ export class Enemy extends Character {
 			bottom: scene.H - size/2,
 		};
 
+		this.spawnBar = spawnBar;
 		this.phases = [];
 		this.phaseIndex = 0;
 		this.patterns = [];
@@ -72,7 +74,7 @@ export class Enemy extends Character {
 		this.bodyAreas = [ new Phaser.Geom.Circle( 0, 0, 80) ];
 	}
 
-	update(time: number, delta: number) {
+	update(time: number, delta: number, barTime: number, barDelta: number) {
 		super.update(time, delta);
 
 		if (this.alive) {
@@ -94,18 +96,29 @@ export class Enemy extends Character {
 					// pattern.timer
 					// pattern.loop
 
-					pattern.timer -= delta/1000;
+					// pattern.timer -= barDelta;
 					let playLoud = false;
 					let noise = 0;
-					let limit = 10;
-					while (pattern.loop.length > 0 && pattern.timer < 0 && limit-- > 0) {
+					let limit = 20;
+					while (pattern.loop.length > 0 && barTime+barDelta > this.spawnBar + pattern.timer && limit-- > 0) {
 
-						pattern.timer = pattern.loop[pattern.index].wait;
+						pattern.timer += pattern.loop[pattern.index].wait;
+						console.log('shoot', barTime.toFixed(2));
+						// pattern.timer = barTime + 4*pattern.loop[pattern.index].wait;
+						// pattern.timer = Math.round(pattern.timer*4)/4;
 
 						let p = pattern.loop[pattern.index];
 						let pos = this.pos;
+						if(p.varx === undefined) {
+							p.varx = 0;
+						}
+						if(p.vary === undefined) {
+							p.vary = 0;
+						}
+						pos.x += ((1-2*Math.random())*p.varx*0.24*this.scene.W);
+						pos.y += ((1-2*Math.random())*p.vary*0.5*this.scene.H);
 						if (p.x !== undefined && p.y !== undefined) {
-							pos.set(this.scene.CX + p.x * 0.24*this.scene.W, this.scene.CY + p.y * 0.5*this.scene.H);
+							pos.set(this.scene.CX + (p.x+(1-2*Math.random())*p.varx) * 0.24*this.scene.W, this.scene.CY + (p.y+(1-2*Math.random())*p.vary) * 0.5*this.scene.H);
 						}
 						let dir = this.dir;
 						if (p.angle !== undefined) {
@@ -113,7 +126,9 @@ export class Enemy extends Character {
 						}
 						let dayTime = (p.type == this.dayTime);
 
-						this.scene.spawnBulletArc(true, dayTime, pos, dir, p.radius, p.speed, p.amount, p.offset, p.degrees);
+						if (p.amount) {
+							this.scene.spawnBulletArc(true, dayTime, pos, dir, p.radius, p.speed, p.amount, p.offset, p.degrees);
+						}
 
 
 						// Noise calculation
@@ -140,7 +155,7 @@ export class Enemy extends Character {
 					if (noise) {
 						let k = Math.log10(noise)/4.5;
 						let rate = 1.1 - 1*k;
-						let volume = 0.0 + 0.7*k
+						let volume = 0.04 + 0.7*k
 						volume *= (playLoud ? 1 : 0.4);
 
 						if (this.scene.dayTime !== playLoud) {
@@ -168,6 +183,7 @@ export class Enemy extends Character {
 				if (threshold > 0 && this.health < threshold) {
 					this.phaseIndex++;
 					this.stunnedTimer = STUNNED_DURATION;
+					this.spawnBar = 4 + Math.ceil(barTime);
 					this.setPatterns(this.phases[this.phaseIndex]);
 					this.emit("phase");
 				}
@@ -200,28 +216,28 @@ export class Enemy extends Character {
 
 
 			if (this.stunnedTimer > 0) {
-				this.stunnedTimer -= delta/1000;
+				this.stunnedTimer -= delta;
 				let stunFac = 1 - this.stunnedTimer / STUNNED_DURATION;
 				let x = Math.max(0, 1-Math.abs(1-2*stunFac));
 				let stunEase = Phaser.Math.Easing.Sine.Out(x);
 
-				this.sprite.setOrigin(0.5 + stunEase * 0.1 * Math.sin(50*time/1000), 0.5);
+				this.sprite.setOrigin(0.5 + stunEase * 0.1 * Math.sin(50*time), 0.5);
 			}
 		}
 
 		// Death animation
 		else {
-			this.deathTimer += delta/1000;
+			this.deathTimer += delta;
 			let deathFac = this.deathTimer / this.deathDuration; // 1 = dead
 			let deathEase = Phaser.Math.Easing.Quintic.In(deathFac);
 			let x = Math.max(0, 1-Math.abs(1-2.5*deathFac));
 			let deathEase2 = Phaser.Math.Easing.Sine.Out(x);
 
 			this.setScale(1 - deathEase);
-			this.sprite.setOrigin(0.5 + deathEase2 * 0.15 * Math.sin(100*time/1000), 0.5);
+			this.sprite.setOrigin(0.5 + deathEase2 * 0.15 * Math.sin(100*time), 0.5);
 			// this.setAlpha(1 - deathEase);
 
-			let blink = (Math.sin(50*time/1000) > 0);
+			let blink = (Math.sin(50*time) > 0);
 			this.sprite.setTint(blink ? 0xFFBBBB : 0xFFFFFF);
 
 			this.light.setAlpha(1-Phaser.Math.Easing.Quintic.Out(deathFac));
@@ -285,11 +301,11 @@ export class Enemy extends Character {
 
 			this.patterns.push({
 				index: 0,
-				timer: loop[0].wait,
+				timer: 4,//loop[0].wait,
 				loop
 			});
 		}
 
-		this.patterns[0].timer = 1.5;
+		// this.patterns[0].timer = 0;
 	}
 }

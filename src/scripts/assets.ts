@@ -237,7 +237,6 @@ import bossDamage from "../assets/sounds/BossDamage.ogg";
 import complete from "../assets/sounds/Complete.ogg";
 import score from "../assets/sounds/Score.ogg";
 
-
 import music_day from "../assets/music/Game_Day.ogg";
 import music_night from "../assets/music/Game_Night.ogg";
 import music_title from "../assets/music/Title.ogg";

@@ -134,14 +134,14 @@ class Particle extends Phaser.GameObjects.Sprite {
 		}
 
 
-		this.vel.x += this.acc.x * delta/1000;
-		this.vel.y += this.acc.y * delta/1000;
-		this.pos.x += this.vel.x * delta/1000;
-		this.pos.y += this.vel.y * delta/1000;
+		this.vel.x += this.acc.x * delta;
+		this.vel.y += this.acc.y * delta;
+		this.pos.x += this.vel.x * delta;
+		this.pos.y += this.vel.y * delta;
 		this.x = this.pos.x + this.offset.x;
 		this.y = this.pos.y + this.offset.y;
 
-		this.life += delta/1000;
+		this.life += delta;
 		if (this.life > this.lifeTime) {
 			this.setVisible(false);
 		}

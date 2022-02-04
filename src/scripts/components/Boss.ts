@@ -9,8 +9,8 @@ export class Boss extends Enemy {
 	public goalPoints: Phaser.Math.Vector2[];
 	private appearScale: number;
 
-	constructor(scene: GameScene, x: number, y: number, dayTime: boolean) {
-		super(scene, x, y, dayTime);
+	constructor(scene: GameScene, x: number, y: number, dayTime: boolean, spawnBar: number) {
+		super(scene, x, y, dayTime, spawnBar);
 
 		this.sprite.setTexture("boss");
 		this.sprite.setOrigin(0.5, 0.4);
@@ -28,7 +28,7 @@ export class Boss extends Enemy {
 		for (let i=-2; i<3; i++) {
 			for (let j=0; j<1; j++) {
 				this.goalPoints.push(
-					new Phaser.Math.Vector2(this.x + i*75, this.y + j*90)
+					new Phaser.Math.Vector2(this.x + i*50, this.y + j*90)
 				);
 			}
 		}
@@ -39,13 +39,13 @@ export class Boss extends Enemy {
 		this.appearScale = 0.5;
 	}
 
-	update(time: number, delta: number) {
-		super.update(time, delta);
+	update(time: number, delta: number, barTime: number, barDelta: number) {
+		super.update(time, delta, barTime, barDelta);
 
 		if (this.alive) {
 
-			this.appearScale += 2 * (1 - this.appearScale) * delta/1000;
-			this.light.intensity += 2 * (1.0 - this.appearScale) * delta/1000;
+			this.appearScale += 2 * (1 - this.appearScale) * delta;
+			this.light.intensity += 2 * (1.0 - this.appearScale) * delta;
 
 			this.setScale(
 				this.appearScale - 0.06 * this.hurtEase,
@@ -53,18 +53,18 @@ export class Boss extends Enemy {
 			this.sprite.setTint(interpolateColor(
 				0xFFFFFF, 0xFFCCCC, this.hurtEase));
 
-			this.moveTimer -= delta/1000;
+			this.moveTimer -= delta;
 			if (this.moveTimer <= 0) {
-				this.moveTimer = 3 + 3 * Math.random();
+				this.moveTimer = 5 + 3 * Math.random();
 
 				this.goal.copy(Phaser.Math.RND.pick(this.goalPoints));
 			}
 
-			let gx = this.goal.x + 80 * Math.sin(1.2*time/1000);
-			let gy = this.goal.y + 40 * Math.sin(1.8*time/1000);
+			let gx = this.goal.x + 60 * Math.sin(0.5*1.2*time);
+			let gy = this.goal.y + 30 * Math.sin(0.5*1.8*time);
 
-			this.x += (gx - this.x) * delta/1000;
-			this.y += 2 * (gy - this.y) * delta/1000;
+			this.x += (gx - this.x) * delta;
+			this.y += 2 * (gy - this.y) * delta;
 
 			// this.light.color = Phaser.Display.Color.ValueToColor(interpolateColor(0xff5500, 0xffff99, this.healthPerc));
 		}

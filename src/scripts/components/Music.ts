@@ -10,6 +10,7 @@ export class Music extends Phaser.Sound.WebAudioSound {
 	public offset: number;
 	public speed: number;
 	public start: number;
+	public loopSum: number;
 
 	constructor(scene, myKey, config={}) {
 		super(scene.sound, myKey, config);
@@ -38,6 +39,7 @@ export class Music extends Phaser.Sound.WebAudioSound {
 
 		this.speed = 60 / this.bpm;
 		this.maxBar = Math.round((this.end - this.start) / this.speed);
+		this.loopSum = 0;
 	}
 
 	update() {
@@ -47,7 +49,9 @@ export class Music extends Phaser.Sound.WebAudioSound {
 			if (this.myLoop) {
 				if (this.currentTime > this.end) {
 					this.setSeek(this.currentTime - (this.end - this.start));
+					this.loopSum += this.end - this.start;
 					console.log("Music loop", this.currentTime);
+					this.emit('loop');
 				}
 			}
 
@@ -55,9 +59,6 @@ export class Music extends Phaser.Sound.WebAudioSound {
 			if (barTime >= 0) {
 				if (Math.floor(barTime) != Math.floor(this._prevBarTime)) {
 					this.emit('bar', Math.floor(barTime));
-				}
-				if (Math.floor(4*barTime) != Math.floor(4*this._prevBarTime)) {
-					this.emit('beat', Math.floor(4*barTime)/4);
 				}
 			}
 			this._prevBarTime = barTime;
@@ -76,6 +77,15 @@ export class Music extends Phaser.Sound.WebAudioSound {
 
 
 	get currentTime() {
-		return (this as any).getCurrentTime();
+		return this.seek;
+		// return (this as any).getCurrentTime();
+	}
+
+	get totalTime() {
+		return this.seek + this.loopSum;
+	}
+
+	get barTime() {
+		return (this.totalTime - this.offset) / this.speed
 	}
 }

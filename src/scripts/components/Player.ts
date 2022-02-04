@@ -113,7 +113,7 @@ export class Player extends Character {
 			this.velocity.limit(MAX_SPEED);
 
 			if (this.isTapped) {
-				this.tappedTimer -= delta/1000;
+				this.tappedTimer -= delta;
 				if (this.tappedTimer > TAPPING_TIMER/2) {
 					this.velocity.reset();
 				}
@@ -122,8 +122,8 @@ export class Player extends Character {
 				}
 			}
 
-			this.x += this.velocity.x * delta/1000;
-			this.y += this.velocity.y * delta/1000;
+			this.x += this.velocity.x * delta;
+			this.y += this.velocity.y * delta;
 
 			// Border collision
 			if (this.x < this.border.left) {
@@ -148,7 +148,7 @@ export class Player extends Character {
 			this.sprite.angle = (4 * this.velocity.x * Phaser.Math.DEG_TO_RAD);
 
 			// Shooting bullets
-			this.shootTimer += delta/1000;
+			this.shootTimer += delta;
 			if (this.shootTimer > SHOOTING_TIMER && this.scene.anyEnemies && !this.stunned) {
 				this.shootTimer = 0;
 
@@ -170,12 +170,12 @@ export class Player extends Character {
 
 
 		// Hurt animation
-		this.hurtTimer -= delta/1000;
+		this.hurtTimer -= delta;
 		if (this.hurtTimer > 0 || !this.alive) {
-			let blink = (Math.sin(50*time/1000) > 0);
+			let blink = (Math.sin(50*time) > 0);
 			this.sprite.setTint(blink ? 0xFF7777 : 0xFFFFFF);
 			this.sprite.setAlpha(0.5);
-			this.sprite.setOrigin(0.5 + 0.01 * Math.sin(35*time/1000), 0.5);
+			this.sprite.setOrigin(0.5 + 0.01 * Math.sin(35*time), 0.5);
 		}
 		else {
 			this.sprite.setTint(0xFFFFFF);
@@ -186,7 +186,7 @@ export class Player extends Character {
 
 		// Check if dead
 		if (!this.alive) {
-			this.deathTimer += delta/1000;
+			this.deathTimer += delta;
 			this.setScale(1 - 0.5 * this.deathTimer / this.deathDuration);
 			this.setAlpha(1 - this.deathTimer / this.deathDuration);
 			if (this.deathTimer > this.deathDuration && this.visible) {
