@@ -54,16 +54,16 @@ export class MenuScene extends BaseScene {
 
 		this.bg = this.add.image(this.CX, this.CY, "CoverArtBg");
 		this.containToScreen(this.bg);
-		this.bird = this.add.image(this.CX-40, this.CY+70, "CoverArtBird");
-		this.bird.setVisible(false);
-		this.bird.setAlpha(0);
-		this.containToScreen(this.bird);
 		this.imp = this.add.image(this.CX+80, this.CY-60, "CoverArtImp");
 		this.imp.setAlpha(0);
 		this.containToScreen(this.imp);
 		this.angel = this.add.image(this.CX-90, this.CY-50, "CoverArtAngel");
 		this.angel.setAlpha(0);
 		this.containToScreen(this.angel);
+		this.bird = this.add.image(this.CX-40, this.CY+70, "CoverArtBird");
+		this.bird.setVisible(false);
+		this.bird.setAlpha(0);
+		this.containToScreen(this.bird);
 
 
 		this.title = this.createText(this.W-50, this.H-100, 60, "#000", "Twilight Wings");
