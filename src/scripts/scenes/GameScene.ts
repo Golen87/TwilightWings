@@ -258,8 +258,8 @@ export class GameScene extends BaseScene {
 		this.dayTimeLinear += Phaser.Math.Clamp( (this.dayTime ? 1 : 0) - this.dayTimeLinear, -swapDur, swapDur );
 		this.dayTimeSmooth = Phaser.Math.Easing.Back.InOut(this.dayTimeLinear, 0.8);
 
-		this.musicDay.volume   = 0.25 * (0.1 + 0.9 * this.dayTimeSmooth);
-		this.musicNight.volume = 0.25 * (1.0 - 0.9 * this.dayTimeSmooth);
+		this.musicDay.volume   = 0.25 * (0.01 + 0.99 * this.dayTimeSmooth);
+		this.musicNight.volume = 0.25 * (1.00 - 0.99 * this.dayTimeSmooth);
 
 
 
