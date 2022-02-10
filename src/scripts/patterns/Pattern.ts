@@ -12,6 +12,7 @@ export default interface Pattern {
 	angle?: number; // Direction of attack - Default: facing towards player
 	x?: number; // Origin or attack - Default: enemy position
 	y?: number;
-	varx?: number; // Variable random offset from origin point - Default: 0
+	varx?: number; // Variable random offset from origin point. Interpreted as range from -n/2 to +n/2 - Default: 0
 	vary?: number;
+	varoff?: number; // Variable random offset to angle. Added to "offset". Interpreted as range from -n/2 to +n/2 - Default: 0
 }
