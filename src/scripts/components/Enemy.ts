@@ -145,7 +145,7 @@ export class Enemy extends Character {
 							p.varoff = 0;
 						}
 						if (p.amount) {
-							this.scene.spawnBulletArc(true, dayTime, pos, dir, p.radius, p.speed, p.amount, (p.offset+(1-2*Math.random())*p.varoff), p.degrees);
+							this.scene.spawnBulletArc(true, dayTime, pos, dir, p.radius, p.speed, p.amount, p.offset, p.degrees, ((1-2*Math.random())*p.varoff));
 						}
 
 
