@@ -109,10 +109,12 @@ export class Enemy extends Character {
 
 						let p = pattern.loop[pattern.index];
 						let pos = this.pos;
-						if(p.varx === undefined) {
+
+						// check for undefs nya
+						if(p.varx == undefined) {
 							p.varx = 0;
 						}
-						if(p.vary === undefined) {
+						if(p.vary == undefined) {
 							p.vary = 0;
 						}
 						pos.x += ((1-2*Math.random())*p.varx*0.24*this.scene.W);
@@ -120,14 +122,30 @@ export class Enemy extends Character {
 						if (p.x !== undefined && p.y !== undefined) {
 							pos.set(this.scene.CX + (p.x+(1-2*Math.random())*p.varx) * 0.24*this.scene.W, this.scene.CY + (p.y+(1-2*Math.random())*p.vary) * 0.5*this.scene.H);
 						}
+
 						let dir = this.dir;
+
+						// QUICK FIX FOR AIMING FROM NON BOSS CENTERED POSITIONS VERY BAD PLEASE OPTIMIZE
+						if(p.varx !== undefined || p.vary !== undefined || p.x !== undefined || p.y !== undefined)
+						{
+							target.copy(this.scene.player);
+							target.subtract(pos);
+							target.normalize();
+							dir = target.angle();
+						}
+
 						if (p.angle !== undefined) {
 							dir = p.angle * Phaser.Math.DEG_TO_RAD;
 						}
 						let dayTime = (p.type == this.dayTime);
 
+						//offset randomization TEMP FIXME
+						if(p.varoff == undefined)
+						{
+							p.varoff = 0;
+						}
 						if (p.amount) {
-							this.scene.spawnBulletArc(true, dayTime, pos, dir, p.radius, p.speed, p.amount, p.offset, p.degrees);
+							this.scene.spawnBulletArc(true, dayTime, pos, dir, p.radius, p.speed, p.amount, (p.offset+(1-2*Math.random())*p.varoff), p.degrees);
 						}
 
 
