@@ -642,13 +642,14 @@ export class GameScene extends BaseScene {
 		spawnFunc(dayTime, origin, direction, radius);
 	}
 
-	spawnBulletArc(enemyType: boolean, dayTime: boolean, origin: Phaser.Math.Vector2, dirAngle, radius, speed, amount, offsetAngle: any=0, maxAngle: any=360) {
+	spawnBulletArc(enemyType: boolean, dayTime: boolean, origin: Phaser.Math.Vector2, dirAngle, radius, speed, amount, offsetAngle: any=0, maxAngle: any=360, offvar: any=0) {
 		dirAngle = dirAngle || 90;
 		radius = radius || 6;
 		speed = speed || 100;
 		amount = amount || 1;
 		offsetAngle = offsetAngle || 0;
 		maxAngle = maxAngle || 360;
+		offvar = offvar || 0;
 
 		let subLength = Math.max(
 			Array.isArray(dirAngle) ? dirAngle.length : 0,
@@ -669,7 +670,8 @@ export class GameScene extends BaseScene {
 					Array.isArray(speed) ? speed[i%speed.length] : speed,
 					Array.isArray(amount) ? amount[i%amount.length] : amount,
 					Array.isArray(offsetAngle) ? offsetAngle[i%offsetAngle.length] : offsetAngle,
-					Array.isArray(maxAngle) ? maxAngle[i%maxAngle.length] : maxAngle
+					Array.isArray(maxAngle) ? maxAngle[i%maxAngle.length] : maxAngle,
+					offvar
 				);
 			}
 			return;
@@ -682,13 +684,14 @@ export class GameScene extends BaseScene {
 		let dir = new Phaser.Math.Vector2();
 		offsetAngle *= Phaser.Math.DEG_TO_RAD;
 		maxAngle *= Phaser.Math.DEG_TO_RAD;
+		offvar *= Phaser.Math.DEG_TO_RAD;
 
 		for (let i = 0; i < amount; i++) {
 
-			let angle = dirAngle + offsetAngle;
+			let angle = dirAngle + offsetAngle + offvar;
 
 			if (amount > 1) {
-				angle = dirAngle + offsetAngle - maxAngle/2 + maxAngle * i / (amount-1);
+				angle = dirAngle + offsetAngle + offvar - maxAngle/2 + maxAngle * i / (amount-1);
 			}
 
 			dir.setToPolar(angle, speed);
