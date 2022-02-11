@@ -25,8 +25,8 @@ const PLAYER_LAYER = 3;
 const PLAYER_BULLET_LAYER = 4;
 const ENEMY_GLOW_BACK_LAYER = 5;
 const ENEMY_GLOW_FRONT_LAYER = 6;
-const ENEMY_BULLET_FRONT_LAYER = 7;
-const ENEMY_BULLET_BACK_LAYER = 8;
+const ENEMY_BULLET_BACK_LAYER = 7;
+const ENEMY_BULLET_FRONT_LAYER = 8;
 const UI_LAYER = 9;
 const FLASH_LAYER = 10;
 
@@ -265,13 +265,14 @@ export class GameScene extends BaseScene {
 
 
 
-		this.background.update(time, delta, this.dayTimeSmooth);
-		this.ui.update(time, delta, this.dayTimeSmooth);
-
-
 		this.player.update(time, delta);
 
 		this.particles.update(time, delta);
+
+
+		this.background.update(time, delta, this.dayTimeSmooth);
+		this.ui.update(time, delta, this.dayTimeSmooth);
+
 
 
 		if (!this.anyEnemies && !this.enemiesInQueue) {
@@ -460,6 +461,7 @@ export class GameScene extends BaseScene {
 			}
 			else {
 				bullet.setAlpha(0.3 + 0.7 * this.dayTimeSmooth);
+				bullet.setTint(0xFFFFFF);
 			}
 
 			let dist = Phaser.Math.Distance.BetweenPoints(this.player, bullet);

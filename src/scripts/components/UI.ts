@@ -44,6 +44,8 @@ export class UI extends Phaser.GameObjects.Container {
 	public endText: Phaser.GameObjects.Text;
 	public playAgain: Phaser.GameObjects.Text;
 
+	private playerHitbox: Phaser.GameObjects.Ellipse;
+
 	private boss?: Boss;
 
 
@@ -219,6 +221,12 @@ export class UI extends Phaser.GameObjects.Container {
 		this.endScreen.add(this.playAgain);
 
 
+		/* Player hitbox */
+
+		this.playerHitbox = this.scene.add.ellipse(0, 0, 8, 8, 0xE91E63);
+		this.add(this.playerHitbox);
+
+
 		this.setScore(0, 0);
 	}
 
@@ -258,6 +266,10 @@ export class UI extends Phaser.GameObjects.Container {
 		this.scoreBounce += 10 * (0 - this.scoreBounce) * delta;
 		this.score.setScale(1 + 0.15 * this.scoreBounce, 1 - 0.05 * this.scoreBounce);
 		this.highscore.setScale(1 + 0.15 * this.scoreBounce, 1 - 0.05 * this.scoreBounce);
+
+		// Player
+		this.playerHitbox.x = this.scene.player.x + this.scene.player.bodyArea.x;
+		this.playerHitbox.y = this.scene.player.y + this.scene.player.bodyArea.y;
 	}
 
 	setBoss(boss: Boss) {

@@ -8,7 +8,7 @@ const MAX_SPEED = 200;
 const HURT_DURATION = 4.0;
 const TAPPING_TIMER = 0.2;
 const SHOOTING_TIMER = 0.09;
-const PLAYER_RADIUS = 2.4;
+const PLAYER_RADIUS = 4.8;
 let TOUCH_OFFSET = 50;
 
 // Hack to detect computer with mouse
@@ -38,7 +38,7 @@ export class Player extends Character {
 	private border: { [key: string]: number }; 
 
 	// Health
-	private bodyArea: Phaser.Geom.Circle;
+	public bodyArea: Phaser.Geom.Circle;
 
 	// Shooting
 	public dayTimeSmooth: number;
@@ -82,7 +82,7 @@ export class Player extends Character {
 		};
 
 		// Game
-		this.bodyArea = new Phaser.Geom.Circle(0, 2*PLAYER_RADIUS, 2*PLAYER_RADIUS);
+		this.bodyArea = new Phaser.Geom.Circle(0, PLAYER_RADIUS, PLAYER_RADIUS);
 		this.maxHealth = 5;
 		this.health = 5;
 		this.dayTimeSmooth = this.dayTime ? 1 : 0;
@@ -202,9 +202,9 @@ export class Player extends Character {
 
 
 		// Debug
-		this.graphics.clear();
-		this.graphics.fillStyle(0xe91e63, 0.9);
-		this.graphics.fillCircleShape(this.bodyArea);
+		// this.graphics.clear();
+		// this.graphics.fillStyle(0xe91e63, 0.9);
+		// this.graphics.fillCircleShape(this.bodyArea);
 	}
 
 	onDayToggle() {
