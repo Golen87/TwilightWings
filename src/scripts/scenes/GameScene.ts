@@ -32,6 +32,7 @@ const FLASH_LAYER = 10;
 
 
 export class GameScene extends BaseScene {
+	public mode: string;
 	public isRunning: boolean;
 	public dayTime: boolean; // Day is true, Night is false
 	public dayTimeLinear: number;
@@ -88,6 +89,7 @@ export class GameScene extends BaseScene {
 
 	init(data): void {
 		// this.level = data.level;
+		this.mode = "miau";
 		this.isRunning = true;
 	}
 
@@ -325,7 +327,14 @@ export class GameScene extends BaseScene {
 								});
 								boss.on("death", this.onBossDefeated.bind(this));
 								boss.on("destruction", () => {
-									// this.sounds.explosion.play();
+									if (this.mode == "miau") {
+										this.sounds.explosion.play();
+										this.particles.createExplosion(
+											boss.x,
+											boss.y,
+											2.0, 2.0
+										);
+									}
 									this.sounds.enemyDestroy.play();
 									this.flash(3000, 0xFFFFFF, 1.0);
 									this.shake(1000, 12, 0);
@@ -346,7 +355,9 @@ export class GameScene extends BaseScene {
 									this.shake(500, 4, 0);
 								});
 								minion.on("destruction", () => {
-									// this.sounds.explosion.play();
+									if (this.mode == "miau") {
+										this.sounds.explosion.play();
+									}
 									this.sounds.enemyDestroy.play();
 									this.flash(1000, 0xFFFFFF, 0.5);
 									this.shake(1000, 6, 0);
@@ -419,18 +430,15 @@ export class GameScene extends BaseScene {
 						this.ui.onBossDamage(enemy);
 					}
 
-					// this.particles.createExplosion(
-						// enemy.x + 20 * (-1+2*Math.random()),
-						// enemy.y + 20 * (-1+2*Math.random())
-					// );
-					// this.sounds.explosion.play();
-
-					// if (enemy.alive) {
-						// this.shakeCamera = true;
-						// this.addEvent(400, () => {
-							// this.shakeCamera = false;
-						// });
-					// }
+					if (this.mode == "miau") {
+						// this.particles.createExplosion(
+						// 	enemy.x + 70 * (-1+2*Math.random()),
+						// 	enemy.y + 70 * (-1+2*Math.random()),
+						// 	0.1, 0.2
+						// );
+						// if (!this.sounds.oof.isPlaying)
+							// this.sounds.oof.play();
+					}
 				}
 			});
 		});
@@ -462,16 +470,19 @@ export class GameScene extends BaseScene {
 
 			// Collision with player
 			if (this.player.alive && this.player.dayTime != bullet.dayTime && this.player.insideBody(bullet) && (this.dayTime ? 1 : 0) == this.dayTimeLinear) {
+				if (this.mode == "miau" && !this.player.invulnerable) {
+					this.particles.createExplosion(
+						this.player.x + 20 * (-1+2*Math.random()),
+						this.player.y + 20 * (-1+2*Math.random()),
+						1.0, 1.0
+					);
+					this.sounds.boom.play();
+					this.sounds.bruh.play();
+				}
+
 				this.player.damage();
 				this.ui.setPlayerHealth(this.player.health);
 				bullet.kill();
-
-				// this.particles.createExplosion(
-					// this.player.x + 20 * (-1+2*Math.random()),
-					// this.player.y + 20 * (-1+2*Math.random())
-				// );
-				// this.sounds.boom.play();
-				// this.sounds.bruh.play();
 			}
 		});
 
@@ -505,8 +516,14 @@ export class GameScene extends BaseScene {
 		// Music
 
 		if (!this.musicDay) {
-			this.musicDay = new Music(this, "music_day", { volume: 0.25 });
-			this.musicNight = new Music(this, "music_night", { volume: 0.25 });
+			if (this.mode == "miau") {
+				this.musicDay = new Music(this, "music_miau", { volume: 0.25 });
+				this.musicNight = new Music(this, "music_miau", { volume: 0.25 });
+			}
+			else {
+				this.musicDay = new Music(this, "music_day", { volume: 0.25 });
+				this.musicNight = new Music(this, "music_night", { volume: 0.25 });
+			}
 
 			this.musicDay.on('bar', () => {
 				// this.sounds.score.play();
@@ -688,7 +705,7 @@ export class GameScene extends BaseScene {
 
 		for (let i = 0; i < amount; i++) {
 
-			let angle = dirAngle + offsetAngle + offvar;
+			let angle = dirAngle + offsetAngle;
 
 			if (amount > 1) {
 				angle = dirAngle + offsetAngle + offvar - maxAngle/2 + maxAngle * i / (amount-1);

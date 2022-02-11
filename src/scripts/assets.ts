@@ -45,6 +45,7 @@ import boss from "../assets/images/characters/boss.png";
 import angel from "../assets/images/characters/angel.png";
 import small_angel from "../assets/images/characters/small_angel.png";
 import small_imp from "../assets/images/characters/small_imp.png";
+import miau from "../assets/images/characters/miau.png";
 import face from "../assets/images/face.png";
 
 import CoverArtImp from "../assets/images/CoverArtImp.png";
@@ -79,6 +80,7 @@ const images: Asset[] = [
 	// { key: "angel",	path: angel },
 	{ key: "small_angel",	path: small_angel },
 	{ key: "small_imp",	path: small_imp },
+	{ key: "miau",	path: miau },
 	{ key: "face",	path: face },
 
 	{ key: "CoverArtImp",	path: CoverArtImp },
@@ -101,16 +103,18 @@ import explosion from "../assets/images/explosion.png";
 import bullet_core from "../assets/images/bullet_core.png";
 import bullet_glow from "../assets/images/bullet_glow.png";
 import feather from "../assets/images/feather.png";
+import newspaper from "../assets/images/MiauPaper.png";
 
 const spritesheets: SpriteSheet[] = [
-	{ key: "ui_clock",	path: ui_clock,		width: 400,	height: 320 },
+	{ key: "ui_clock",	path: ui_clock,			width: 400,	height: 320 },
 
-	{ key: "player",	path: player,		width: 256,	height: 256 },
+	{ key: "player",	path: player,			width: 256,	height: 256 },
 
-	{ key: "explosion",	path: explosion,	width: 200,	height: 282 },
-	{ key: "bullet_core",	path: bullet_core,		width: 95,	height: 95 },
-	{ key: "bullet_glow",	path: bullet_glow,		width: 128,	height: 128 },
-	{ key: "feather",	path: feather,		width: 64,	height: 64 },
+	{ key: "explosion",	path: explosion,		width: 200,	height: 282 },
+	{ key: "bullet_core",	path: bullet_core,	width: 95,	height: 95 },
+	{ key: "bullet_glow",	path: bullet_glow,	width: 128,	height: 128 },
+	{ key: "feather",	path: feather,			width: 64,	height: 64 },
+	{ key: "newspaper",	path: newspaper,		width: 160,	height: 160 },
 ];
 
 
@@ -208,7 +212,7 @@ import a_necoarc from "../assets/sounds/memes/a_necoarc.ogg";
 // import q_isaac_hurt from "../assets/sounds/memes/q_isaac_hurt.ogg";
 // import r_isaac_dead from "../assets/sounds/memes/r_isaac_dead.ogg";
 // import ra_isaac_mantle from "../assets/sounds/memes/ra_isaac_mantle.ogg";
-// import s_oof from "../assets/sounds/memes/s_oof.ogg";
+import s_oof from "../assets/sounds/memes/s_oof.ogg";
 // import sa_subaluwa from "../assets/sounds/memes/sa_subaluwa.ogg";
 // import t_yoda from "../assets/sounds/memes/t_yoda.ogg";
 // import a_noteblock_harp from "../assets/sounds/memes/a_noteblock_harp.ogg";
@@ -242,6 +246,7 @@ import music_night from "../assets/music/Game_Night.ogg";
 import music_title from "../assets/music/Title.ogg";
 import music_tutorial_day from "../assets/music/Tutorial_Day.ogg";
 import music_tutorial_night from "../assets/music/Tutorial_Night.ogg";
+import music_miau from "../assets/music/Formless_Onslaught.ogg";
 
 const audios: Audio[] = [
 	{ key: "music_day", path: music_day, volume: 0.25 },
@@ -249,6 +254,7 @@ const audios: Audio[] = [
 	{ key: "music_title", path: music_title, volume: 0.25 },
 	{ key: "music_tutorial_day", path: music_tutorial_day, volume: 0.25 },
 	{ key: "music_tutorial_night", path: music_tutorial_night, volume: 0.25 },
+	{ key: "music_miau", path: music_miau, volume: 0.25 },
 
 	{ key: "wind", path: flightLoop, volume: 0.5 },
 	{ key: "dayShift", path: dayShift, volume: 0.8 },
@@ -366,7 +372,7 @@ const audios: Audio[] = [
 	// { key: "isaac_hurt", path: q_isaac_hurt, volume: 0.5 },
 	// { key: "isaac_dead", path: r_isaac_dead, volume: 0.5 },
 	// { key: "isaac_mantle", path: ra_isaac_mantle, volume: 0.5 },
-	// { key: "oof", path: s_oof, volume: 0.5 },
+	{ key: "oof", path: s_oof, volume: 0.2 },
 	// { key: "subaluwa", path: sa_subaluwa, volume: 0.5 },
 	// { key: "yoda", path: t_yoda, volume: 0.5 },
 	// { key: "noteblock_harp", path: a_noteblock_harp, volume: 0.5 },

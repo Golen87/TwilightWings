@@ -20,4 +20,11 @@ export default {
 		// start: 4.151,
 		// end: 56.981,
 	},
+	'music_miau': {
+		offset: 3.285 - (60/150*2),
+		bpm: 150,
+		loop: true,
+		start: 6.472,
+		end: 6.472 + 76.8,
+	},
 };

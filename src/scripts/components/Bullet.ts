@@ -5,6 +5,7 @@ export class Bullet extends Phaser.GameObjects.Container {
 	public scene: GameScene;
 	public dayTime: boolean;
 
+	protected fScale: number;
 	public sprite: Phaser.GameObjects.Sprite;
 	protected light: Phaser.GameObjects.PointLight;
 
@@ -31,6 +32,7 @@ export class Bullet extends Phaser.GameObjects.Container {
 		// this.add(this.light);
 
 		// Create bullet sprite
+		this.fScale = 1.0;
 		this.sprite = scene.add.sprite(0, 0, "", 0);
 		this.sprite.setOrigin(0.5); // Center pivot, for rotation
 		this.add(this.sprite); // Attach sprite to the Bullet-component
@@ -46,7 +48,7 @@ export class Bullet extends Phaser.GameObjects.Container {
 		this.sprite.setFrame(this.dayTime ? 0 : 1);
 
 		this.radius = radius;
-		this.sprite.setScale(2*radius / this.sprite.width);
+		this.sprite.setScale(this.fScale * 2*radius / this.sprite.width);
 	}
 
 	update(time: number, delta: number) {

@@ -12,7 +12,12 @@ export class Boss extends Enemy {
 	constructor(scene: GameScene, x: number, y: number, dayTime: boolean, spawnBar: number) {
 		super(scene, x, y, dayTime, spawnBar);
 
-		this.sprite.setTexture("boss");
+		if (this.scene.mode == "miau") {
+			this.sprite.setTexture("miau");
+		}
+		else {
+			this.sprite.setTexture("boss");
+		}
 		this.sprite.setOrigin(0.5, 0.4);
 
 		// this.light = scene.add.pointlight(0, 0, 0xffeeaa, 200, 0.4, 0.05);

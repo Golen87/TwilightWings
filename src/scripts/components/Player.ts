@@ -294,7 +294,7 @@ export class Player extends Character {
 
 
 	damage() {
-		if (this.alive && this.hurtTimer < 0) {
+		if (this.alive && !this.invulnerable) {
 
 			this.hurtTimer = HURT_DURATION;
 
@@ -310,5 +310,9 @@ export class Player extends Character {
 
 	get stunned() {
 		return this.hurtTimer > HURT_DURATION/2;
+	}
+
+	get invulnerable() {
+		return this.hurtTimer > 0;
 	}
 }

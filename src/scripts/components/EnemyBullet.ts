@@ -10,7 +10,13 @@ export class EnemyBullet extends Bullet {
 
 		this.radius = 6;
 
-		this.sprite.setTexture("bullet_core");
+		if (this.scene.mode == "miau") {
+			this.sprite.setTexture("newspaper");
+			this.fScale = 2;
+		}
+		else {
+			this.sprite.setTexture("bullet_core");
+		}
 		// this.sprite.setScale(2*this.radius / this.sprite.width);
 		this.velocity.reset();
 
