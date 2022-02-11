@@ -89,7 +89,7 @@ export class GameScene extends BaseScene {
 
 	init(data): void {
 		// this.level = data.level;
-		this.mode = "miau";
+		this.mode = "normal";
 		this.isRunning = true;
 	}
 

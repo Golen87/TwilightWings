@@ -61,10 +61,10 @@ export class Bullet extends Phaser.GameObjects.Container {
 		}
 
 		// Border collision
-		if (this.x < 0.26 * this.scene.W - 4*this.radius ||
-			this.x > 0.74 * this.scene.W + 4*this.radius ||
-			this.y < 0 - 2*this.radius ||
-			this.y > this.scene.H + 2*this.radius) {
+		if (this.x < 0.26 * this.scene.W - 4*this.radius && this.velocity.x < 0 ||
+			this.x > 0.74 * this.scene.W + 4*this.radius && this.velocity.x > 0 ||
+			this.y < 0 - 2*this.radius && this.velocity.y < 0 ||
+			this.y > this.scene.H + 2*this.radius && this.velocity.y > 0) {
 			this.kill();
 		}
 

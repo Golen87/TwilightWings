@@ -48,63 +48,63 @@ export interface Stage {
 
 let levelData: Stage[] = [
 
-	// {
-	// 	delay: 1,
-	// 	duration: 10,
-	// 	enemies: [
-	// 		{
-	// 			type: "small_imp",
-	// 			pattern: alternatingRings,
-	// 			health: 200, x: 0, y: -0.5, spawnDelay: 0,
-	// 		},
-	// 	]
-	// },
+	{
+		delay: 1,
+		duration: 10,
+		enemies: [
+			{
+				type: "small_imp",
+				pattern: alternatingRings,
+				health: 200, x: 0, y: -0.5, spawnDelay: 0,
+			},
+		]
+	},
 
-	// {
-	// 	delay: 1,
-	// 	duration: 10,
-	// 	enemies: [
-	// 		{
-	// 			type: "small_angel",
-	// 			pattern: arrowRing,
-	// 			health: 150, x: 0.5, y: -0.5, spawnDelay: 0,
-	// 		},
-	// 		{
-	// 			type: "small_imp",
-	// 			pattern: arrowRing,
-	// 			health: 150, x: -0.5, y: -0.5, spawnDelay: 6,
-	// 		}
-	// 	]
-	// },
+	{
+		delay: 1,
+		duration: 10,
+		enemies: [
+			{
+				type: "small_angel",
+				pattern: arrowRing,
+				health: 150, x: 0.5, y: -0.5, spawnDelay: 0,
+			},
+			{
+				type: "small_imp",
+				pattern: arrowRing,
+				health: 150, x: -0.5, y: -0.5, spawnDelay: 6,
+			}
+		]
+	},
 
-	// {
-	// 	delay: 2,
-	// 	duration: 10,
-	// 	enemies: [
-	// 		{
-	// 			type: "small_angel",
-	// 			pattern: [fourWay[0], laser[0]],
-	// 			health: 200, x: 0, y: -0.5, spawnDelay: 0,
-	// 		},
-	// 	]
-	// },
+	{
+		delay: 2,
+		duration: 10,
+		enemies: [
+			{
+				type: "small_angel",
+				pattern: [fourWay[0], laser[0]],
+				health: 200, x: 0, y: -0.5, spawnDelay: 0,
+			},
+		]
+	},
 
-	// {
-	// 	delay: 0.5,
-	// 	duration: 10,
-	// 	enemies: [
-	// 		{
-	// 			type: "small_imp",
-	// 			pattern: [fastCircle[0], sixFiveFour[0]],
-	// 			health: 160, x: -0.5, y: -0.5, spawnDelay: 0,
-	// 		},
-	// 		{
-	// 			type: "small_angel",
-	// 			pattern: [easyArcs[0], sixFiveFour[0]],
-	// 			health: 160, x: 0.5, y: -0.5, spawnDelay: 1.7,
-	// 		}
-	// 	]
-	// },
+	{
+		delay: 0.5,
+		duration: 10,
+		enemies: [
+			{
+				type: "small_imp",
+				pattern: [fastCircle[0], sixFiveFour[0]],
+				health: 160, x: -0.5, y: -0.5, spawnDelay: 0,
+			},
+			{
+				type: "small_angel",
+				pattern: [easyArcs[0], sixFiveFour[0]],
+				health: 160, x: 0.5, y: -0.5, spawnDelay: 1.7,
+			}
+		]
+	},
 
 	{
 		delay: 2,
