@@ -1,23 +1,25 @@
 import { GameScene } from "../scenes/GameScene";
 import { Enemy } from "./Enemy";
+import { EnemyMovement, EnemyPatterns } from "../interfaces";
 
 
 export class Minion extends Enemy {
-	public goal: Phaser.Math.Vector2;
+	// public goal: Phaser.Math.Vector2;
 
-	constructor(scene: GameScene, x: number, y: number, type: string, spawnBar: number) {
+	constructor(scene: GameScene, x: number, y: number, type: string, spawnTime: number, movement: EnemyMovement, patterns: EnemyPatterns) {
 		let dayTime = (type == "small_angel");
-		super(scene, x, y, dayTime, spawnBar);
+		super(scene, x, y, dayTime, spawnTime, movement, patterns);
 
-		this.goal = new Phaser.Math.Vector2(this.x, this.y);
+		// this.goal = new Phaser.Math.Vector2(this.x, this.y);
 
-		this.y = -100;
+		// this.y = -100;
 
 		this.sprite.setTexture(type);
 		this.sprite.setScale(0.35);
 		this.bodyAreas = [ new Phaser.Geom.Circle( 0, 0, 30) ];
 	}
 
+	/*
 	update(time: number, delta: number, barTime: number, barDelta: number) {
 		super.update(time, delta, barTime, barDelta);
 
@@ -29,4 +31,5 @@ export class Minion extends Enemy {
 			this.y += (this.goal.y - this.y) * delta;
 		}
 	}
+	*/
 }

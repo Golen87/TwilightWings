@@ -1,6 +1,7 @@
 import { GameScene } from "../scenes/GameScene";
 import { Enemy } from "./Enemy";
 import { interpolateColor } from "../utils";
+import { EnemyMovement, EnemyPatterns } from "../interfaces";
 
 
 export class Boss extends Enemy {
@@ -9,8 +10,8 @@ export class Boss extends Enemy {
 	public goalPoints: Phaser.Math.Vector2[];
 	private appearScale: number;
 
-	constructor(scene: GameScene, x: number, y: number, dayTime: boolean, spawnBar: number) {
-		super(scene, x, y, dayTime, spawnBar);
+	constructor(scene: GameScene, x: number, y: number, dayTime: boolean, spawnTime: number, movement: EnemyMovement, patterns: EnemyPatterns) {
+		super(scene, x, y, dayTime, spawnTime, movement, patterns);
 
 		if (this.scene.mode == "miau") {
 			this.sprite.setTexture("miau");
@@ -44,6 +45,7 @@ export class Boss extends Enemy {
 		this.appearScale = 0.5;
 	}
 
+	/*
 	update(time: number, delta: number, barTime: number, barDelta: number) {
 		super.update(time, delta, barTime, barDelta);
 
@@ -74,8 +76,9 @@ export class Boss extends Enemy {
 			// this.light.color = Phaser.Display.Color.ValueToColor(interpolateColor(0xff5500, 0xffff99, this.healthPerc));
 		}
 	}
+	*/
 
-	center() {
-		this.goal.copy(this.start);
-	}
+	// center() {
+		// this.goal.copy(this.start);
+	// }
 }

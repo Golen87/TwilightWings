@@ -1,6 +1,8 @@
 import { GameScene } from "../scenes/GameScene";
 import { Character } from "./Character";
 import { Bullet } from "./Bullet";
+import { EnemyMovement, EnemyMovementProps, EnemyShotPattern, EnemyPatterns, BulletParams } from "../interfaces";
+import { playerMovement } from "../patterns/bulletMovement";
 import { interpolateColor } from "../utils";
 
 const ACCELERATION = 70;
@@ -15,6 +17,12 @@ let TOUCH_OFFSET = 50;
 addEventListener("mousemove", e => {
 	TOUCH_OFFSET = 0;
 });
+
+interface Pattern {
+	generator: EnemyShotPattern;
+	queuedBullet: BulletParams | null;
+	swapDayTime: boolean;
+}
 
 
 export class Player extends Character {
@@ -41,6 +49,7 @@ export class Player extends Character {
 	public bodyArea: Phaser.Geom.Circle;
 
 	// Shooting
+	protected pattern: Pattern;
 	public dayTimeSmooth: number;
 	public shootTimer: number;
 
@@ -88,6 +97,37 @@ export class Player extends Character {
 		this.dayTimeSmooth = this.dayTime ? 1 : 0;
 		this.shootTimer = 0;
 		this.deathDuration = 1.2;
+
+
+		function* playerPattern(): EnemyShotPattern {
+			let straightBullet = new BulletParams({
+				radius: 14,
+				speed: 1000,
+				angle: -90,
+				aimPlayer: false
+			});
+
+			let time = 0;
+			let bullets = [
+				playerMovement( 0),
+				playerMovement(-60),
+				playerMovement( 60),
+			];
+
+			while (true) {
+				yield straightBullet.modify({ time, angle: -90, movement: bullets[0] });
+				time += 1 / 16;
+				yield straightBullet.modify({ time, angle: -90-2, movement: bullets[1] });
+				yield straightBullet.modify({ time, angle: -90+2, movement: bullets[2] });
+				time += 1 / 16;
+			}
+		}
+
+		this.pattern = {
+			generator: playerPattern(),
+			queuedBullet: null,
+			swapDayTime: true
+		};
 
 
 		// Intro
@@ -148,23 +188,54 @@ export class Player extends Character {
 			this.sprite.angle = (4 * this.velocity.x * Phaser.Math.DEG_TO_RAD);
 
 			// Shooting bullets
+			/*
 			this.shootTimer += delta;
 			if (this.shootTimer > SHOOTING_TIMER && this.scene.anyEnemies && !this.stunned) {
 				this.shootTimer = 0;
 
 				let pos = new Phaser.Math.Vector2(this.x, this.y - 0.4*this.sprite.displayHeight);
 				let dir = this.facing.clone();
-				dir.setLength(500);
+				// dir.setLength(500);
 				// const angle = 20;
 
 				// pos.add({x:-50,y:0})
 				// this.emit("shoot", this.dayTime, pos, dir);
 				// dir.rotate( -angle * Phaser.Math.DEG_TO_RAD);
 				// pos.add({x:50,y:0})
-				this.emit("shoot", this.dayTime, pos, dir);
+				this.emit("shoot", this.dayTime, pos, dir, 500, time);
 				// dir.rotate(2*angle * Phaser.Math.DEG_TO_RAD);
 				// pos.add({x:50,y:0})
 				// this.emit("shoot", this.dayTime, pos, dir);
+			}
+			*/
+
+			// Continue firing bullets until queue time is caught up
+			let elapsed = time - 0;
+			let limit = 1000;
+			while ((!this.pattern.queuedBullet || this.pattern.queuedBullet.time < elapsed) && limit-- > 0) {
+
+				// If no bullets are in queue, fetch new bullet
+				if (!this.pattern.queuedBullet) {
+					let next = this.pattern.generator.next();
+
+					// Shooting function returned bullet to be fired in the future, queue it
+					if (!next.done && next.value) {
+						this.pattern.queuedBullet = next.value;
+					}
+
+					// Shooting function ran out of bullets, halt
+					else {
+						break;
+					}
+				}
+
+				// Wait until the queued bullet is ready to fire
+				if (this.pattern.queuedBullet && this.pattern.queuedBullet.time < elapsed) {
+
+					// Fire bullet
+					this.emit("shoot", this.pattern.queuedBullet, this.pattern.swapDayTime);
+					this.pattern.queuedBullet = null;
+				}
 			}
 		}
 
@@ -306,6 +377,10 @@ export class Player extends Character {
 				this.emit("damage");
 			}
 		}
+	}
+
+	getPositionAt(time: number) {
+		return {x:this.x, y:this.y};
 	}
 
 	get stunned() {

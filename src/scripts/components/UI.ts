@@ -225,6 +225,7 @@ export class UI extends Phaser.GameObjects.Container {
 
 		this.playerHitbox = this.scene.add.ellipse(0, 0, 8, 8, 0xE91E63);
 		this.add(this.playerHitbox);
+		this.sendToBack(this.playerHitbox);
 
 
 		this.setScore(0, 0);
@@ -268,6 +269,7 @@ export class UI extends Phaser.GameObjects.Container {
 		this.highscore.setScale(1 + 0.15 * this.scoreBounce, 1 - 0.05 * this.scoreBounce);
 
 		// Player
+		this.playerHitbox.setVisible(this.scene.player.alive);
 		this.playerHitbox.x = this.scene.player.x + this.scene.player.bodyArea.x;
 		this.playerHitbox.y = this.scene.player.y + this.scene.player.bodyArea.y;
 	}

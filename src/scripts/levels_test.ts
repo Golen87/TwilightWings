@@ -1,3 +1,4 @@
+/*
 // import * as patterns from "./patterns";
 import alternatingRings from "./patterns/alternatingRings";
 import arrowRing from "./patterns/arrowRing";
@@ -29,6 +30,7 @@ import spiral from "./patterns/spiral";
 import tightArcs from "./patterns/tightArcs";
 import zigzag from "./patterns/zigzag";
 import bosspattern_hard1 from "./patterns/bosspattern_hard1";
+import stress_p1 from "./patterns/stress_p1";
 
 export interface StageEnemy {
 	type: string;
@@ -48,22 +50,19 @@ export interface Stage {
 
 
 let levelData: Stage[] = [
-	{
-		delay: 1,
-		duration: 10,
-		enemies: [
-			{
-				type: "boss",
-				phases: [
-					wallPatternPt1,
-					wallPatternPt2,
-					wallPatternPt3,
-					wallPatternPt4
-				],
-				health: 4000, x: 0, y: -0.5, spawnDelay: 2.0
-			}
-		]
-	},
+	// {
+	// 	delay: 1,
+	// 	duration: 10,
+	// 	enemies: [
+	// 		{
+	// 			type: "boss",
+	// 			phases: [
+	// 				stress_p1
+	// 			],
+	// 			health: 4000, x: 0, y: -0.5, spawnDelay: 2.0
+	// 		}
+	// 	]
+	// },
 
 	{
 		delay: 1,
@@ -100,3 +99,4 @@ let levelData: Stage[] = [
 export {
 	levelData
 };
+*/

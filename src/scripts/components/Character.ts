@@ -64,6 +64,10 @@ export class Character extends Phaser.GameObjects.Container {
 		this.health = health;
 	}
 
+	getPositionAt(time: number) {
+		return {x:0, y:0};
+	}
+
 	get alive() {
 		return this.health > 0;
 	}
@@ -78,5 +82,9 @@ export class Character extends Phaser.GameObjects.Container {
 
 	get dir(): number {
 		return this.facing.angle();
+	}
+
+	get spawnTime(): number {
+		return 0;
 	}
 }

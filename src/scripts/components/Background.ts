@@ -115,8 +115,8 @@ export class Background extends Phaser.GameObjects.Container {
 		});
 
 		// Rotate sun and moon
-		this.sun.angle = time/200;
-		this.moon.angle = time/200;
+		this.sun.angle = 5 * time;
+		this.moon.angle = 5 * time;
 
 		// TileSprite
 		this.stars.tilePositionX = 2 * time;

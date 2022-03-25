@@ -3,8 +3,15 @@ import { Character } from "./Character";
 import { Bullet } from "./Bullet";
 import { EnemyBullet } from "./EnemyBullet";
 import { interpolateColor } from "../utils";
+import { EnemyMovement, EnemyMovementProps, EnemyShotPattern, EnemyPatterns, BulletParams } from "../interfaces";
 
 const STUNNED_DURATION = 1.5;
+
+interface Pattern {
+	generator: EnemyShotPattern;
+	queuedBullet: BulletParams | null;
+	swapDayTime: boolean;
+}
 
 
 export class Enemy extends Character {
@@ -16,28 +23,29 @@ export class Enemy extends Character {
 	protected graphics: Phaser.GameObjects.Graphics;
 
 	// Movement
-	public start: Phaser.Math.Vector2;
-	public velocity: Phaser.Math.Vector2;
-	protected border: { [key: string]: number };
+	protected movementFunction: EnemyMovement;
+	protected movementProps: EnemyMovementProps;
 
 	// Shooting
-	protected spawnBar: number;
+	protected patterns: Pattern[];
 	protected phases: any[];
 	protected phaseIndex: number;
-	protected patterns: any[];
 	protected stunnedTimer: number;
+
+	// public start: Phaser.Math.Vector2;
+	public velocity: Phaser.Math.Vector2;
+	protected border: { [key: string]: number };
 
 	// Collision
 	protected bodyAreas: Phaser.Geom.Circle[];
 
 
-	constructor(scene: GameScene, x: number, y: number, dayTime: boolean, spawnBar: number) {
+	constructor(scene: GameScene, x: number, y: number, dayTime: boolean, spawnTime: number, movement: EnemyMovement, patterns: EnemyPatterns) {
 		super(scene, x, y, dayTime);
 
 		// Create player sprite
 		const size = 80;
 		this.sprite = scene.add.sprite(0, 0, "", 0);
-		this.sprite.setFrame(this.dayTime ? 0 : 1);
 		this.sprite.setScale(0.25);
 		this.add(this.sprite); // Attach sprite to the Player-component
 
@@ -52,7 +60,7 @@ export class Enemy extends Character {
 		this.add(this.graphics);
 
 		// Movement
-		this.start = new Phaser.Math.Vector2(this.x, this.y);
+		// this.start = new Phaser.Math.Vector2(this.x, this.y);
 		this.velocity = new Phaser.Math.Vector2(0, 0);
 		this.facing.set(0, 1);
 		this.border = {
@@ -62,23 +70,115 @@ export class Enemy extends Character {
 			bottom: scene.H - size/2,
 		};
 
-		this.spawnBar = spawnBar;
 		this.phases = [];
 		this.phaseIndex = 0;
-		this.patterns = [];
 		this.stunnedTimer = 0;
 
 		this.maxHealth = 200;
 		this.health = this.maxHealth;
 
 		this.bodyAreas = [ new Phaser.Geom.Circle( 0, 0, 80) ];
+
+		this.movementFunction = movement;
+		this.movementProps = {
+			spawnTime,
+			originX: x,
+			originY: y,
+			// facing: { x: facing.x, y: facing.y },
+			// speed: speed,
+			// angle: this.facing.angle()
+		};
+
+		this.patterns = [];
+		for (let patternGenerator of patterns.easy) {
+			this.patterns.push({
+				generator: patternGenerator(),
+				queuedBullet: null,
+				swapDayTime: true
+			});
+		}
+		for (let patternGenerator of patterns.hard) {
+			this.patterns.push({
+				generator: patternGenerator(),
+				queuedBullet: null,
+				swapDayTime: false
+			});
+		}
 	}
 
 	update(time: number, delta: number, barTime: number, barDelta: number) {
 		super.update(time, delta);
+		let elapsed = time - this.movementProps.spawnTime;
+
 
 		if (this.alive) {
 
+			// Call function that calculates movement
+			let pos = this.movementFunction(this, elapsed, this.movementProps);
+			this.x = pos.x;
+			this.y = pos.y;
+
+
+			let noise = 0;
+			let playLoud = false;
+
+			// Loop over all patterns
+			for (let pattern of this.patterns) {
+
+				// Continue firing bullets until queue time is caught up
+				let limit = 1000;
+				while ((!pattern.queuedBullet || pattern.queuedBullet.time < elapsed) && limit-- > 0) {
+
+					// If no bullets are in queue, fetch new bullet
+					if (!pattern.queuedBullet) {
+						let next = pattern.generator.next();
+
+						// Shooting function returned bullet to be fired in the future, queue it
+						if (!next.done && next.value) {
+							pattern.queuedBullet = next.value;
+						}
+
+						// Shooting function ran out of bullets, halt
+						else {
+							break;
+						}
+					}
+
+					// Wait until the queued bullet is ready to fire
+					if (pattern.queuedBullet && pattern.queuedBullet.time < elapsed) {
+
+						// Fire bullet
+						this.emit("shoot", pattern.queuedBullet, pattern.swapDayTime);
+						noise += pattern.queuedBullet.radius;
+						pattern.queuedBullet = null;
+					}
+				}
+
+				console.assert(limit > 0, "Bullet count exceeded!");
+			}
+
+
+			if (noise) {
+				let k = Math.log10(noise)/4.5;
+				let rate = 1.1 - 1*k;
+				let volume = 0.04 + 0.7*k
+				volume *= (playLoud ? 1 : 0.4);
+
+				if (this.scene.dayTime !== playLoud) {
+					this.scene.sounds.enemyShotDay.play({ rate, volume });
+				}
+				else {
+					this.scene.sounds.enemyShotNight.play({ rate, volume });
+				}
+
+				k *= k;
+				// k -= 0.5
+				if (k > 0)
+					this.scene.shake(500*k, 3*k, 0);
+			}
+
+
+			/*
 			// Movement
 			let target = new Phaser.Math.Vector2();
 			target.add(this.scene.player);
@@ -100,10 +200,9 @@ export class Enemy extends Character {
 					let playLoud = false;
 					let noise = 0;
 					let limit = 20;
-					while (pattern.loop.length > 0 && barTime+barDelta > this.spawnBar + pattern.timer && limit-- > 0) {
+					while (pattern.loop.length > 0 && barTime+barDelta > this.spawnTime + pattern.timer && limit-- > 0) {
 
 						pattern.timer += pattern.loop[pattern.index].wait;
-						console.log('shoot', barTime.toFixed(2));
 						// pattern.timer = barTime + 4*pattern.loop[pattern.index].wait;
 						// pattern.timer = Math.round(pattern.timer*4)/4;
 
@@ -199,12 +298,13 @@ export class Enemy extends Character {
 				if (threshold > 0 && this.health < threshold) {
 					this.phaseIndex++;
 					this.stunnedTimer = STUNNED_DURATION;
-					this.spawnBar = 4 + Math.ceil(barTime);
+					this.spawnTime = 4 + Math.ceil(barTime);
 					this.setPatterns(this.phases[this.phaseIndex]);
 					this.emit("phase");
 				}
 
 			}
+			*/
 		}
 
 
@@ -290,6 +390,10 @@ export class Enemy extends Character {
 		// });
 	}
 
+	getPositionAt(time: number) {
+		return this.movementFunction(this, time - this.movementProps.spawnTime, this.movementProps);
+	}
+
 	insideBody(bullet: Bullet): boolean {
 		return this.bodyAreas.some((circle: Phaser.Geom.Circle) => {
 			return this.checkCollision(circle, bullet);
@@ -304,28 +408,32 @@ export class Enemy extends Character {
 
 
 	setPhases(phases) {
-		console.assert(Array.isArray(phases), "Phases needs to be an array of patterns");
-		this.phases = phases;
-		this.phaseIndex = 0;
-		this.setPatterns(phases[0]);
+		// console.assert(Array.isArray(phases), "Phases needs to be an array of patterns");
+		// this.phases = phases;
+		// this.phaseIndex = 0;
+		// this.setPatterns(phases[0]);
 	}
 
 	setPatterns(patterns) {
-		this.patterns = [];
-		console.assert(Array.isArray(patterns), "Patterns need to be an array");
-		if (!Array.isArray(patterns[0])) {
-			patterns = [patterns];
-		}
+		// this.patterns = [];
+		// console.assert(Array.isArray(patterns), "Patterns need to be an array");
+		// if (!Array.isArray(patterns[0])) {
+		// 	patterns = [patterns];
+		// }
 
-		for (let loop of patterns) {
+		// for (let loop of patterns) {
 
-			this.patterns.push({
-				index: 0,
-				timer: 4,//loop[0].wait,
-				loop
-			});
-		}
+		// 	this.patterns.push({
+		// 		index: 0,
+		// 		timer: 4,//loop[0].wait,
+		// 		loop
+		// 	});
+		// }
 
 		// this.patterns[0].timer = 0;
+	}
+
+	get spawnTime(): number {
+		return this.movementProps.spawnTime;
 	}
 }

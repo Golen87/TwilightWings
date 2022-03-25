@@ -8,4 +8,12 @@ export class PlayerBullet extends Bullet {
 
 		this.sprite.setTexture("feather");
 	}
+
+	update(time: number, delta: number) {
+		super.update(time, delta);
+
+		let elapsed = time - this.movementProps.spawnTime;
+		let introBounce = (elapsed < 0.125) ? Phaser.Math.Easing.Sine.In(8*elapsed) : 1;
+		this.rescale(introBounce);
+	}
 }
