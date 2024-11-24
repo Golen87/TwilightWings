@@ -1,0 +1,13 @@
+{
+	"team": "Chocobois",
+	"title": "Twilight Wings",
+	"description": "Bullet hell through dawn and dusk. Made during Global Game Jam 2022.",
+	"itch": {
+		"upload": false,
+		"username": "golen",
+		"game": "twilight-wings"
+	},
+	"neutralino": {
+		"allow": ["app.exit", "window.center"]
+	}
+}
