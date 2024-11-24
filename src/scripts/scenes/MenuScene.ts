@@ -117,8 +117,8 @@ export class MenuScene extends BaseScene {
 
 		// Input
 
-		this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE).on('down', this.progress, this);
-		this.input.on('pointerdown', (pointer) => {
+		this.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE).on('down', this.progress, this);
+		this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
 			if (pointer.button == 0) {
 				this.progress();
 			}
@@ -191,7 +191,7 @@ export class MenuScene extends BaseScene {
 	}
 
 
-	onBar(bar) {
+	onBar(bar: number) {
 		if (bar >= 4) {
 			this.title.setVisible(true);
 		}
@@ -203,7 +203,7 @@ export class MenuScene extends BaseScene {
 		}
 	}
 
-	onBeat(time) {
+	onBeat(time: number) {
 		// this.select.play();
 	}
 }

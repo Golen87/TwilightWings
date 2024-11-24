@@ -15,8 +15,6 @@ interface Pattern {
 
 
 export class Enemy extends Character {
-	public scene: GameScene;
-
 	// Graphics
 	protected sprite: Phaser.GameObjects.Sprite;
 	protected light: Phaser.GameObjects.PointLight;
@@ -407,14 +405,14 @@ export class Enemy extends Character {
 	// }
 
 
-	setPhases(phases) {
+	// setPhases(phases) {
 		// console.assert(Array.isArray(phases), "Phases needs to be an array of patterns");
 		// this.phases = phases;
 		// this.phaseIndex = 0;
 		// this.setPatterns(phases[0]);
-	}
+	// }
 
-	setPatterns(patterns) {
+	// setPatterns(patterns) {
 		// this.patterns = [];
 		// console.assert(Array.isArray(patterns), "Patterns need to be an array");
 		// if (!Array.isArray(patterns[0])) {
@@ -431,7 +429,7 @@ export class Enemy extends Character {
 		// }
 
 		// this.patterns[0].timer = 0;
-	}
+	// }
 
 	get spawnTime(): number {
 		return this.movementProps.spawnTime;

@@ -1,8 +1,9 @@
+import { Character } from "../components/Character";
 import { Point, EnemyParams, EnemyMovement, EnemyMovementProps, EnemyShotPattern, BulletParams, BulletMovement, BulletMovementProps } from "../interfaces";
 import { straightMovement, acceleratedMovement, shapeMovement } from "./bulletMovement";
 
 
-function figureEight(enemy, time, p) {
+function figureEight(enemy: Character, time: number, p: EnemyMovementProps) {
 	return {
 		x: p.originX + 60 * Math.sin(time),
 		y: p.originY + 30 * Math.sin(2*time)
@@ -52,7 +53,7 @@ function* polygonPattern(): EnemyShotPattern {
 	let leftRotation = shapeMovement(-1);
 	let rightRotation = shapeMovement(1);
 
-	function scale(radius, points) {
+	function scale(radius: number, points: number[][]): number[][] {
 		return points.map(p => p.map(x => x*radius));
 	}
 

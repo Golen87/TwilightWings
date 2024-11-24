@@ -1,20 +1,21 @@
+import { BaseScene } from "../scenes/BaseScene";
 import MusicData from "./../components/MusicData";
 
 export class Music extends Phaser.Sound.WebAudioSound {
 	public _prevBarTime: number;
 	public bpm: number;
 	public end: number;
-	public myKey: number;
-	public myLoop: number;
+	public myKey: string;
+	public myLoop: boolean;
 	public maxBar: number;
 	public offset: number;
 	public speed: number;
 	public start: number;
 	public loopSum: number;
 
-	constructor(scene, myKey, config={}) {
-		super(scene.sound, myKey, config);
-		scene.sound.sounds.push(this);
+	constructor(scene: BaseScene, myKey: string, config={}) {
+		super(scene.sound as Phaser.Sound.WebAudioSoundManager, myKey, config);
+		// scene.sound.sounds.push(this);
 		this.myKey = myKey;
 
 		if (!MusicData[myKey]) {
@@ -26,7 +27,7 @@ export class Music extends Phaser.Sound.WebAudioSound {
 		this.bpm = custom.bpm;
 		this.myLoop = custom.loop || false;
 
-		if (this.myLoop) {
+		if (this.myLoop && custom.start && custom.end) {
 			this.start = custom.start;
 			this.end = custom.end;
 			this.setLoop(true);

@@ -1,6 +1,4 @@
 import { BaseScene } from "./BaseScene";
-import { RoundRectangle } from "../components/RoundRectangle";
-import BendWaves2 from "../pipelines/BendWavesPostFX2";
 
 
 export interface Point {
@@ -65,7 +63,6 @@ export class OverworldScene extends BaseScene {
 
 
 		this.title = this.createText(this.CX, 0.43*this.H, 3*40, "#FA4", "Twilight Wings").setOrigin(0.5).setStroke("#732", 6);
-		this.title.setPostPipeline(BendWaves2);
 		this.title.setVisible(false);
 
 		this.desc = this.createText(this.CX, 0.65*this.H, 3*18, "#FFF").setOrigin(0.5);
@@ -151,14 +148,14 @@ export class OverworldScene extends BaseScene {
 		}
 
 		// Skip
-		this.input.keyboard.on("keydown-ESC", () => {
+		this.input.keyboard?.on("keydown-ESC", () => {
 			this.skip();
 			if (this.level < 4) {
 				this.scene.start("GameScene", { level: this.level });
 			}
 		}, this);
 
-		this.input.keyboard.on("keydown-SPACE", this.skip, this);
+		this.input.keyboard?.on("keydown-SPACE", this.skip, this);
 		this.input.on('pointerdown', this.skip, this);
 	}
 
@@ -239,7 +236,8 @@ export class OverworldScene extends BaseScene {
 			});
 
 			// Move player
-			tween.on('update', (tween, key, target, current, previous) => {
+			tween.on('update', (tween: Phaser.Tweens.Tween) => {
+				let current = tween.getValue();
 				let p = curve.getPoint(1-current);
 				this.player.x = p.x;
 				this.player.y = p.y;
@@ -263,7 +261,7 @@ export class OverworldScene extends BaseScene {
 	skip() {
 		if (this.introPlaying) {
 			this.myTweens.forEach((tween: Phaser.Tweens.Tween) => {
-				tween.stop(1);
+				tween.stop();
 			});
 		}
 		else if (this.title.visible) {

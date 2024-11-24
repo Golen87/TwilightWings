@@ -26,8 +26,6 @@ interface Pattern {
 
 
 export class Player extends Character {
-	public scene: GameScene;
-
 	// Input
 	private keys: any;
 	public isTouched: boolean;
@@ -43,7 +41,7 @@ export class Player extends Character {
 	private inputVec: Phaser.Math.Vector2; // Just used for keyboard -> vector
 	private touchPos: Phaser.Math.Vector2;
 	public velocity: Phaser.Math.Vector2;
-	private border: { [key: string]: number }; 
+	private border: { [key: string]: number };
 
 	// Health
 	public bodyArea: Phaser.Geom.Circle;
@@ -68,7 +66,7 @@ export class Player extends Character {
 		this.add(this.graphics);
 
 		// Movement
-		this.keys = scene.input.keyboard.addKeys({
+		this.keys = scene.input.keyboard?.addKeys({
 			up: 'W',		up2: 'Up',
 			down: 'S',		down2: 'Down',
 			left: 'A',		left2: 'Left',

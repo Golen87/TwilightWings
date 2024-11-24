@@ -2,7 +2,6 @@ import { GameScene } from "../scenes/GameScene";
 import { RoundRectangle } from "./RoundRectangle";
 import { interpolateColor } from "../utils";
 import { Boss } from "./Boss";
-import BendWaves2 from "../pipelines/BendWavesPostFX2";
 
 const EDGE = 0.235;
 const PAD = 13;

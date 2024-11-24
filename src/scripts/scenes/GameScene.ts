@@ -90,7 +90,7 @@ export class GameScene extends BaseScene {
 		super({key: "GameScene"});
 	}
 
-	init(data): void {
+	init(): void {
 		// this.level = data.level;
 		this.mode = "normal";
 		this.isRunning = true;
@@ -209,14 +209,14 @@ export class GameScene extends BaseScene {
 			// this.scene.start("OverworldScene", { level: this.level+1 });
 		// }, this);
 
-		this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE).on('down', this.onDayToggle, this);
-		this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q).on('down', () => {
+		this.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE).on('down', this.onDayToggle, this);
+		this.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.Q).on('down', () => {
 			this.enemies.forEach((enemy: Enemy, index: number) => {
 				enemy.destroy();
 			});
 			this.screenWipe();
 		}, this);
-		this.shiftKey = this.input.keyboard.addKey('Shift');
+		this.shiftKey = this.input.keyboard?.addKey('Shift');
 		this.focusValue = 1;
 
 
@@ -390,10 +390,10 @@ export class GameScene extends BaseScene {
 		}
 
 		this.enemies.forEach((enemy: Enemy, index: number) => {
-			if (!enemy.scene) {
-				return this.enemies.splice(index, 1);
-			}
-			enemy.update(time, delta, barTime, barDelta);
+			if (enemy.scene)
+				enemy.update(time, delta, barTime, barDelta);
+			else
+				this.enemies.splice(index, 1);
 		});
 
 
@@ -652,10 +652,10 @@ export class GameScene extends BaseScene {
 
 			if (!this.playerBullets[this.pbIndex].active) {
 
-				let movementFunction = function(bullet, time, p) {
-					bullet.x = p.start.x + p.facing.x * p.speed * time;
-					bullet.y = p.start.y + p.facing.y * p.speed * time;
-				}
+				// let movementFunction = function(bullet, time, p) {
+				// 	bullet.x = p.start.x + p.facing.x * p.speed * time;
+				// 	bullet.y = p.start.y + p.facing.y * p.speed * time;
+				// }
 
 				this.playerBullets[this.pbIndex].spawn(bulletParams, this.player, false);
 
@@ -711,7 +711,7 @@ export class GameScene extends BaseScene {
 		// spawnFunc(dayTime, origin, direction, radius);
 	}
 
-	spawnBulletArc(enemyType: boolean, dayTime: boolean, origin: Phaser.Math.Vector2, dirAngle, radius, speed, amount, offsetAngle: any=0, maxAngle: any=360, offvar: any=0) {
+	spawnBulletArc(enemyType: boolean, dayTime: boolean, origin: Phaser.Math.Vector2, dirAngle: number, radius: number, speed: number, amount: number, offsetAngle: any=0, maxAngle: any=360, offvar: any=0) {
 		dirAngle = dirAngle || 90;
 		radius = radius || 6;
 		speed = speed || 100;
@@ -778,11 +778,11 @@ export class GameScene extends BaseScene {
 		// }
 	}
 
-	debugSpawnPatter(key, event) {
-		const origin = new Phaser.Math.Vector2(this.CX, 0.5 * this.CY);
-		let type = !this.dayTime ? "enemy-day" : "enemy-night";
-		this.spawnBulletPattern(type, origin, event.key);
-	}
+	// debugSpawnPatter(key, event) {
+	// 	const origin = new Phaser.Math.Vector2(this.CX, 0.5 * this.CY);
+	// 	let type = !this.dayTime ? "enemy-day" : "enemy-night";
+	// 	this.spawnBulletPattern(type, origin, event.key);
+	// }
 
 	spawnBulletPattern(type: string, origin: any, pattern: number) {
 		/*

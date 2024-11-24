@@ -4,14 +4,14 @@ import { straightMovement } from "./patterns/bulletMovement";
 
 
 // 2D point
-interface Point {
+export interface Point {
 	x: number;
 	y: number;
 }
 
 
 // Bullet movement function props
-interface BulletMovementProps {
+export interface BulletMovementProps {
 	spawnTime: number;
 	speed: number;
 	angle: number;
@@ -27,10 +27,10 @@ interface BulletMovementProps {
 }
 
 // Bullet movement function
-type BulletMovement = (bullet: Bullet, time: number, p: BulletMovementProps) => Point;
+export type BulletMovement = (bullet: Bullet, time: number, p: BulletMovementProps) => Point;
 
 
-class BulletParams {
+export class BulletParams {
 	movement: BulletMovement;
 	time: number;
 	radius: number;
@@ -64,7 +64,23 @@ class BulletParams {
 	// vary?: number;
 	// varoff?: number; // Variable random offset to angle. Added to "offset". Interpreted as range from -n/2 to +n/2 - Default: 0
 
-	constructor(p) {
+	constructor(p: {
+		movement?: BulletMovement,
+		time?: number,
+		radius?: number,
+		speed?: number,
+		angle?: number,
+
+		originX?: number,
+		originY?: number,
+		offsetX?: number,
+		offsetY?: number,
+		offsetAngle?: number,
+		offsetRadius?: number,
+
+		aimPlayer?: boolean,
+		fromEnemy?: boolean,
+	}) {
 		this.movement = p.movement ?? straightMovement();
 		this.time = p.time ?? 0;
 		this.radius = p.radius ?? 6;
@@ -82,9 +98,11 @@ class BulletParams {
 		this.fromEnemy = p.fromEnemy ?? true;
 	}
 
-	modify(changes: any) {
+	modify(changes: Partial<BulletParams>): this {
 		for (let key in changes) {
-			this[key] = changes[key];
+			if (changes.hasOwnProperty(key)) {
+				(this as any)[key as keyof BulletParams] = changes[key as keyof BulletParams];
+			}
 		}
 		return this;
 	}
@@ -92,14 +110,14 @@ class BulletParams {
 
 
 // Enemy movement function props
-interface EnemyMovementProps {
+export interface EnemyMovementProps {
 	spawnTime: number;
 	originX: number;
 	originY: number;
 }
 
 // Enemy movement function
-type EnemyMovement = (enemy: Character, time: number, p: EnemyMovementProps) => Point;
+export type EnemyMovement = (enemy: Character, time: number, p: EnemyMovementProps) => Point;
 
 // Enemy shooting function
 /**
@@ -107,15 +125,15 @@ type EnemyMovement = (enemy: Character, time: number, p: EnemyMovementProps) => 
  * - returns strings
  * - can be passed in booleans
  */
-type EnemyShotPattern = IterableIterator<BulletParams>;
+export type EnemyShotPattern = IterableIterator<BulletParams>;
 
-interface EnemyPatterns {
+export interface EnemyPatterns {
 	easy: (() => EnemyShotPattern)[];
 	hard: (() => EnemyShotPattern)[];
 };
 
 // Enemy spawn data
-interface EnemyParams {
+export interface EnemyParams {
 	type: string;
 	health: number;
 	// pattern?: any;
@@ -126,19 +144,4 @@ interface EnemyParams {
 	movement: EnemyMovement;
 	patterns: EnemyPatterns;
 	// *generator(count:number): IterableIterator<number>;
-}
-
-
-export {
-	Point,
-
-	BulletParams,
-	BulletMovement,
-	BulletMovementProps,
-
-	EnemyParams,
-	EnemyMovement,
-	EnemyMovementProps,
-	EnemyShotPattern,
-	EnemyPatterns,
 }

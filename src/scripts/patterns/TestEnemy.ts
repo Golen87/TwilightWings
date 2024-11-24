@@ -1,15 +1,16 @@
+import { Character } from "../components/Character";
 import { Point, EnemyParams, EnemyMovement, EnemyMovementProps, EnemyShotPattern, BulletParams, BulletMovement, BulletMovementProps } from "../interfaces";
 import { straightMovement, acceleratedMovement, shapeMovement } from "./bulletMovement";
 
 
-function figureEight(enemy, time, p) {
+function figureEight(enemy: Character, time: number, p: EnemyMovementProps): Point {
 	return {
 		x: p.originX + 60 * Math.sin(time),
 		y: p.originY + 30 * Math.sin(2*time)
 	};
 }
 
-function spinningBeams(startX, direction): () => EnemyShotPattern {
+function spinningBeams(startX: number, direction: number): () => EnemyShotPattern {
 	return function*() {
 		let bullet = new BulletParams({
 			radius: 10,
