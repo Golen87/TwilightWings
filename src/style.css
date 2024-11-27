@@ -37,8 +37,5 @@ body {
 	font-family: Sans-Serif;
 	font-size: 2.5rem;
 	white-space: nowrap;
-}
-
-body:has(canvas) .fontPreloader {
 	visibility: hidden;
 }

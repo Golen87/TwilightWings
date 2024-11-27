@@ -2,7 +2,7 @@ import { GameScene } from "../scenes/GameScene";
 import { Character } from "./Character";
 import { Bullet } from "./Bullet";
 import { EnemyMovement, EnemyMovementProps, EnemyShotPattern, EnemyPatterns, BulletParams } from "../interfaces";
-import { playerMovement } from "../patterns/bulletMovement";
+import { playerBulletMovement } from "../patterns/bulletMovement";
 import { interpolateColor } from "../utils";
 
 const ACCELERATION = 70;
@@ -107,9 +107,9 @@ export class Player extends Character {
 
 			let time = 0;
 			let bullets = [
-				playerMovement( 0),
-				playerMovement(-60),
-				playerMovement( 60),
+				playerBulletMovement( 0),
+				playerBulletMovement(-60),
+				playerBulletMovement( 60),
 			];
 
 			while (true) {

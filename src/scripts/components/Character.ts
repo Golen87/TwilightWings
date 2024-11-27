@@ -4,7 +4,6 @@ import { interpolateColor } from "../utils";
 
 const HURT_DURATION = 0.7;
 
-
 export class Character extends Phaser.GameObjects.Container {
 	public scene: GameScene;
 
@@ -19,7 +18,6 @@ export class Character extends Phaser.GameObjects.Container {
 	protected deathDuration;
 
 	public facing: Phaser.Math.Vector2;
-
 
 	constructor(scene: GameScene, x: number, y: number, dayTime: boolean) {
 		super(scene, x, y);
@@ -46,10 +44,10 @@ export class Character extends Phaser.GameObjects.Container {
 		point.add(this);
 
 		let dist = Phaser.Math.Distance.BetweenPoints(point, bullet);
-		return (dist < 0.6*circle.radius + 0.8*bullet.radius);
+		return dist < 0.6 * circle.radius + 0.8 * bullet.radius;
 	}
 
-	damage(amount: number=1) {
+	damage(amount: number = 1) {
 		this.health -= amount;
 		this.hurtTimer = HURT_DURATION;
 		this.hurtEase = 0.25 * amount;
@@ -65,7 +63,7 @@ export class Character extends Phaser.GameObjects.Container {
 	}
 
 	getPositionAt(time: number) {
-		return {x:0, y:0};
+		return { x: 0, y: 0 };
 	}
 
 	get alive() {
