@@ -147,7 +147,9 @@ export class Enemy extends Character {
 
 						// Fire bullet
 						this.emit("shoot", pattern.queuedBullet, pattern.swapDayTime);
-						noise += pattern.queuedBullet.radius;
+						if (pattern.queuedBullet.audible) {
+							noise += pattern.queuedBullet.radius;
+						}
 						pattern.queuedBullet = null;
 					}
 				}

@@ -2,13 +2,11 @@ import { Bullet } from "./components/Bullet";
 import { Character } from "./components/Character";
 import { straightMovement } from "./patterns/bulletMovement";
 
-
 // 2D point
 export interface Point {
 	x: number;
 	y: number;
 }
-
 
 // Bullet movement function props
 export interface BulletMovementProps {
@@ -27,8 +25,11 @@ export interface BulletMovementProps {
 }
 
 // Bullet movement function
-export type BulletMovement = (bullet: Bullet, time: number, p: BulletMovementProps) => Point;
-
+export type BulletMovement = (
+	bullet: Bullet,
+	time: number,
+	p: BulletMovementProps
+) => Point;
 
 export class BulletParams {
 	movement: BulletMovement;
@@ -46,6 +47,7 @@ export class BulletParams {
 
 	aimPlayer: boolean; // Adds enemy->player direction to angle
 	fromEnemy: boolean; // Adds enemy position to start
+	audible: boolean; // Whether to play a sound when spawning
 
 	// type: boolean; // If true, bullet will be the same daytime as the enemy
 	// wait: number; // Seconds the pattern stalls til the next attack
@@ -65,21 +67,22 @@ export class BulletParams {
 	// varoff?: number; // Variable random offset to angle. Added to "offset". Interpreted as range from -n/2 to +n/2 - Default: 0
 
 	constructor(p: {
-		movement?: BulletMovement,
-		time?: number,
-		radius?: number,
-		speed?: number,
-		angle?: number,
+		movement?: BulletMovement;
+		time?: number;
+		radius?: number;
+		speed?: number;
+		angle?: number;
 
-		originX?: number,
-		originY?: number,
-		offsetX?: number,
-		offsetY?: number,
-		offsetAngle?: number,
-		offsetRadius?: number,
+		originX?: number;
+		originY?: number;
+		offsetX?: number;
+		offsetY?: number;
+		offsetAngle?: number;
+		offsetRadius?: number;
 
-		aimPlayer?: boolean,
-		fromEnemy?: boolean,
+		aimPlayer?: boolean;
+		fromEnemy?: boolean;
+		audible?: boolean;
 	}) {
 		this.movement = p.movement ?? straightMovement();
 		this.time = p.time ?? 0;
@@ -96,18 +99,19 @@ export class BulletParams {
 
 		this.aimPlayer = p.aimPlayer ?? true;
 		this.fromEnemy = p.fromEnemy ?? true;
+		this.audible = p.audible ?? true;
 	}
 
 	modify(changes: Partial<BulletParams>): this {
 		for (let key in changes) {
 			if (changes.hasOwnProperty(key)) {
-				(this as any)[key as keyof BulletParams] = changes[key as keyof BulletParams];
+				(this as any)[key as keyof BulletParams] =
+					changes[key as keyof BulletParams];
 			}
 		}
 		return this;
 	}
 }
-
 
 // Enemy movement function props
 export interface EnemyMovementProps {
@@ -117,7 +121,11 @@ export interface EnemyMovementProps {
 }
 
 // Enemy movement function
-export type EnemyMovement = (enemy: Character, time: number, p: EnemyMovementProps) => Point;
+export type EnemyMovement = (
+	enemy: Character,
+	time: number,
+	p: EnemyMovementProps
+) => Point;
 
 // Enemy shooting function
 /**
@@ -130,7 +138,7 @@ export type EnemyShotPattern = IterableIterator<BulletParams>;
 export interface EnemyPatterns {
 	easy: (() => EnemyShotPattern)[];
 	hard: (() => EnemyShotPattern)[];
-};
+}
 
 // Enemy spawn data
 export interface EnemyParams {
