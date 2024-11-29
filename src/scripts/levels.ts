@@ -1,6 +1,8 @@
 import { EnemyParams } from "./interfaces";
 import MyEnemy from "./patterns/MyEnemy";
 import TestEnemy from "./patterns/TestEnemy";
+import { CrimzonCloverEnemy } from "./patterns/CrimzonCloverEnemy";
+
 // import * as patterns from "./patterns";
 // import alternatingRings from "./patterns/alternatingRings";
 // import arrowRing from "./patterns/arrowRing";
@@ -47,22 +49,17 @@ export interface Stage {
 	// duration?: number;
 	enemies: EnemyParams[];
 	// enemies: StageEnemy[];
-
 }
-
-
-
 
 let levelData: Stage[] = [
 	{
-		enemies: [
-			MyEnemy
-		]
+		enemies: [CrimzonCloverEnemy],
 	},
 	{
-		enemies: [
-			TestEnemy
-		]
+		enemies: [MyEnemy],
+	},
+	{
+		enemies: [TestEnemy],
 	},
 
 	// {
@@ -212,9 +209,6 @@ let levelData: Stage[] = [
 	// 		}
 	// 	]
 	// },
-
 ];
 
-export {
-	levelData
-};
+export { levelData };

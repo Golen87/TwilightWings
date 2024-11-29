@@ -1,18 +1,6 @@
-import { Character } from "../components/Character";
-import {
-	EnemyParams,
-	EnemyMovementProps,
-	EnemyShotPattern,
-	BulletParams,
-} from "../interfaces";
+import { EnemyParams, EnemyShotPattern, BulletParams } from "../interfaces";
 import { acceleratedMovement, shapeMovement } from "./bulletMovement";
-
-function figureEight(enemy: Character, time: number, p: EnemyMovementProps) {
-	return {
-		x: p.originX + 60 * Math.sin(time),
-		y: p.originY + 30 * Math.sin(2 * time),
-	};
-}
+import { enemyMoveFigureEight } from "./enemyMovement";
 
 function* wavePattern(): EnemyShotPattern {
 	let accBullet = new BulletParams({
@@ -96,7 +84,7 @@ const MyEnemy: EnemyParams = {
 	type: "small_imp",
 	health: 200,
 
-	movement: figureEight,
+	movement: enemyMoveFigureEight,
 	patterns: {
 		easy: [polygonPattern],
 		hard: [wavePattern],
