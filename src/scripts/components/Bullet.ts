@@ -109,8 +109,8 @@ export class Bullet extends Phaser.GameObjects.Container {
 		this.prev.set(this.x, this.y);
 	}
 
-	update(time: number, delta: number) {
-		let elapsed = time - this.movementProps.spawnTime;
+	update(time: number, delta: number, barTime: number, barDelta: number) {
+		let elapsed = barTime - this.movementProps.spawnTime;
 
 		let introBounce = (elapsed < 0.25) ? Phaser.Math.Easing.Back.Out(4*elapsed, 4.0) : 1;
 		this.rescale(introBounce);

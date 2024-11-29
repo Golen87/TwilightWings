@@ -245,6 +245,8 @@ export class GameScene extends BaseScene {
 	}
 
 	update(timeMs: number, deltaMs: number) {
+		this.musicDay.update();
+		this.musicNight.update();
 
 		let focusTarget = this.shiftKey.isDown ? 0.25 : 1.0;
 		this.focusValue += 6*(focusTarget - this.focusValue) * deltaMs/1000;
@@ -406,7 +408,7 @@ export class GameScene extends BaseScene {
 				return;
 			}
 
-			bullet.update(time, delta);
+			bullet.update(time, delta, barTime, barDelta);
 			bullet.setDepth(PLAYER_BULLET_LAYER - 0/10000 * bullet.y/this.H);
 
 			if (bullet.dayTime)
@@ -455,7 +457,7 @@ export class GameScene extends BaseScene {
 				return;
 			}
 
-			bullet.update(time, delta);
+			bullet.update(time, delta, barTime, barDelta);
 			let layer = bullet.dayTime != this.dayTime ? ENEMY_BULLET_FRONT_LAYER : ENEMY_BULLET_BACK_LAYER;
 			bullet.setDepth(layer - 1/10000 * bullet.y/this.H);
 			let glow = bullet.dayTime != this.dayTime ? ENEMY_GLOW_FRONT_LAYER : ENEMY_GLOW_BACK_LAYER;
@@ -616,7 +618,7 @@ export class GameScene extends BaseScene {
 	spawnEnemy(enemyParams: EnemyParams) {
 		let x = this.CX;// + enemyParams.x * 0.24*this.W;
 		let y = 0.5*this.CY;// + enemyParams.y * 0.5*this.H;
-		let time = Math.round(this.musicDay.totalTime);
+		let time = Math.round(this.musicDay.barTime);
 
 		let minion = new Minion( this, x, y, enemyParams.type, time, enemyParams.movement, enemyParams.patterns );
 		minion.setDepth(ENEMY_LAYER);

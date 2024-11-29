@@ -38,8 +38,8 @@ export class EnemyBullet extends Bullet {
 		this.glow.setFrame(this.dayTime ? 0 : 1);
 	}
 
-	update(time: number, delta: number) {
-		super.update(time, delta);
+	update(time: number, delta: number, barTime: number, barDelta: number) {
+		super.update(time, delta, barTime, barDelta);
 
 		this.glow.x = this.x;
 		this.glow.y = this.y;

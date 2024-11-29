@@ -106,7 +106,7 @@ export class Enemy extends Character {
 
 	update(time: number, delta: number, barTime: number, barDelta: number) {
 		super.update(time, delta);
-		let elapsed = time - this.movementProps.spawnTime;
+		let elapsed = barTime - this.movementProps.spawnTime;
 
 
 		if (this.alive) {
